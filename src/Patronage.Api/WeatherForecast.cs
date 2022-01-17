@@ -1,6 +1,6 @@
 using System;
 
-namespace Intive.Api
+namespace Patronage.Api
 {
     public class WeatherForecast
     {

@@ -199,11 +199,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "Y:\\intive\\patronage22-dotnet-bialystok\\src\\Intive.Api\\Intive.Api.csproj",
-      "projectName": "Intive.Api",
-      "projectPath": "Y:\\intive\\patronage22-dotnet-bialystok\\src\\Intive.Api\\Intive.Api.csproj",
+      "projectUniqueName": "Y:\\intive\\patronage22-dotnet-bialystok\\src\\Patronage.Api\\Patronage.Api.csproj",
+      "projectName": "Patronage.Api",
+      "projectPath": "Y:\\intive\\patronage22-dotnet-bialystok\\src\\Patronage.Api\\Patronage.Api.csproj",
       "packagesPath": "C:\\Users\\Mista\\.nuget\\packages\\",
-      "outputPath": "Y:\\intive\\patronage22-dotnet-bialystok\\src\\Intive.Api\\obj\\",
+      "outputPath": "Y:\\intive\\patronage22-dotnet-bialystok\\src\\Patronage.Api\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"

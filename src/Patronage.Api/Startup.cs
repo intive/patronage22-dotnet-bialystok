@@ -12,7 +12,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 
-namespace Intive.Api
+namespace Patronage.Api
 {
     public class Startup
     {
@@ -30,7 +30,7 @@ namespace Intive.Api
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Intive.Api", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Patronage.Api", Version = "v1" });
             });
         }
 
@@ -41,7 +41,7 @@ namespace Intive.Api
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Intive.Api v1"));
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Patronage.Api v1"));
             }
 
             app.UseHttpsRedirection();
