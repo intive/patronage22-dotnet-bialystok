@@ -11,11 +11,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Patronage.Tests", "Patronag
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Patronage.Models", "Patronage.Models\Patronage.Models.csproj", "{9F7CE423-B2E2-41B0-B16E-D29EE8B80544}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Patronage.Common", "Patronage.Common\Patronage.Common.csproj", "{5A3D7F79-12DC-436B-9395-6D0CFCF804B3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Patronage.Common", "Patronage.Common\Patronage.Common.csproj", "{5A3D7F79-12DC-436B-9395-6D0CFCF804B3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Patronage.DataAccess", "Patronage.DataAccess\Patronage.DataAccess.csproj", "{887ACEA0-6C19-44D5-B1ED-4C1C7053EB54}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Patronage.DataAccess", "Patronage.DataAccess\Patronage.DataAccess.csproj", "{887ACEA0-6C19-44D5-B1ED-4C1C7053EB54}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Patronage.Migrations", "Patronage.Migrations\Patronage.Migrations.csproj", "{B485BD83-8F93-4012-8C3C-4BC9D033DDA7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Patronage.Migrations", "Patronage.Migrations\Patronage.Migrations.csproj", "{B485BD83-8F93-4012-8C3C-4BC9D033DDA7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -109,6 +109,7 @@ Global
 		{9F7CE423-B2E2-41B0-B16E-D29EE8B80544} = {F40E6425-49AF-46DE-AA70-E9F330A32562}
 		{5A3D7F79-12DC-436B-9395-6D0CFCF804B3} = {F40E6425-49AF-46DE-AA70-E9F330A32562}
 		{887ACEA0-6C19-44D5-B1ED-4C1C7053EB54} = {F40E6425-49AF-46DE-AA70-E9F330A32562}
+		{B485BD83-8F93-4012-8C3C-4BC9D033DDA7} = {F40E6425-49AF-46DE-AA70-E9F330A32562}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6804D49B-8C21-4E2C-AE9D-58ACEE6F6674}
