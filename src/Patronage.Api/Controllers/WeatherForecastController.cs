@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
+using NLog;
+using Microsoft.Extensions.Logging;
 
 namespace Patronage.Api.Controllers;
 
@@ -6,6 +8,10 @@ namespace Patronage.Api.Controllers;
 [Route("[controller]")]
 public class WeatherForecastController : ControllerBase
 {
+    //Logeger
+    //private static Logger logger = LogManager.GetLogger("LoggerRules");
+
+
     private static readonly string[] Summaries = new[]
     {
         "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
@@ -13,14 +19,18 @@ public class WeatherForecastController : ControllerBase
 
     private readonly ILogger<WeatherForecastController> _logger;
 
-    public WeatherForecastController(ILogger<WeatherForecastController> logger)
+    public WeatherForecastController(ILogger<WeatherForecastController> dblogger)
     {
-        _logger = logger;
+        _logger = dblogger;
+        _logger.LogInformation("NLog injected into HomeController");
     }
+
 
     [HttpGet(Name = "GetWeatherForecast")]
     public IEnumerable<WeatherForecast> Get()
     {
+        //logger.Info("Entering");
+        _logger.LogInformation("Get");
         return Enumerable.Range(1, 5).Select(index => new WeatherForecast
         {
             Date = DateTime.Now.AddDays(index),
