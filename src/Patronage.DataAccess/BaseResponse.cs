@@ -9,7 +9,7 @@ namespace Patronage.DataAccess
     public class BaseResponse<T>
     {
         public int ResponseCode { get; set; }
-        public List<error> BaseResponseError { get; set; }
+        //public List<error> BaseResponseError { get; set; }
         public string Message { get; set; }
         public T Data { get; set; }
 

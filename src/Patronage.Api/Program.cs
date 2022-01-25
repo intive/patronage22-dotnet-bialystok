@@ -17,7 +17,7 @@ builder.Services.AddSwaggerGen(c =>
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Patronage 2022 API", Version = "v1" });
 });
 
-builder.Services.AddDbContext<DbContext>(options =>
+builder.Services.AddDbContext<TableContext>(options =>
 {
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("Default"),
