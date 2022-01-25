@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace Patronage.DataAccess
 {
-    public abstract class BaseResponse<T>
+    public class BaseResponse<T>
     {
-        public T ResponseCode { get; set; }
-        public List<T> Errors { get; set; }
-        public T Message { get; set; }
+        public int ResponseCode { get; set; }
+        public List<error> BaseResponseError { get; set; }
+        public string Message { get; set; }
         public T Data { get; set; }
 
        
