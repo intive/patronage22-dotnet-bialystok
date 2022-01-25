@@ -8,10 +8,10 @@ namespace Patronage.DataAccess
 {
     public abstract class BaseResponse<T>
     {
-        public T responceCode { get; set; }
-        public List<T> errors { get; set; }
-        public T message { get; set; }
-        public T data { get; set; }
+        public T ResponseCode { get; set; }
+        public List<T> Errors { get; set; }
+        public T Message { get; set; }
+        public T Data { get; set; }
 
        
     }
