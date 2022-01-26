@@ -20,7 +20,7 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddDbContext<TableContext>(options =>
 {
     options.UseSqlServer(
-        builder.Configuration.GetConnectionString("Default"),
+        builder.Configuration.GetConnectionString("DockerString"),
         x => x.MigrationsAssembly("Patronage.Migrations"));
 });
 
