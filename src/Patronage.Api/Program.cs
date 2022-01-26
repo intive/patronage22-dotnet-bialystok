@@ -1,6 +1,9 @@
-using MediatR;
-using Microsoft.OpenApi.Models;
+using Patronage.Models;
+using Microsoft.EntityFrameworkCore;
 
+
+using Microsoft.OpenApi.Models;
+using MediatR;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -14,8 +17,14 @@ builder.Services.AddSwaggerGen(c =>
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Patronage 2022 API", Version = "v1" });
 });
 
-builder.Services.AddMediatR(typeof(Program));
+builder.Services.AddDbContext<TableContext>(options =>
+{
+    options.UseSqlServer(
+        builder.Configuration.GetConnectionString("Default"),
+        x => x.MigrationsAssembly("Patronage.Migrations"));
+});
 
+builder.Services.AddMediatR(typeof(Program));
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

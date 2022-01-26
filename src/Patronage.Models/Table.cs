@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
-using System.Data.Entity;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Data.Entity.Infrastructure;
 
 namespace Patronage.Models
 {
@@ -11,11 +9,12 @@ namespace Patronage.Models
         [Key]
         public int Id { get; set; }
 
-        [Column(TypeName = "nvarchar(255)")]
+        [Column(TypeName = "nvarchar")]
+        [MaxLength(255)]
         [Required]
         public string Name { get; set; }
 
-        [Column(TypeName = "nvarchar(max)")]
+        [Column(TypeName = "nvarchar")]
         public string Description { get; set; }
 
     }
