@@ -1,0 +1,10 @@
+version: '3.4'
+
+services:
+  patronage.api:
+    image: ${DOCKER_REGISTRY-}patronageapi
+    build:
+      context: .
+      dockerfile: src/Patronage.Api/Dockerfile
+    ports:
+      - "5000:80"
