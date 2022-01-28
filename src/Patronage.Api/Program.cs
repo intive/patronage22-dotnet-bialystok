@@ -28,13 +28,13 @@ try
     });
 
     builder.Services.AddMediatR(typeof(Program));
+    builder.Services.AddScoped<PrepDB>();
 
     // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
     //Nlog
     builder.Logging.ClearProviders();
     builder.Logging.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
     builder.Host.UseNLog();
-  
 
 
     var app = builder.Build();
@@ -57,10 +57,16 @@ try
     app.MapControllers();
 
     app.Run();
+
 }
 catch (Exception exception)
 {
-    // NLog: catch setup errors
+    string type = exception.GetType().Name;
+    if (type.Equals("StopTheHostException", StringComparison.Ordinal))
+    { 
+        throw;
+    }
+        // NLog: catch setup errors
     dblogger.Error(exception, "Stopped program because of exception");
     throw;
 }

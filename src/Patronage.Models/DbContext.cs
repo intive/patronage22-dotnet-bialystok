@@ -4,8 +4,8 @@ namespace Patronage.Models
 {
     public class TableContext : DbContext
     {
-        public virtual DbSet<Table> Tables { get; set; }
-        public virtual DbSet<Log> Logs { get; set; }
+        public  DbSet<Table> Tables { get; set; }
+        public  DbSet<Log> Logs { get; set; }
 
         public TableContext(DbContextOptions options) : base(options)
         {
@@ -13,6 +13,9 @@ namespace Patronage.Models
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Log>()
+                .HasKey(e => e.Id);
+
             modelBuilder.Entity<Log>()
                 .Property(r => r.MachineName)
                 .IsRequired()
