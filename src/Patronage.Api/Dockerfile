@@ -1,5 +1,5 @@
 FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
-WORKDIR /src #/app
+WORKDIR /src
 EXPOSE 80
 EXPOSE 443
 
@@ -20,6 +20,6 @@ FROM build AS publish
 RUN dotnet publish "Patronage.Api.csproj" -c Release -o /app/publish
 
 FROM base AS final
-WORKDIR /src #/app
+WORKDIR /src
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "Patronage.Api.dll"]
