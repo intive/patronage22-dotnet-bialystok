@@ -12,4 +12,25 @@ public class TableContext : DbContext
 
     }
 
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        #region Project
+
+        modelBuilder.Entity<Table>()
+            .HasKey(p => p.Id);
+
+        modelBuilder.Entity<Project>()
+            .Property(p => p.Alias)
+            .HasMaxLength(256);
+
+        modelBuilder.Entity<Project>()
+            .Property(p => p.Name)
+            .HasMaxLength(1024);
+
+        modelBuilder.Entity<Project>()
+            .Property(p => p.CreatedOn)
+            .IsRequired();
+
+        #endregion
+    }
 }
