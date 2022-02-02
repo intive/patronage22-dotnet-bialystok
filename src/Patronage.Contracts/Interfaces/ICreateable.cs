@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Patronage.Contracts.ModelDtos;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,6 @@ namespace Patronage.Models.Interfaces
 {
     public interface ICreateable
     {
-
+        DateTime CreatedOn(BoardDto board);
     }
 }

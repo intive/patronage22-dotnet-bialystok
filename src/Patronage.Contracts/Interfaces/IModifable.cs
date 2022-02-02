@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Patronage.Contracts.ModelDtos;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,5 +9,6 @@ namespace Patronage.Contracts.Interfaces
 {
     public interface IModifable
     {
+        DateTime ModifiedOn(BoardDto board);
     }
 }

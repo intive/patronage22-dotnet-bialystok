@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Patronage.Contracts.ModelDtos
 {
-    internal class BoardDto
+    public class BoardDto
     {
         public int Id { get; set; }
         public string Alias { get; set; }
