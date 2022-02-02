@@ -7,6 +7,7 @@ using MediatR;
 using Patronage.Contracts.Interfaces;
 using Patronage.Models.Services;
 using Patronage.DataAccess.Services;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,7 +22,7 @@ builder.Services.AddSwaggerGen(c =>
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Patronage 2022 API", Version = "v1" });
 });
 
-builder.Services.AddDbContext<Patronage.Models.TableContext>((DbContextOptionsBuilder options) =>
+builder.Services.AddDbContext<TableContext>((DbContextOptionsBuilder options) =>
 {
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("Default"),
@@ -33,6 +34,8 @@ builder.Services.AddScoped<IIssueService, IssueService>();
 builder.Services.AddScoped<IProjectService, ProjectService>();
 
 builder.Services.AddMediatR(typeof(Program));
+
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 
 var app = builder.Build();

@@ -11,8 +11,8 @@ namespace Patronage.Contracts.Interfaces
     {
         IEnumerable<ProjectDto> GetAll();
         ProjectDto GetById(int id);
-        void Create(ProjectDto projectDto);
-        void Update(int id, ProjectDto projectDto);
-        void Delete(int id);
+        int Create(ProjectDto projectDto);
+        bool Update(int id, ProjectDto projectDto);
+        bool Delete(int id);
     }
 }

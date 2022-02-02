@@ -11,6 +11,8 @@ using System.Threading.Tasks;
 
 namespace Patronage.Api.Controllers
 {
+    [Route("api/[controller]")]
+    [ApiController]
     public class ProjectController : ControllerBase
     {
         private readonly IProjectService _projectService;
@@ -27,10 +29,9 @@ namespace Patronage.Api.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<ProjectDto>> GetAll()
         {
-            /*---------------*/
-            /*---- TO DO ----*/
-            /*---------------*/
-            return Ok();
+            var projects = _projectService.GetAll();
+
+            return Ok(projects);
         }
 
 
@@ -39,22 +40,22 @@ namespace Patronage.Api.Controllers
         [HttpGet("{id}")]
         public ActionResult<ProjectDto> GetById([FromRoute]int id)
         {
-            /*---------------*/
-            /*---- TO DO ----*/
-            /*---------------*/
-            return Ok();
+            var project = _projectService.GetById(id);
+
+            if (project is null) return NotFound();
+
+            return Ok(project);
         }
 
 
 
         [SwaggerOperation(Summary = "Creates Project")]
         [HttpPost]
-        public ActionResult<ProjectDto> CreateProject([FromBody] ProjectDto projectDto)
+        public ActionResult CreateProject([FromBody] ProjectDto projectDto)
         {
-            /*---------------*/
-            /*---- TO DO ----*/
-            /*---------------*/
-            return Ok();
+            var id = _projectService.Create(projectDto);
+
+            return Created($"/api/project/{id}", null);
         }
 
 
@@ -62,11 +63,12 @@ namespace Patronage.Api.Controllers
 
         [SwaggerOperation(Summary = "Updates project - it's all properties")]
         [HttpPut("{id}")]
-        public ActionResult<ProjectDto> UpdateProject([FromRoute] int id, [FromBody]ProjectDto projectDto)
+        public ActionResult UpdateProject([FromRoute] int id, [FromBody]ProjectDto projectDto)
         {
-            /*---------------*/
-            /*---- TO DO ----*/
-            /*---------------*/
+            var isUpdated = _projectService.Update(id, projectDto);
+
+            if (!isUpdated) return NotFound();
+
             return Ok();
         }
 
@@ -75,7 +77,7 @@ namespace Patronage.Api.Controllers
 
         [SwaggerOperation(Summary = "Updates project - only selected properties")]
         [HttpPatch("{id}")]
-        public ActionResult<ProjectDto> LightUpdateProject([FromRoute] int id, [FromBody] ProjectDto projectDto)
+        public ActionResult LightUpdateProject([FromRoute] int id, [FromBody] ProjectDto projectDto)
         {
             /*---------------*/
             /*---- TO DO ----*/
@@ -90,10 +92,11 @@ namespace Patronage.Api.Controllers
         [HttpDelete("{id}")]
         public ActionResult<ProjectDto> DeleteProject([FromRoute] int id)
         {
-            /*---------------*/
-            /*---- TO DO ----*/
-            /*---------------*/
-            return Ok();
+            var isDeleted = _projectService.Delete(id);
+
+            if (isDeleted) return NoContent();
+
+            return NotFound();
         }
     }
 }
