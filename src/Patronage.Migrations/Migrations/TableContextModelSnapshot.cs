@@ -9,7 +9,7 @@ using Patronage.Models;
 
 namespace Patronage.Migrations.Migrations
 {
-    [DbContext(typeof(TableContext))]
+    [DbContext(typeof(Models.TableContext))]
     partial class TableContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

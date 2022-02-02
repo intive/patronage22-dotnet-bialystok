@@ -10,7 +10,7 @@ using Patronage.Models;
 
 namespace Patronage.Migrations.Migrations
 {
-    [DbContext(typeof(TableContext))]
+    [DbContext(typeof(Models.TableContext))]
     [Migration("20220125154251_InitialMigration")]
     partial class InitialMigration
     {

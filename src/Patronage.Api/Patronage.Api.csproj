@@ -26,6 +26,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Patronage.Contracts\Patronage.Contracts.csproj" />
+    <ProjectReference Include="..\Patronage.DataAccess\Patronage.DataAccess.csproj" />
     <ProjectReference Include="..\Patronage.Migrations\Patronage.Migrations.csproj" />
     <ProjectReference Include="..\Patronage.Models\Patronage.Models.csproj" />
   </ItemGroup>

@@ -16,4 +16,8 @@
     <PackageReference Include="Microsoft.NETCore.Targets" Version="5.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\Patronage.Contracts\Patronage.Contracts.csproj" />
+  </ItemGroup>
+
 </Project>

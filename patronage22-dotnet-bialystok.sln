@@ -17,6 +17,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Patronage.Models", "src\Pat
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Patronage.Tests", "src\Patronage.Tests\Patronage.Tests.csproj", "{3794BE82-E149-4E0F-A60A-D32696EEA63A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Patronage.Contracts", "Patronage.Contracts\Patronage.Contracts.csproj", "{4E0544BE-DB00-402E-96BD-1B133C510C6A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -47,6 +49,10 @@ Global
 		{3794BE82-E149-4E0F-A60A-D32696EEA63A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3794BE82-E149-4E0F-A60A-D32696EEA63A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3794BE82-E149-4E0F-A60A-D32696EEA63A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4E0544BE-DB00-402E-96BD-1B133C510C6A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E0544BE-DB00-402E-96BD-1B133C510C6A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4E0544BE-DB00-402E-96BD-1B133C510C6A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4E0544BE-DB00-402E-96BD-1B133C510C6A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -58,6 +64,7 @@ Global
 		{FD1A5F5A-4599-427C-B109-424E4BF73C58} = {F40E6425-49AF-46DE-AA70-E9F330A32562}
 		{2387112F-0D63-4928-A341-C3076F4E8AE7} = {F40E6425-49AF-46DE-AA70-E9F330A32562}
 		{3794BE82-E149-4E0F-A60A-D32696EEA63A} = {F40E6425-49AF-46DE-AA70-E9F330A32562}
+		{4E0544BE-DB00-402E-96BD-1B133C510C6A} = {F40E6425-49AF-46DE-AA70-E9F330A32562}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6804D49B-8C21-4E2C-AE9D-58ACEE6F6674}
