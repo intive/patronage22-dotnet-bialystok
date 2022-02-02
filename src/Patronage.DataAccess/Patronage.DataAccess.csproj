@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Patronage.Contracts\Patronage.Contracts.csproj" />
+    <ProjectReference Include="..\Patronage.Contracts\Patronage.Contracts.csproj" />
   </ItemGroup>
 
 </Project>
