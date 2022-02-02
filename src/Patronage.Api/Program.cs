@@ -6,6 +6,7 @@ using Microsoft.OpenApi.Models;
 using MediatR;
 using Patronage.Contracts.Interfaces;
 using Patronage.Models.Services;
+using Patronage.DataAccess.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,8 +30,11 @@ builder.Services.AddDbContext<Patronage.Models.TableContext>((DbContextOptionsBu
 
 
 builder.Services.AddScoped<IIssueService, IssueService>();
+builder.Services.AddScoped<IProjectService, ProjectService>();
 
 builder.Services.AddMediatR(typeof(Program));
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
