@@ -6,6 +6,7 @@ using Microsoft.OpenApi.Models;
 using MediatR;
 using Patronage.Contracts.Interfaces;
 using Patronage.Models.Services;
+using Patronage.Common.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,6 +31,10 @@ builder.Services.AddDbContext<Patronage.Models.TableContext>((DbContextOptionsBu
 
 builder.Services.AddScoped<IIssueService, IssueService>();
 
+
+
+builder.Services.AddScoped<ErrorHandlingMiddleware>();
+
 builder.Services.AddMediatR(typeof(Program));
 var app = builder.Build();
 
@@ -43,6 +48,8 @@ if (app.Environment.IsDevelopment())
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "Patronage 2022 API v1");
     });
 }
+
+app.UseMiddleware<ErrorHandlingMiddleware>();
 
 app.UseHttpsRedirection();
 
