@@ -1,0 +1,24 @@
+version: '3.4'
+
+services:
+  patronage.api:
+    image: ${DOCKER_REGISTRY-}patronageapi
+    build:
+      context: .
+      dockerfile: src/Patronage.Api/Dockerfile
+    ports:
+      - "5000:80"
+    environment:
+      - COMPOSE_TLS_VERSION= "TLSv1_2"
+    volumes:
+      - ./logs:/src/logs
+#    depends_on:
+#      - database
+#  database:
+#    image: mcr.microsoft.com/mssql/server:2019-latest
+#    environment:
+#     ACCEPT_EULA: "Y"
+#     SA_PASSWORD: "Pwd12345"
+#    ports:
+#     - "1433:1433"
+     

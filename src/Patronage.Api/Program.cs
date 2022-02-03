@@ -1,7 +1,7 @@
+using NLog;
+using NLog.Web;
 using Patronage.Models;
 using Microsoft.EntityFrameworkCore;
-
-
 using Microsoft.OpenApi.Models;
 using MediatR;
 using Patronage.Contracts.Interfaces;
@@ -11,16 +11,20 @@ using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(c =>
+try
 {
-    c.EnableAnnotations();
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Patronage 2022 API", Version = "v1" });
-});
+    var logger = NLog.LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
+    logger.Debug("init main");
+
+    var builder = WebApplication.CreateBuilder(args);
+    builder.Services.AddControllers();
+    // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+    builder.Services.AddEndpointsApiExplorer();
+    builder.Services.AddSwaggerGen(c =>
+    {
+        c.EnableAnnotations();
+        c.SwaggerDoc("v1", new OpenApiInfo { Title = "Patronage 2022 API", Version = "v1" });
+    });
 
 builder.Services.AddDbContext<TableContext>((DbContextOptionsBuilder options) =>
 {
@@ -40,21 +44,38 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseDeveloperExceptionPage();
-    app.UseSwagger();
-    app.UseSwaggerUI(c =>
+    // Configure the HTTP request pipeline.
+    if (app.Environment.IsDevelopment())
     {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Patronage 2022 API v1");
-    });
+        app.UseSwagger();
+        app.UseSwaggerUI(c =>
+        {
+            c.SwaggerEndpoint("/swagger/v1/swagger.json", "Patronage 2022 API v1");
+        });
+    }
+
+    app.UseHttpsRedirection();
+
+    app.UseAuthorization();
+    app.UseDeveloperExceptionPage();
+
+    app.MapControllers();
+
+    app.Run();
+
 }
-
-app.UseHttpsRedirection();
-
-app.UseAuthorization();
-
-app.MapControllers();
-
-app.Run();
+catch (Exception exception)
+{
+    string type = exception.GetType().Name;
+    if (type.Equals("StopTheHostException", StringComparison.Ordinal))
+    { 
+        throw;
+    }
+        // NLog: catch setup errors
+    throw;
+}
+finally
+{
+    // Ensure to flush and stop internal timers/threads before application-exit (Avoid segmentation fault on Linux)
+    LogManager.Shutdown();
+}
