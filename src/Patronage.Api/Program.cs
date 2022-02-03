@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using MediatR;
 
-var dblogger = NLog.LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
-dblogger.Debug("init main dsfsdfs");
-
 try
 {
+    var logger = NLog.LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
+    logger.Debug("init main");
+
     var builder = WebApplication.CreateBuilder(args);
     builder.Services.AddControllers();
     // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -67,7 +67,6 @@ catch (Exception exception)
         throw;
     }
         // NLog: catch setup errors
-    dblogger.Error(exception, "Stopped program because of exception");
     throw;
 }
 finally
