@@ -17,6 +17,12 @@ public class TableContext : DbContext
     {
         #region Project
 
+<<<<<<< HEAD
+=======
+        modelBuilder.Entity<Table>()
+            .HasKey(p => p.Id);
+
+>>>>>>> develop
         modelBuilder.Entity<Project>()
             .Property(p => p.Alias)
             .HasMaxLength(256);
@@ -31,5 +37,8 @@ public class TableContext : DbContext
 
         #endregion
     }
+<<<<<<< HEAD
 
+=======
+>>>>>>> develop
 }
