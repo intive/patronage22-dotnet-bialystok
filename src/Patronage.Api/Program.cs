@@ -9,7 +9,6 @@ using Patronage.Models.Services;
 using Patronage.DataAccess.Services;
 using System.Reflection;
 
-var builder = WebApplication.CreateBuilder(args);
 
 try
 {

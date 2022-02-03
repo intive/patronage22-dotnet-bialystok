@@ -20,7 +20,6 @@ namespace Patronage.Api.Controllers
         [HttpGet]
         public string HelloWorld()
         {
-            _logger.LogError
             _logger.LogInformation("hello world");
             return "Hello World";
         }

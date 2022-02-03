@@ -7,6 +7,7 @@ public class TableContext : DbContext
     public virtual DbSet<Table> Tables { get; set; }
     public virtual DbSet<Issue> Issues { get; set; }
     public virtual DbSet<Project> Projects { get; set; }
+    public virtual DbSet<Log> Logs { get; set; }
 
     public TableContext(DbContextOptions options) : base(options)
     {
@@ -33,5 +34,41 @@ public class TableContext : DbContext
             .IsRequired();
 
         #endregion
+
+        #region logTable
+        modelBuilder.Entity<Log>()
+                .HasKey(e => e.Id);
+
+        modelBuilder.Entity<Log>()
+            .Property(r => r.MachineName)
+            .IsRequired()
+            .HasMaxLength(50);
+
+        modelBuilder.Entity<Log>()
+            .Property(r => r.Logged)
+            .IsRequired();
+
+        modelBuilder.Entity<Log>()
+            .Property(r => r.Level)
+            .IsRequired()
+            .HasMaxLength(50);
+
+        modelBuilder.Entity<Log>()
+            .Property(r => r.Message)
+            .IsRequired();
+
+        modelBuilder.Entity<Log>()
+            .Property(r => r.Logger)
+            .IsRequired(false)
+            .HasMaxLength(250);
+
+        modelBuilder.Entity<Log>()
+            .Property(r => r.Callsite)
+            .IsRequired(false);
+
+        modelBuilder.Entity<Log>()
+            .Property(r => r.Exception)
+            .IsRequired(false);
+        #endregion 
     }
 }
