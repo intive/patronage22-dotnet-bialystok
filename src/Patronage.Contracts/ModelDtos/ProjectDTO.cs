@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Patronage.Common;
 
-namespace Patronage.DataAccess
+namespace Patronage.Contracts
 {
     public class ProjectDTO
     {
