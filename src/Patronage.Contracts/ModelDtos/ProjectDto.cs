@@ -7,9 +7,7 @@ using Patronage.Common;
 
 namespace Patronage.Contracts
 {
-    public class ProjectDTO
-    {
-        public class Projekt : ICreatable, IModifable
+        public class ProjectDto : ICreatable, IModifable
         {
             private int Id { get; set; }
             public string Alias { get; set; }
@@ -29,5 +27,4 @@ namespace Patronage.Contracts
                 ModifiedOn = DateTime.UtcNow;
             }
         }
-    }
 }
