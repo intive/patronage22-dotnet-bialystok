@@ -33,7 +33,7 @@ namespace Patronage.Models.Services
 
             if (issue is null)
             {
-                throw new NotFoundException("Restaurant not found");
+                throw new NotFoundException("Issues not found");
             }
 
             /* To do - read how to change value in DB */
