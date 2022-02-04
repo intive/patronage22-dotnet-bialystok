@@ -12,13 +12,18 @@ services:
       - COMPOSE_TLS_VERSION= "TLSv1_2"
     volumes:
       - ./logs:/src/logs
-#    depends_on:
-#      - database
-#  database:
-#    image: mcr.microsoft.com/mssql/server:2019-latest
-#    environment:
-#     ACCEPT_EULA: "Y"
-#     SA_PASSWORD: "Pwd12345"
-#    ports:
-#     - "1433:1433"
-     
+    depends_on:
+      - database
+  database:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    build: /src/Patronage.Api/mssql
+    environment:
+     ACCEPT_EULA: "Y"
+     SA_PASSWORD: "Pwd12345"
+     MSSQL_DB: "patronageDB"
+     MSSQL_USER: "user1"
+     MSSQL_PASSWORD: "Pwd12345"
+    ports:
+     - "1433:1433"
+    volumes:
+      - /init.sql:/data/application/init.sql

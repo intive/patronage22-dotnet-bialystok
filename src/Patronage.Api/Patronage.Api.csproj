@@ -47,6 +47,10 @@
     <ProjectReference Include="..\Patronage.Migrations\Patronage.Migrations.csproj" />
     <ProjectReference Include="..\Patronage.Models\Patronage.Models.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="mssql\" />
+  </ItemGroup>
   <PropertyGroup>
 	<ErrorOnDuplicatePublishOutputFiles>false</ErrorOnDuplicatePublishOutputFiles>
   </PropertyGroup>
