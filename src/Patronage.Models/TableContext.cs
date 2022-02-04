@@ -1,4 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Patronage.Common;
 using Patronage.Common.Entities;
 
 namespace Patronage.Models;
@@ -8,12 +10,14 @@ public class TableContext : DbContext
     public virtual DbSet<Issue> Issues { get; set; }
     public virtual DbSet<Project> Projects { get; set; }
     public virtual DbSet<Log> Logs { get; set; }
+    public virtual DbSet<Board> Boards { get; set; }
 
     public TableContext(DbContextOptions options) : base(options)
     {
-
+        
     }
 
+   
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         #region Project
@@ -69,6 +73,29 @@ public class TableContext : DbContext
         modelBuilder.Entity<Log>()
             .Property(r => r.Exception)
             .IsRequired(false);
-        #endregion 
+        #endregion
+
+        #region Board
+
+        modelBuilder.Entity<Board>()
+            .HasKey(a => a.Id);
+
+        modelBuilder.Entity<Board>()
+            .Property(a => a.Alias)
+            .HasMaxLength(256);
+
+        modelBuilder.Entity<Board>()
+            .Property(a => a.Name)
+            .HasMaxLength(1024);
+
+        modelBuilder.Entity<Board>()
+            .Property(a => a.ProjectId)
+            .IsRequired();
+
+        modelBuilder.Entity<Board>()
+            .Property(a => a.CreatedOn)
+            .IsRequired();
+        #endregion
+
     }
 }
