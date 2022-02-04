@@ -1,27 +1,32 @@
+using NLog;
+using NLog.Web;
 using Patronage.Models;
 using Microsoft.EntityFrameworkCore;
-
-
 using Microsoft.OpenApi.Models;
 using MediatR;
 using Patronage.Contracts.Interfaces;
 using Patronage.Models.Services;
+using Patronage.DataAccess.Services;
+using System.Reflection;
 using Patronage.Common.Middleware;
 
-var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(c =>
+try
 {
-    c.EnableAnnotations();
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Patronage 2022 API", Version = "v1" });
-});
+    var logger = NLog.LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
+    logger.Debug("init main");
 
-builder.Services.AddDbContext<Patronage.Models.TableContext>((DbContextOptionsBuilder options) =>
+    var builder = WebApplication.CreateBuilder(args);
+    builder.Services.AddControllers();
+    // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+    builder.Services.AddEndpointsApiExplorer();
+    builder.Services.AddSwaggerGen(c =>
+    {
+        c.EnableAnnotations();
+        c.SwaggerDoc("v1", new OpenApiInfo { Title = "Patronage 2022 API", Version = "v1" });
+    });
+
+builder.Services.AddDbContext<TableContext>((DbContextOptionsBuilder options) =>
 {
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("Default"),
@@ -30,31 +35,53 @@ builder.Services.AddDbContext<Patronage.Models.TableContext>((DbContextOptionsBu
 
 
 builder.Services.AddScoped<IIssueService, IssueService>();
+builder.Services.AddScoped<IProjectService, ProjectService>();
 
 
 
 builder.Services.AddScoped<ErrorHandlingMiddleware>();
 
 builder.Services.AddMediatR(typeof(Program));
+
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseDeveloperExceptionPage();
-    app.UseSwagger();
-    app.UseSwaggerUI(c =>
+    // Configure the HTTP request pipeline.
+    if (app.Environment.IsDevelopment())
     {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Patronage 2022 API v1");
-    });
-}
+        app.UseSwagger();
+        app.UseSwaggerUI(c =>
+        {
+            c.SwaggerEndpoint("/swagger/v1/swagger.json", "Patronage 2022 API v1");
+        });
+    }
 
 app.UseMiddleware<ErrorHandlingMiddleware>();
 
 app.UseHttpsRedirection();
 
-app.UseAuthorization();
+    app.UseAuthorization();
+    app.UseDeveloperExceptionPage();
 
-app.MapControllers();
+    app.MapControllers();
 
-app.Run();
+    app.Run();
+
+}
+catch (Exception exception)
+{
+    string type = exception.GetType().Name;
+    if (type.Equals("StopTheHostException", StringComparison.Ordinal))
+    { 
+        throw;
+    }
+        // NLog: catch setup errors
+    throw;
+}
+finally
+{
+    // Ensure to flush and stop internal timers/threads before application-exit (Avoid segmentation fault on Linux)
+    LogManager.Shutdown();
+}
