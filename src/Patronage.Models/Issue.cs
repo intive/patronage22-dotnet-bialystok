@@ -1,12 +1,13 @@
-﻿using System;
+﻿using Patronage.Common;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Patronage.Common.Entities
+namespace Patronage.Models
 {
-    public class Issue
+    public class Issue : ICreatable, IModifable
     {
         public int Id { get; set; }
         public string Alias { get; set; }
@@ -18,5 +19,15 @@ namespace Patronage.Common.Entities
         public bool IsActive { get; set; }
         public DateTime CreatedOn { get; set; }
         public DateTime? ModifiedOn { get; set; }
+
+        public void OnCreate()
+        {
+            CreatedOn = DateTime.UtcNow;
+        }
+
+        public void OnModify()
+        {
+            ModifiedOn = DateTime.UtcNow;
+        }
     }
 }

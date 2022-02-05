@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Patronage.Contracts.Interfaces;
 using Patronage.Contracts.ModelDtos;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace Patronage.Api.Controllers
 {
@@ -15,6 +16,24 @@ namespace Patronage.Api.Controllers
             _issueService = issueService;
         }
 
+        [SwaggerOperation(Summary = "Returns all Issues")]
+        [HttpGet("list")]
+        public ActionResult<IEnumerable<IssueDto>> GetAll()
+        {
+
+            return Ok();
+        }
+
+        [SwaggerOperation(Summary = "Returns Issue by id")]
+        [HttpGet("{issueId}")]
+        public ActionResult<IssueDto> GetById([FromRoute] int issueId)
+        {
+            var issue = _issueService.GetById(issueId);
+
+            return Ok(issue);
+        }
+
+        [SwaggerOperation(Summary = "Creates Issue")]
         [HttpPost("create")]
         public ActionResult Create([FromBody] CreateIssueDto dto)
         {
@@ -22,16 +41,19 @@ namespace Patronage.Api.Controllers
             return Ok();
         }
 
-        [HttpDelete("delete/{issueId}")]
-        public ActionResult Delete(int issueId)
+        [SwaggerOperation(Summary = "Updates Issue")]
+        [HttpPost("update/{issueId}")]
+        public ActionResult Update([FromBody] UpdateIssueDto dto, [FromRoute] int issueId)
         {
 
             return Ok();
         }
 
-        [HttpPost("update/{issueId}")]
-        public ActionResult Update(int issueId, UpdateIssueDto dto)
+        [SwaggerOperation(Summary = "Deletes Issue")]
+        [HttpDelete("delete/{issueId}")]
+        public ActionResult Delete([FromRoute] int issueId)
         {
+            _issueService.Delete(issueId);
 
             return Ok();
         }
