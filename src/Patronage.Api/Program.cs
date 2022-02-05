@@ -9,7 +9,7 @@ using Patronage.Models.Services;
 using Patronage.DataAccess.Services;
 using System.Reflection;
 using Patronage.Common.Middleware;
-
+using Patronage.DataAccess;
 
 try
 {
@@ -26,27 +26,41 @@ try
         c.SwaggerDoc("v1", new OpenApiInfo { Title = "Patronage 2022 API", Version = "v1" });
     });
 
-builder.Services.AddDbContext<TableContext>((DbContextOptionsBuilder options) =>
-{
-    options.UseSqlServer(
-        builder.Configuration.GetConnectionString("Default"),
-        x => x.MigrationsAssembly("Patronage.Migrations"));
-});
+    builder.Services.AddDbContext<TableContext>((DbContextOptionsBuilder options) =>
+    {
+        options.UseSqlServer(
+            builder.Configuration.GetConnectionString("Default"),
+            x => x.MigrationsAssembly("Patronage.Migrations"));
+    });
 
 
-builder.Services.AddScoped<IIssueService, IssueService>();
-builder.Services.AddScoped<IProjectService, ProjectService>();
+    builder.Services.AddScoped<IIssueService, IssueService>();
+    builder.Services.AddScoped<IProjectService, ProjectService>();
+
+    builder.Services.AddScoped<ErrorHandlingMiddleware>();
+
+    builder.Services.AddTransient<DataSeeder>();
+
+    builder.Services.AddMediatR(typeof(Program));
+
+    builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 
+    var app = builder.Build();
 
-builder.Services.AddScoped<ErrorHandlingMiddleware>();
+    SendData(app);
 
-builder.Services.AddMediatR(typeof(Program));
+    void SendData(IHost app)
+    {
+        var scopedFactory = app.Services.GetService<IServiceScopeFactory>();
 
-builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+        using (var scope = scopedFactory.CreateScope())
+        {
+            var service = scope.ServiceProvider.GetService<DataSeeder>();
+            service.Seed();
+        }
+    }
 
-
-var app = builder.Build();
 
     // Configure the HTTP request pipeline.
     if (app.Environment.IsDevelopment())
@@ -58,9 +72,9 @@ var app = builder.Build();
         });
     }
 
-app.UseMiddleware<ErrorHandlingMiddleware>();
+    app.UseMiddleware<ErrorHandlingMiddleware>();
 
-app.UseHttpsRedirection();
+    app.UseHttpsRedirection();
 
     app.UseAuthorization();
     app.UseDeveloperExceptionPage();

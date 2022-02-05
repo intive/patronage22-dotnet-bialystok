@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Patronage.Contracts;
 using Patronage.Contracts.Interfaces;
+using Patronage.Contracts.ModelDtos;
 using Patronage.DataAccess;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
