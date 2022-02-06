@@ -23,23 +23,19 @@ namespace Patronage.Models.Services
 
         public int Create(CreateIssueDto dto)
         {
+            var issue = _mapper.Map<Issue>(dto);
+            issue.IsActive = true;
+            issue.CreatedOn = DateTime.UtcNow;
 
-            /* create Create issue
-               return id issue */
+            _dbContext.Issues.Add(issue);
+            _dbContext.SaveChanges();
 
-            return 0;
+            return issue.Id;
         }
 
         public void Delete(int issueId)
         {
-            var issue = _dbContext
-                .Issues
-                .FirstOrDefault(x => x.Id == issueId);
-
-            if (issue is null)
-            {
-                throw new NotFoundException("Issues not found");
-            }
+            var issue = GetIssue(issueId);
 
             issue.IsActive = false;
 
@@ -48,28 +44,39 @@ namespace Patronage.Models.Services
 
         public IEnumerable<IssueDto> GetAll()
         {
+            var issue = _dbContext
+                .Issues
+                .ToList();
+            var projectsDto = _mapper.Map<List<IssueDto>>(issue);
 
-
-            throw new NotImplementedException();
+            return projectsDto;
         }
 
         public IssueDto GetById(int issueId)
         {
-            var issue = _dbContext
-                .Issues
-                .FirstOrDefault(x => x.Id == issueId);
+            var issue = GetIssue(issueId);
+            var result = _mapper.Map<IssueDto>(issue);
 
-            if (issue is null)
-            {
-                throw new NotFoundException("Issues not found");
-            }
-
-            /* create GetById issue */
-
-            return new IssueDto();
+            return result;
         }
 
         public void Update(int issueId, UpdateIssueDto dto)
+        {
+            var issue = GetIssue(issueId);
+
+            issue.Alias = dto.Alias;
+            issue.Name = dto.Name;
+            issue.Description = dto.Description;
+            issue.ModifiedOn = DateTime.UtcNow;
+            issue.ProjectId = dto.ProjectId;
+            issue.BoardId = dto.BoardId;
+            issue.StatusId = dto.StatusId;
+            issue.IsActive = dto.IsActive;
+
+            _dbContext.SaveChanges();
+        }
+
+        private Issue GetIssue(int issueId)
         {
             var issue = _dbContext
                 .Issues
@@ -80,9 +87,7 @@ namespace Patronage.Models.Services
                 throw new NotFoundException("Issues not found");
             }
 
-            /* create Update */
-
-            _dbContext.SaveChanges();
+            return issue;
         }
     }
 }

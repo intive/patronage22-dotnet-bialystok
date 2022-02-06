@@ -20,8 +20,9 @@ namespace Patronage.Api.Controllers
         [HttpGet("list")]
         public ActionResult<IEnumerable<IssueDto>> GetAll()
         {
+            var issues = _issueService.GetAll();
 
-            return Ok();
+            return Ok(issues);
         }
 
         [SwaggerOperation(Summary = "Returns Issue by id")]
@@ -37,14 +38,16 @@ namespace Patronage.Api.Controllers
         [HttpPost("create")]
         public ActionResult Create([FromBody] CreateIssueDto dto)
         {
+            var id = _issueService.Create(dto);
 
-            return Ok();
+            return Created($"/api/issue/{id}", null);
         }
 
         [SwaggerOperation(Summary = "Updates Issue")]
         [HttpPost("update/{issueId}")]
         public ActionResult Update([FromBody] UpdateIssueDto dto, [FromRoute] int issueId)
         {
+            _issueService.Update(issueId, dto);
 
             return Ok();
         }

@@ -8,7 +8,6 @@ namespace Patronage.Contracts.ModelDtos
 {
     public class UpdateIssueDto
     {
-        public int Id { get; set; }
         public string Alias { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
@@ -16,6 +15,5 @@ namespace Patronage.Contracts.ModelDtos
         public int BoardId { get; set; }
         public int StatusId { get; set; }
         public bool IsActive { get; set; }
-        public DateTime ModifiedOn { get; set; }
     }
 }
