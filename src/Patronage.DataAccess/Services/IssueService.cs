@@ -47,9 +47,9 @@ namespace Patronage.Models.Services
             var issue = _dbContext
                 .Issues
                 .ToList();
-            var projectsDto = _mapper.Map<List<IssueDto>>(issue);
+            var issueDto = _mapper.Map<List<IssueDto>>(issue);
 
-            return projectsDto;
+            return issueDto;
         }
 
         public IssueDto GetById(int issueId)
