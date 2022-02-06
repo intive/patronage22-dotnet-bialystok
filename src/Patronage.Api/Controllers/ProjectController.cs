@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Patronage.Contracts;
 using Patronage.Contracts.Interfaces;
+using Patronage.Contracts.ModelDtos;
 using Patronage.DataAccess;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
@@ -24,12 +25,11 @@ namespace Patronage.Api.Controllers
 
 
 
-
         [SwaggerOperation(Summary = "Returns all Projects")]
         [HttpGet]
-        public ActionResult<IEnumerable<ProjectDto>> GetAll()
+        public ActionResult<IEnumerable<ProjectDto>> GetAll([FromQuery]string? searchedProject)
         {
-            var projects = _projectService.GetAll();
+            var projects = _projectService.GetAll(searchedProject);
 
             return Ok(projects);
         }
@@ -42,7 +42,10 @@ namespace Patronage.Api.Controllers
         {
             var project = _projectService.GetById(id);
 
-            if (project is null) return NotFound();
+            if (project is null)
+            {
+                return NotFound();
+            }
 
             return Ok(project);
         }
@@ -51,7 +54,7 @@ namespace Patronage.Api.Controllers
 
         [SwaggerOperation(Summary = "Creates Project")]
         [HttpPost]
-        public ActionResult CreateProject([FromBody] ProjectDto projectDto)
+        public ActionResult CreateProject([FromBody] CreateOrUpdateProjectDto projectDto)
         {
             var id = _projectService.Create(projectDto);
 
@@ -63,7 +66,7 @@ namespace Patronage.Api.Controllers
 
         [SwaggerOperation(Summary = "Updates project - it's all properties")]
         [HttpPut("{id}")]
-        public ActionResult UpdateProject([FromRoute] int id, [FromBody]ProjectDto projectDto)
+        public ActionResult UpdateProject([FromRoute] int id, [FromBody] CreateOrUpdateProjectDto projectDto)
         {
             var isUpdated = _projectService.Update(id, projectDto);
 

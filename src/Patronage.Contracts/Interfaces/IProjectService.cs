@@ -9,10 +9,10 @@ namespace Patronage.Contracts.Interfaces
 {
     public interface IProjectService
     {
-        IEnumerable<ProjectDto> GetAll();
+        IEnumerable<ProjectDto> GetAll(string searchedProject);
         ProjectDto GetById(int id);
-        int Create(ProjectDto projectDto);
-        bool Update(int id, ProjectDto projectDto);
+        int Create(CreateOrUpdateProjectDto projectDto);
+        bool Update(int id, CreateOrUpdateProjectDto projectDto);
         bool Delete(int id);
     }
 }

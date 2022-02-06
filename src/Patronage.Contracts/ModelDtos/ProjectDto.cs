@@ -7,24 +7,14 @@ using Patronage.Common;
 
 namespace Patronage.Contracts
 {
-        public class ProjectDto : ICreatable, IModifable
+        public class ProjectDto 
         {
-            private int Id { get; set; }
+            public int Id { get; set; }
             public string Alias { get; set; }
             public string Name { get; set; }
             public string Description { get; set; }
             public bool IsActive { get; set; }
             public DateTime CreatedOn { get; set; }
             public DateTime? ModifiedOn { get; set; }
-
-            public void OnCreate()
-            {
-                CreatedOn = DateTime.UtcNow;
-            }
-
-            public void OnModify()
-            {
-                ModifiedOn = DateTime.UtcNow;
-            }
         }
 }

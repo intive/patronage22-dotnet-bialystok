@@ -9,6 +9,5 @@ namespace Patronage.Common
     public interface ICreatable
     {
         public DateTime CreatedOn { get; set; }
-        void OnCreate();
     }
 }

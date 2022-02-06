@@ -1,4 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Patronage.Common;
 using Patronage.Common.Entities;
 
 namespace Patronage.Models;
@@ -10,15 +12,18 @@ public class TableContext : DbContext
 
     public TableContext(DbContextOptions options) : base(options)
     {
-
+        ChangeTracker.StateChanged += Timestamps;
+        ChangeTracker.Tracked += Timestamps;
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        #region Project
+        
 
         modelBuilder.Entity<Table>()
             .HasKey(p => p.Id);
+
+        #region Project
 
         modelBuilder.Entity<Project>()
             .Property(p => p.Alias)
@@ -27,11 +32,38 @@ public class TableContext : DbContext
         modelBuilder.Entity<Project>()
             .Property(p => p.Name)
             .HasMaxLength(1024);
+        
+        modelBuilder.Entity<Project>()
+            .Property(p => p.Description)
+            .HasMaxLength(65_536);
 
         modelBuilder.Entity<Project>()
             .Property(p => p.CreatedOn)
-            .IsRequired();
+            .HasPrecision(0);
+
+        modelBuilder.Entity<Project>()
+            .Property(p => p.ModifiedOn)
+            .HasPrecision(0);
+
+        
 
         #endregion
+    }
+
+
+    private static void Timestamps(object sender, EntityEntryEventArgs e)
+    {
+        if (e.Entry.Entity is ICreatable createdEntity &&
+            e.Entry.State == EntityState.Added)
+        {
+            createdEntity.CreatedOn = DateTime.UtcNow;
+        }
+            
+        if (e.Entry.Entity is IModifable modifiedEntity &&
+        e.Entry.State == EntityState.Modified)
+        { 
+            modifiedEntity.ModifiedOn = DateTime.UtcNow;
+        }            
+        
     }
 }
