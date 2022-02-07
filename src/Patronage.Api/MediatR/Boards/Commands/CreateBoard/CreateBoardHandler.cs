@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Patronage.Api.MediatR.Boards.Commands.CreateBoard
 {
-    public class CreateBoardHandler : IRequestHandler<>
+    public class CreateBoardHandler : IRequestHandler<CreateBoardCommand>
     {
 
     }
