@@ -1,11 +1,6 @@
 ﻿using AutoMapper;
 using Patronage.Contracts.ModelDtos;
 using Patronage.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Patronage.DataAccess.Mappings
 {
@@ -16,6 +11,8 @@ namespace Patronage.DataAccess.Mappings
             CreateMap<Project, ProjectDto>();
 
             CreateMap<Issue, IssueDto>();
+
+            CreateMap<Board, BoardDto>();
         }
     }
 }
