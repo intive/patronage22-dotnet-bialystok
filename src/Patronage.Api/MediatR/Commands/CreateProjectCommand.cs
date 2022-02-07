@@ -20,7 +20,10 @@ namespace Patronage.Api.MediatR.Commands
 
         public Task<ProjectDto> Handle(CreateProjectCommand request, CancellationToken cancellationToken)
         {
-            return _projectService.Create(request.Project);  
+            _projectService.Create(request.Project);
+
+            return Task.FromResult(request.Project);
         }
+
     }
 }
