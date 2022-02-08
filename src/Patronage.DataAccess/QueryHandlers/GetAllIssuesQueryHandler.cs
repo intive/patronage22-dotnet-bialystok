@@ -27,13 +27,12 @@ namespace Patronage.DataAccess.QueryHandlers
 
         public Task<List<IssueDto>> Handle(GetAllIssuesQuery request, CancellationToken cancellationToken)
         {
-            var issues = _issueService.GetAll();
+            var issues = _issueService.GetAllIssues().AsQueryable();
 
             issues = issues.FilterBy(request);
             issues = issues
                 .Skip(request.PageSize * (request.PageNumber - 1))
-                .Take(request.PageSize)
-                .ToList();
+                .Take(request.PageSize);
 
             var issueDto = _mapper.Map<List<IssueDto>>(issues);
 

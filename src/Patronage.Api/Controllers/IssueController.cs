@@ -22,7 +22,7 @@ namespace Patronage.Api.Controllers
 
         [SwaggerOperation(Summary = "Returns all Issues")]
         [HttpGet("list")]
-        public async Task<ActionResult<List<IssueDto>>> GetAll([FromQuery] GetAllIssuesQuery query)
+        public async Task<ActionResult<IQueryable<IssueDto>>> GetAllIssues([FromQuery] GetAllIssuesQuery query)
         {
             var result = await _mediator.Send(query);
 
@@ -31,9 +31,9 @@ namespace Patronage.Api.Controllers
 
         [SwaggerOperation(Summary = "Returns Issue by id")]
         [HttpGet("{issueId}")]
-        public ActionResult<IssueDto> GetById([FromRoute] int issueId)
+        public ActionResult<IssueDto> GetIssueById([FromRoute] int issueId)
         {
-            var issue = _issueService.GetById(issueId);
+            var issue = _issueService.GetIssueById(issueId);
 
             return Ok(issue);
         }

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Patronage.Models.Services
 {
-    public class IssueService : IIssueService
+    public class IssueService : IIssueService, IEntityService<Issue>
     {
         private readonly TableContext _dbContext;
         private readonly IMapper _mapper;
@@ -42,19 +42,18 @@ namespace Patronage.Models.Services
             _dbContext.SaveChanges();
         }
 
-        public List<Issue> GetAll()
+        public IQueryable<Issue> GetAllIssues()
         {
             var issue = _dbContext
                 .Issues
-                .ToList();
-            //var issueDto = _mapper.Map<List<IssueDto>>(issue);
+                .AsQueryable();
 
             return issue;
         }
 
-        public IssueDto GetById(int issueId)
+        public IssueDto GetIssueById(int issueId)
         {
-            var issue = GetIssueById(issueId);
+            var issue = GetById(issueId);
             var result = _mapper.Map<IssueDto>(issue);
 
             return result;
@@ -62,7 +61,7 @@ namespace Patronage.Models.Services
 
         public void Update(int issueId, BaseIssueDto dto)
         {
-            var issue = GetIssueById(issueId);
+            var issue = GetById(issueId);
 
             issue.Alias = dto.Alias;
             issue.Name = dto.Name;
@@ -76,14 +75,14 @@ namespace Patronage.Models.Services
 
         public void LightUpdate(int issueId, BaseIssueDto dto)
         {
-            var issue = GetIssueById(issueId);
+            var issue = GetById(issueId);
 
             /* waiting for validator */
 
             _dbContext.SaveChanges();
         }
 
-        private Issue GetIssueById(int issueId)
+        public Issue GetById(int issueId)
         {
             var issue = _dbContext
                 .Issues

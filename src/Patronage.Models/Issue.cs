@@ -18,7 +18,7 @@ namespace Patronage.Models
         public int StatusId { get; set; }
         public bool IsActive { get; set; }
         public DateTime CreatedOn { get; set; }
-        public DateTime ModifiedOn { get; set; }
+        public DateTime? ModifiedOn { get; set; }
 
         public void OnCreate()
         {

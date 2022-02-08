@@ -8,10 +8,10 @@ using System.Threading.Tasks;
 
 namespace Patronage.Contracts.Interfaces
 {
-    public interface IIssueService
+    public interface IIssueService : IEntityService<Issue>
     {
-        List<Issue> GetAll();
-        IssueDto GetById(int issueId);
+        IQueryable<Issue> GetAllIssues();
+        IssueDto GetIssueById(int issueId);
         int Create(BaseIssueDto dto);
         void Delete(int issueId);
         void Update(int issueId, BaseIssueDto dto);
