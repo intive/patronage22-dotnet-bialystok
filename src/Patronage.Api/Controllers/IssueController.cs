@@ -36,7 +36,7 @@ namespace Patronage.Api.Controllers
 
         [SwaggerOperation(Summary = "Creates Issue")]
         [HttpPost("create")]
-        public ActionResult Create([FromBody] CreateIssueDto dto)
+        public ActionResult Create([FromBody] BaseIssueDto dto)
         {
             var id = _issueService.Create(dto);
 
@@ -45,7 +45,7 @@ namespace Patronage.Api.Controllers
 
         [SwaggerOperation(Summary = "Updates Issue")]
         [HttpPost("update/{issueId}")]
-        public ActionResult Update([FromBody] UpdateIssueDto dto, [FromRoute] int issueId)
+        public ActionResult Update([FromBody] BaseIssueDto dto, [FromRoute] int issueId)
         {
             _issueService.Update(issueId, dto);
 

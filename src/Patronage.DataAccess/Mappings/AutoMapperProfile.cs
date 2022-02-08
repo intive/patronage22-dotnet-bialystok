@@ -16,7 +16,7 @@ namespace Patronage.DataAccess.Mappings
             CreateMap<Project, ProjectDto>();
 
             CreateMap<Issue, IssueDto>();
-            CreateMap<CreateIssueDto, Issue>();
+            CreateMap<BaseIssueDto, Issue>();
         }
     }
 }

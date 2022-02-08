@@ -11,8 +11,9 @@ namespace Patronage.Contracts.Interfaces
     {
         IEnumerable<IssueDto> GetAll();
         IssueDto GetById(int issueId);
-        int Create(CreateIssueDto dto);
+        int Create(BaseIssueDto dto);
         void Delete(int issueId);
-        void Update(int issueId, UpdateIssueDto dto);
+        void Update(int issueId, BaseIssueDto dto);
+        void LightUpdate(int issueId, BaseIssueDto dto);
     }
 }

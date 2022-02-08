@@ -21,7 +21,7 @@ namespace Patronage.Models.Services
             _mapper = mapper;
         }
 
-        public int Create(CreateIssueDto dto)
+        public int Create(BaseIssueDto dto)
         {
             var issue = _mapper.Map<Issue>(dto);
             issue.IsActive = true;
@@ -35,7 +35,7 @@ namespace Patronage.Models.Services
 
         public void Delete(int issueId)
         {
-            var issue = GetIssue(issueId);
+            var issue = GetIssueById(issueId);
 
             issue.IsActive = false;
 
@@ -54,15 +54,15 @@ namespace Patronage.Models.Services
 
         public IssueDto GetById(int issueId)
         {
-            var issue = GetIssue(issueId);
+            var issue = GetIssueById(issueId);
             var result = _mapper.Map<IssueDto>(issue);
 
             return result;
         }
 
-        public void Update(int issueId, UpdateIssueDto dto)
+        public void Update(int issueId, BaseIssueDto dto)
         {
-            var issue = GetIssue(issueId);
+            var issue = GetIssueById(issueId);
 
             issue.Alias = dto.Alias;
             issue.Name = dto.Name;
@@ -70,13 +70,20 @@ namespace Patronage.Models.Services
             issue.ModifiedOn = DateTime.UtcNow;
             issue.ProjectId = dto.ProjectId;
             issue.BoardId = dto.BoardId;
-            issue.StatusId = dto.StatusId;
-            issue.IsActive = dto.IsActive;
 
             _dbContext.SaveChanges();
         }
 
-        private Issue GetIssue(int issueId)
+        public void LightUpdate(int issueId, BaseIssueDto dto)
+        {
+            var issue = GetIssueById(issueId);
+
+            /* waiting for validator */
+
+            _dbContext.SaveChanges();
+        }
+
+        private Issue GetIssueById(int issueId)
         {
             var issue = _dbContext
                 .Issues

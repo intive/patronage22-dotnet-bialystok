@@ -5,8 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Patronage.Contracts.ModelDtos
-{
-    public class UpdateIssueDto
+{  
+    public class BaseIssueDto
     {
         public string Alias { get; set; }
         public string Name { get; set; }
@@ -14,6 +14,10 @@ namespace Patronage.Contracts.ModelDtos
         public int ProjectId { get; set; }
         public int BoardId { get; set; }
         public int StatusId { get; set; }
-        public bool IsActive { get; set; }
+
+
+
+        //public PropInfo<string> Name { get; set; }
+        //public PropInfo<string> Description { get; set; }
     }
 }
