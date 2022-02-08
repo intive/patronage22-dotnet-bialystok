@@ -1,4 +1,5 @@
 ﻿using Patronage.Contracts.ModelDtos;
+using Patronage.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace Patronage.Contracts.Interfaces
 {
     public interface IIssueService
     {
-        IEnumerable<IssueDto> GetAll();
+        List<Issue> GetAll();
         IssueDto GetById(int issueId);
         int Create(BaseIssueDto dto);
         void Delete(int issueId);

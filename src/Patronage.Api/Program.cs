@@ -41,7 +41,7 @@ try
 
     builder.Services.AddTransient<DataSeeder>();
 
-    builder.Services.AddMediatR(typeof(Program));
+    builder.Services.AddMediatR(AppDomain.CurrentDomain.GetAssemblies());
 
     builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 

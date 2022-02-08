@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using Patronage.Contracts.Interfaces;
 using Patronage.Contracts.ModelDtos;
+using Patronage.DataAccess.Queries;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace Patronage.Api.Controllers
@@ -10,19 +12,21 @@ namespace Patronage.Api.Controllers
     public class IssueController : ControllerBase
     {
         private readonly IIssueService _issueService;
+        private readonly IMediator _mediator;
 
-        public IssueController(IIssueService issueService)
+        public IssueController(IIssueService issueService, IMediator mediator)
         {
             _issueService = issueService;
+            _mediator = mediator;
         }
 
         [SwaggerOperation(Summary = "Returns all Issues")]
         [HttpGet("list")]
-        public ActionResult<IEnumerable<IssueDto>> GetAll()
+        public async Task<ActionResult<List<IssueDto>>> GetAll([FromQuery] GetAllIssuesQuery query)
         {
-            var issues = _issueService.GetAll();
+            var result = await _mediator.Send(query);
 
-            return Ok(issues);
+            return Ok(result);
         }
 
         [SwaggerOperation(Summary = "Returns Issue by id")]
@@ -48,6 +52,15 @@ namespace Patronage.Api.Controllers
         public ActionResult Update([FromBody] BaseIssueDto dto, [FromRoute] int issueId)
         {
             _issueService.Update(issueId, dto);
+
+            return Ok();
+        }
+
+        [SwaggerOperation(Summary = "Light Updates Issue")]
+        [HttpPost("updateLight/{issueId}")]
+        public ActionResult UpdateLight([FromBody] BaseIssueDto dto, [FromRoute] int issueId)
+        {
+            _issueService.LightUpdate(issueId, dto);
 
             return Ok();
         }

@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Patronage.Common\Patronage.Common.csproj" />
+    <ProjectReference Include="..\Patronage.Models\Patronage.Models.csproj" />
   </ItemGroup>
 
 </Project>

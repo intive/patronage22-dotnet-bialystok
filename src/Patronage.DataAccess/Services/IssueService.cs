@@ -42,14 +42,14 @@ namespace Patronage.Models.Services
             _dbContext.SaveChanges();
         }
 
-        public IEnumerable<IssueDto> GetAll()
+        public List<Issue> GetAll()
         {
             var issue = _dbContext
                 .Issues
                 .ToList();
-            var issueDto = _mapper.Map<List<IssueDto>>(issue);
+            //var issueDto = _mapper.Map<List<IssueDto>>(issue);
 
-            return issueDto;
+            return issue;
         }
 
         public IssueDto GetById(int issueId)
