@@ -1,5 +1,4 @@
-﻿using Patronage.Common.Enums;
-using Patronage.Contracts.ModelDtos;
+﻿using Patronage.Contracts.ModelDtos;
 using Patronage.DataAccess.Queries;
 using Patronage.Models;
 using System;
@@ -21,7 +20,8 @@ namespace Patronage.DataAccess
             }
             if (filter.Date > DateTime.MinValue)
             {
-                
+                value = value.Where(x => x.CreatedOn.Day == filter.Date.Day && x.CreatedOn.Month == filter.Date.Month && x.CreatedOn.Year == filter.Date.Year ||
+                                         x.ModifiedOn.Day == filter.Date.Day && x.ModifiedOn.Month == filter.Date.Month && x.ModifiedOn.Year == filter.Date.Year).ToList();
             }
 
             return value;

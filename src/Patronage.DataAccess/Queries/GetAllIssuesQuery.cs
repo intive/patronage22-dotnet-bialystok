@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using Patronage.Common.Enums;
+using Patronage.Contracts.ModelDtos;
 using Patronage.Models;
 using System;
 using System.Collections.Generic;
@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Patronage.DataAccess.Queries
 {
-    public class GetAllIssuesQuery : IRequest<List<Issue>>
+    public class GetAllIssuesQuery : IRequest<List<IssueDto>>
     {
         public string SearchPhrase { get; set; }
         public DateTime Date { get; set; }
