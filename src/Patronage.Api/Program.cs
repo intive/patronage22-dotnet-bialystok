@@ -8,12 +8,15 @@ using Patronage.Contracts.Interfaces;
 using Patronage.Models.Services;
 using Patronage.DataAccess.Services;
 using System.Reflection;
+using FluentValidation;
+using Patronage.Contracts.ModelDtos;
+using FluentValidation.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddFluentValidation();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
@@ -32,6 +35,8 @@ builder.Services.AddDbContext<TableContext>((DbContextOptionsBuilder options) =>
 
 builder.Services.AddScoped<IIssueService, IssueService>();
 builder.Services.AddScoped<IProjectService, ProjectService>();
+
+builder.Services.AddScoped<IValidator<CreateOrUpdateProjectDto>, CreateOrUpdateProjectDtoValidator>();
 
 builder.Services.AddMediatR(typeof(Program));
 

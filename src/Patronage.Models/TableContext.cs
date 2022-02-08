@@ -32,10 +32,6 @@ public class TableContext : DbContext
         modelBuilder.Entity<Project>()
             .Property(p => p.Name)
             .HasMaxLength(1024);
-        
-        modelBuilder.Entity<Project>()
-            .Property(p => p.Description)
-            .HasMaxLength(65_536);
 
         modelBuilder.Entity<Project>()
             .Property(p => p.CreatedOn)
@@ -51,19 +47,19 @@ public class TableContext : DbContext
     }
 
 
-    private static void Timestamps(object sender, EntityEntryEventArgs e)
+    private void Timestamps(object sender, EntityEntryEventArgs e)
     {
         if (e.Entry.Entity is ICreatable createdEntity &&
             e.Entry.State == EntityState.Added)
         {
             createdEntity.CreatedOn = DateTime.UtcNow;
         }
-            
+
         if (e.Entry.Entity is IModifable modifiedEntity &&
         e.Entry.State == EntityState.Modified)
-        { 
+        {
             modifiedEntity.ModifiedOn = DateTime.UtcNow;
-        }            
-        
+        }
     }
+
 }
