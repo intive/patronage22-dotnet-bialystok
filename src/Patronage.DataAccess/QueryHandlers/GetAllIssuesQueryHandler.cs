@@ -14,13 +14,11 @@ namespace Patronage.DataAccess.QueryHandlers
 {
     public class GetAllIssuesQueryHandler : IRequestHandler<GetAllIssuesQuery, List<IssueDto>>
     {
-        private readonly TableContext _dbContext;
         private readonly IIssueService _issueService;
         private readonly IMapper _mapper;
 
-        public GetAllIssuesQueryHandler(TableContext dbContext, IIssueService issueService, IMapper mapper)
+        public GetAllIssuesQueryHandler(IIssueService issueService, IMapper mapper)
         {
-            _dbContext = dbContext;
             _issueService = issueService;
             _mapper = mapper;
         }

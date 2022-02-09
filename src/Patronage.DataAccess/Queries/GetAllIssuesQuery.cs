@@ -11,8 +11,9 @@ namespace Patronage.DataAccess.Queries
 {
     public class GetAllIssuesQuery : IRequest<List<IssueDto>>
     {
-        public string SearchPhrase { get; set; }
+        public string? SearchPhrase { get; set; }
         public DateTime Date { get; set; }
+        public bool? IsActive { get; set;}
         public int PageNumber { get; set; }
         public int PageSize { get; set; }
     }
