@@ -56,7 +56,7 @@ namespace Patronage.DataAccess.Services
             return mapper.Map<BoardDto>(board);
         }
 
-        public IEnumerable<BoardDto> GetBoards(BoardDto filter)
+        public IEnumerable<BoardDto> GetBoards(BoardDto? filter = null)
         {
             if (filter is null)
             {
