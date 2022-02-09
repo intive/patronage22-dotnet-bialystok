@@ -5,7 +5,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using MediatR;
 using Patronage.Contracts.Interfaces;
-using Patronage.Models.Services;
 using Patronage.DataAccess.Services;
 using System.Reflection;
 using Patronage.Common.Middleware;

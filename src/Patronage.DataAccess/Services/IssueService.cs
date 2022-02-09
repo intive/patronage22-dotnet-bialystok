@@ -2,15 +2,11 @@
 using Patronage.Common.Exceptions;
 using Patronage.Contracts.Interfaces;
 using Patronage.Contracts.ModelDtos;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Patronage.Models;
 
-namespace Patronage.Models.Services
+namespace Patronage.DataAccess.Services
 {
-    public class IssueService : IIssueService, IEntityService<Issue>
+    public class IssueService : IIssueService
     {
         private readonly TableContext _dbContext;
         private readonly IMapper _mapper;
@@ -44,11 +40,10 @@ namespace Patronage.Models.Services
 
         public IQueryable<Issue> GetAllIssues()
         {
-            var issue = _dbContext
-                .Issues
-                .AsQueryable();
+            var issues = _dbContext
+                .Issues;
 
-            return issue;
+            return issues;
         }
 
         public IssueDto GetIssueById(int issueId)

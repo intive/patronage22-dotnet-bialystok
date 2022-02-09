@@ -1,31 +1,25 @@
 ﻿using AutoMapper;
 using MediatR;
+using Patronage.Api.Functions.Extensions;
 using Patronage.Contracts.Interfaces;
 using Patronage.Contracts.ModelDtos;
-using Patronage.DataAccess.Queries;
-using Patronage.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Patronage.DataAccess.QueryHandlers
+namespace Patronage.Api.Functions.Queries.GetIssues
 {
-    public class GetAllIssuesQueryHandler : IRequestHandler<GetAllIssuesQuery, List<IssueDto>>
+    public class GetIssuesListQueryHandler : IRequestHandler<GetIssuesListQuery, List<IssueDto>>
     {
         private readonly IIssueService _issueService;
         private readonly IMapper _mapper;
 
-        public GetAllIssuesQueryHandler(IIssueService issueService, IMapper mapper)
+        public GetIssuesListQueryHandler(IIssueService issueService, IMapper mapper)
         {
             _issueService = issueService;
             _mapper = mapper;
         }
 
-        public Task<List<IssueDto>> Handle(GetAllIssuesQuery request, CancellationToken cancellationToken)
+        public Task<List<IssueDto>> Handle(GetIssuesListQuery request, CancellationToken cancellationToken)
         {
-            var issues = _issueService.GetAllIssues().AsQueryable();
+            var issues = _issueService.GetAllIssues();
 
             issues = issues.FilterBy(request);
             issues = issues

@@ -1,8 +1,8 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Patronage.Api.Functions.Queries.GetIssues;
 using Patronage.Contracts.Interfaces;
 using Patronage.Contracts.ModelDtos;
-using Patronage.DataAccess.Queries;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace Patronage.Api.Controllers
@@ -22,7 +22,7 @@ namespace Patronage.Api.Controllers
 
         [SwaggerOperation(Summary = "Returns all Issues")]
         [HttpGet("list")]
-        public async Task<ActionResult<IQueryable<IssueDto>>> GetAllIssues([FromQuery] GetAllIssuesQuery query)
+        public async Task<ActionResult<IQueryable<IssueDto>>> GetAllIssues([FromQuery] GetIssuesListQuery query)
         {
             var result = await _mediator.Send(query);
 

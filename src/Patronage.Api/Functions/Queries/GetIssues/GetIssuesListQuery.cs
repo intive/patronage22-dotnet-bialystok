@@ -1,15 +1,9 @@
 ﻿using MediatR;
 using Patronage.Contracts.ModelDtos;
-using Patronage.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Patronage.DataAccess.Queries
+namespace Patronage.Api.Functions.Queries.GetIssues
 {
-    public class GetAllIssuesQuery : IRequest<List<IssueDto>>
+    public class GetIssuesListQuery : IRequest<List<IssueDto>>
     {
         public string? SearchPhrase { get; set; }
         public DateTime Date { get; set; }
