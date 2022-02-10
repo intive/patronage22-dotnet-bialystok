@@ -28,13 +28,14 @@ try
 builder.Services.AddDbContext<TableContext>((DbContextOptionsBuilder options) =>
 {
     options.UseSqlServer(
-        builder.Configuration.GetConnectionString("Default"),
+        builder.Configuration.GetConnectionString("DefaultString"),
         x => x.MigrationsAssembly("Patronage.Migrations"));
 });
 
 
 builder.Services.AddScoped<IIssueService, IssueService>();
 builder.Services.AddScoped<IProjectService, ProjectService>();
+builder.Services.AddScoped<IBoardStatusService, BoardStatusService>();
 
 builder.Services.AddMediatR(typeof(Program));
 

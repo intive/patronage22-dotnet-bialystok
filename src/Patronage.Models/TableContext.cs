@@ -11,6 +11,8 @@ public class TableContext : DbContext
     public virtual DbSet<Project> Projects { get; set; }
     public virtual DbSet<Log> Logs { get; set; }
     public virtual DbSet<Board> Boards { get; set; }
+    public virtual DbSet<Status> Statuses { get; set; }
+    public virtual DbSet<BoardStatus> BoardsStatus { get; set; }
 
     public TableContext(DbContextOptions options) : base(options)
     {
@@ -95,6 +97,30 @@ public class TableContext : DbContext
         modelBuilder.Entity<Board>()
             .Property(a => a.CreatedOn)
             .IsRequired();
+        #endregion
+
+        #region Status
+        modelBuilder.Entity<Status>()
+            .Property(s => s.Code)
+            .IsRequired();
+        #endregion
+
+        #region BoardStatus
+
+        modelBuilder.Entity<BoardStatus>()
+            .HasKey(bs => new { bs.BoardId, bs.StatusId });
+
+
+        modelBuilder.Entity<BoardStatus>()
+            .HasOne(b => b.Board)
+            .WithMany(s => s.BoardStatuses)
+            .HasForeignKey(bi => bi.BoardId);
+
+        modelBuilder.Entity<BoardStatus>()
+            .HasOne(b => b.Status)
+            .WithMany(s => s.BoardStatuses)
+            .HasForeignKey(si => si.StatusId);
+
         #endregion
 
     }

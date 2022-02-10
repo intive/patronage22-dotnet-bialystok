@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Patronage.Common.Entities;
-using Patronage.Contracts;
+using Patronage.Contracts.ModelDtos;
 using Patronage.Contracts.Interfaces;
 using Patronage.Models;
 using System;

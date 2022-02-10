@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Patronage.Contracts;
+using Patronage.Contracts.ModelDtos;
 using Patronage.Models;
 using System;
 using System.Collections.Generic;
@@ -14,6 +15,9 @@ namespace Patronage.DataAccess.Mappings
         public AutoMapperProfile()
         {
             CreateMap<Project, ProjectDto>();
+            CreateMap<BoardStatus, BoardStatusDto>().ReverseMap();
+            
+
         }
     }
 }

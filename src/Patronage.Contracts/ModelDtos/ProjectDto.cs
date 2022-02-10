@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Patronage.Common;
 
-namespace Patronage.Contracts
+namespace Patronage.Contracts.ModelDtos
 {
         public class ProjectDto : ICreatable, IModifable
         {
