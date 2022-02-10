@@ -12,7 +12,7 @@ namespace Patronage.DataAccess.Mappings
 
             CreateMap<Issue, IssueDto>();
 
-            CreateMap<Board, BoardDto>();
+            CreateMap<Board, BoardDto>().ReverseMap();
         }
     }
 }
