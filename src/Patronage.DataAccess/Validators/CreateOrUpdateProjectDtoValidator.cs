@@ -1,7 +1,8 @@
 ﻿using FluentValidation;
+using Patronage.Contracts.ModelDtos.Projects;
 using Patronage.Models;
 
-namespace Patronage.Contracts.ModelDtos
+namespace Patronage.DataAccess.Validators
 {
     public class CreateOrUpdateProjectDtoValidator : AbstractValidator<CreateOrUpdateProjectDto>
     {

@@ -1,4 +1,4 @@
-﻿namespace Patronage.Contracts.ModelDtos
+﻿namespace Patronage.Contracts.ModelDtos.Projects
 {
     public class CreateOrUpdateProjectDto
     {

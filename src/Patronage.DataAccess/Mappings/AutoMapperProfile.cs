@@ -16,6 +16,8 @@ namespace Patronage.DataAccess.Mappings
         {
             CreateMap<Project, ProjectDto>();
             CreateMap<CreateOrUpdateProjectDto, Project>();
+            CreateMap<PartialProjectDto, Project>()
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
         }
     }
 }

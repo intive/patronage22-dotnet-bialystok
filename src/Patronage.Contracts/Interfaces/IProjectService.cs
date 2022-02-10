@@ -1,9 +1,4 @@
-﻿using Patronage.Contracts.ModelDtos;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Patronage.Contracts.ModelDtos.Projects;
 
 namespace Patronage.Contracts.Interfaces
 {
@@ -13,6 +8,7 @@ namespace Patronage.Contracts.Interfaces
         ProjectDto GetById(int id);
         int Create(CreateOrUpdateProjectDto projectDto);
         bool Update(int id, CreateOrUpdateProjectDto projectDto);
+        bool LightUpdate(int id, PartialProjectDto projectDto);
         bool Delete(int id);
     }
 }

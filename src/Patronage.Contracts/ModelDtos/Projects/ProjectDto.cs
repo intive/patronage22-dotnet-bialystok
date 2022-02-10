@@ -1,4 +1,4 @@
-﻿namespace Patronage.Contracts
+﻿namespace Patronage.Contracts.ModelDtos.Projects
 {
         public class ProjectDto 
         {

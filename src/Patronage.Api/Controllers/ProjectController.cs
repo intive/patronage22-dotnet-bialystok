@@ -1,14 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Patronage.Contracts;
 using Patronage.Contracts.Interfaces;
-using Patronage.Contracts.ModelDtos;
-using Patronage.DataAccess;
+using Patronage.Contracts.ModelDtos.Projects;
 using Swashbuckle.AspNetCore.Annotations;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Patronage.Api.Controllers
 {
@@ -46,10 +39,7 @@ namespace Patronage.Api.Controllers
         {
             var project = _projectService.GetById(id);
 
-            if (project is null)
-            {
-                return NotFound();
-            }
+            if (project is null) return NotFound();
 
             return Ok(project);
         }
@@ -74,7 +64,8 @@ namespace Patronage.Api.Controllers
 
         [SwaggerOperation(Summary = "Updates project - it's all properties")]
         [HttpPut("{id}")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult UpdateProject([FromRoute] int id, [FromBody] CreateOrUpdateProjectDto projectDto)
         {
@@ -90,13 +81,14 @@ namespace Patronage.Api.Controllers
 
         [SwaggerOperation(Summary = "Updates project - only selected properties")]
         [HttpPatch("{id}")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult LightUpdateProject([FromRoute] int id, [FromBody] ProjectDto projectDto)
+        public ActionResult LightUpdateProject([FromRoute] int id, [FromBody] PartialProjectDto projectDto)
         {
-            /*---------------*/
-            /*---- TO DO ----*/
-            /*---------------*/
+            var isUpdated = _projectService.LightUpdate(id, projectDto);
+
+            if (!isUpdated) return NotFound();
+
             return Ok();
         }
 

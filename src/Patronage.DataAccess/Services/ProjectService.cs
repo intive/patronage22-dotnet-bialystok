@@ -1,14 +1,7 @@
 ﻿using AutoMapper;
-using Patronage.Common.Entities;
-using Patronage.Contracts;
 using Patronage.Contracts.Interfaces;
-using Patronage.Contracts.ModelDtos;
+using Patronage.Contracts.ModelDtos.Projects;
 using Patronage.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Patronage.DataAccess.Services
 {
@@ -77,9 +70,24 @@ namespace Patronage.DataAccess.Services
 
             if (project is null) return false;
 
-            project.Alias = projectDto.Alias;
-            project.Name = projectDto.Name;
-            project.Description = projectDto.Description;
+            _mapper.Map(projectDto, project);
+
+            _dbContext.SaveChanges();
+
+            return true;
+        }
+
+
+
+        public bool LightUpdate(int id, PartialProjectDto projectDto)
+        {
+            var project = _dbContext
+                .Projects
+                .FirstOrDefault(p => p.Id == id);
+
+            if (project is null) return false;
+
+            _mapper.Map(projectDto, project);
 
             _dbContext.SaveChanges();
 
