@@ -5,7 +5,7 @@ using Patronage.Contracts.ModelDtos;
 
 namespace Patronage.Api.MediatR.Boards.Queries
 {
-    public class GetAllBoardsHandler : IRequestHandler<GetAllBoardsQuery, List<BoardDto>>
+    public class GetAllBoardsHandler : IRequestHandler<GetAllBoardsQuery, IEnumerable<BoardDto>>
     {
         private readonly IBoardService _boardService;
 
@@ -16,9 +16,9 @@ namespace Patronage.Api.MediatR.Boards.Queries
 
 
 
-        public Task<List<BoardDto>> Handle(GetAllBoardsQuery request, CancellationToken cancellationToken)
+        public Task<IEnumerable<BoardDto>> Handle(GetAllBoardsQuery request, CancellationToken cancellationToken)
         {
-            // return _boardService.GetAll();
+            return Task.FromResult(_boardService.GetBoards(request.filterBoard));
         }
     }
 }

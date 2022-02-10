@@ -15,11 +15,11 @@ namespace Patronage.Api.MediatR.Boards.Commands.UpdateBoard
 
 
 
-        public async Task<Unit> Handle(UpdateBoardCommand request, CancellationToken cancellationToken)
+        public Task<Unit> Handle(UpdateBoardCommand request, CancellationToken cancellationToken)
         {
             _boardService.UpdateBoard(request.dto);
 
-            return Unit.Value;
+            return Task.FromResult(Unit.Value);
         }
     }
 }

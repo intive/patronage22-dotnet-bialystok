@@ -15,11 +15,11 @@ namespace Patronage.Api.MediatR.Boards.Commands.DeleteBoard
 
 
         
-        public async Task<Unit> Handle(DeleteBoardCommand request, CancellationToken cancellationToken)
+        public Task<Unit> Handle(DeleteBoardCommand request, CancellationToken cancellationToken)
         {
-            // _boardService.DeleteBoard(request.id);
+            _boardService.DeleteBoard(request.id);
 
-            return Unit.Value;
+            return Task.FromResult(Unit.Value);
         }
     }
 }
