@@ -95,7 +95,7 @@ namespace Patronage.Api.Controllers
 
 
 
-        [SwaggerOperation(Summary = "Deletes Project. (Changes flag \"IsActive\" to false")]
+        [SwaggerOperation(Summary = "Deletes Project. Changes flag \"IsActive\" to false")]
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

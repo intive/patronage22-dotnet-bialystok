@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Patronage.Contracts;
-using Patronage.Contracts.ModelDtos;
+using Patronage.Contracts.ModelDtos.Projects;
 using Patronage.Models;
 using System;
 using System.Collections.Generic;

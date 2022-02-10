@@ -9,8 +9,9 @@ using Patronage.Models.Services;
 using Patronage.DataAccess.Services;
 using System.Reflection;
 using FluentValidation;
-using Patronage.Contracts.ModelDtos;
+using Patronage.Contracts.ModelDtos.Projects;
 using FluentValidation.AspNetCore;
+using Patronage.DataAccess.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
 
