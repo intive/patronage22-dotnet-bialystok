@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Patronage.Common;
-using Patronage.Common.Entities;
 
 namespace Patronage.Models;
 public class TableContext : DbContext
@@ -18,7 +17,6 @@ public class TableContext : DbContext
     {
         
     }
-
    
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -123,5 +121,22 @@ public class TableContext : DbContext
 
         #endregion
 
+        #region Issue
+        modelBuilder.Entity<Issue>()
+            .Property(r => r.Alias)
+            .HasMaxLength(256);
+        modelBuilder.Entity<Issue>()
+             .Property(r => r.Name)
+             .HasMaxLength(1024);
+        modelBuilder.Entity<Issue>()
+             .Property(r => r.ProjectId)
+             .IsRequired();
+        modelBuilder.Entity<Issue>()
+             .Property(r => r.StatusId)
+             .IsRequired();
+        modelBuilder.Entity<Issue>()
+             .Property(r => r.CreatedOn)
+             .IsRequired();
+        #endregion
     }
 }

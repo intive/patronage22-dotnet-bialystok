@@ -18,6 +18,9 @@ namespace Patronage.DataAccess.Mappings
             CreateMap<BoardStatus, BoardStatusDto>().ReverseMap();
             
 
+
+            CreateMap<Issue, IssueDto>();
+            CreateMap<BaseIssueDto, Issue>();
         }
     }
 }

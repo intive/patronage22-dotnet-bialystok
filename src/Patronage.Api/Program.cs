@@ -8,7 +8,8 @@ using Patronage.Contracts.Interfaces;
 using Patronage.Models.Services;
 using Patronage.DataAccess.Services;
 using System.Reflection;
-
+using Patronage.Common.Middleware;
+using Patronage.DataAccess;
 
 try
 {
@@ -25,24 +26,42 @@ try
         c.SwaggerDoc("v1", new OpenApiInfo { Title = "Patronage 2022 API", Version = "v1" });
     });
 
-builder.Services.AddDbContext<TableContext>((DbContextOptionsBuilder options) =>
-{
-    options.UseSqlServer(
-        builder.Configuration.GetConnectionString("DefaultString"),
-        x => x.MigrationsAssembly("Patronage.Migrations"));
-});
+    builder.Services.AddDbContext<TableContext>((DbContextOptionsBuilder options) =>
+    {
+        options.UseSqlServer(
+            builder.Configuration.GetConnectionString("Default"),
+            x => x.MigrationsAssembly("Patronage.Migrations"));
+    });
 
 
 builder.Services.AddScoped<IIssueService, IssueService>();
 builder.Services.AddScoped<IProjectService, ProjectService>();
 builder.Services.AddScoped<IBoardStatusService, BoardStatusService>();
 
-builder.Services.AddMediatR(typeof(Program));
+    builder.Services.AddScoped<ErrorHandlingMiddleware>();
 
-builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+    builder.Services.AddTransient<DataSeeder>();
+
+    builder.Services.AddMediatR(AppDomain.CurrentDomain.GetAssemblies());
+
+    builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 
-var app = builder.Build();
+    var app = builder.Build();
+
+    SendData(app);
+
+    void SendData(IHost app)
+    {
+        var scopedFactory = app.Services.GetService<IServiceScopeFactory>();
+
+        using (var scope = scopedFactory.CreateScope())
+        {
+            var service = scope.ServiceProvider.GetService<DataSeeder>();
+            service.Seed();
+        }
+    }
+
 
     // Configure the HTTP request pipeline.
     if (app.Environment.IsDevelopment())
@@ -53,6 +72,8 @@ var app = builder.Build();
             c.SwaggerEndpoint("/swagger/v1/swagger.json", "Patronage 2022 API v1");
         });
     }
+
+    app.UseMiddleware<ErrorHandlingMiddleware>();
 
     app.UseHttpsRedirection();
 
