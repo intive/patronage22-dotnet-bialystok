@@ -36,6 +36,7 @@ try
 
     builder.Services.AddScoped<IIssueService, IssueService>();
     builder.Services.AddScoped<IProjectService, ProjectService>();
+    builder.Services.AddScoped<IBoardService, BoardService>();
 
     builder.Services.AddScoped<ErrorHandlingMiddleware>();
 
