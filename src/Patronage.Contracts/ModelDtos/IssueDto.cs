@@ -11,9 +11,6 @@ namespace Patronage.Contracts.ModelDtos
         public int Id { get; set; }
         public DateTime CreatedOn { get; set; }
         public DateTime? ModifiedOn { get; set; }
-        public bool IsActive { get; set; }
-
-
-        //public PropInfo<bool> IsActive { get; set; }
+        public PropInfo<bool> IsActive { get; set; }
     }
 }
