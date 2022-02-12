@@ -8,6 +8,7 @@ namespace Patronage.Contracts.Interfaces
         bool CreateBoard(BoardDto request);
         BoardDto GetBoardById(int id);
         bool UpdateBoard(BoardDto request);
+        bool UpdateBoardLight(PartialBoardDto request);
         bool DeleteBoard(int id);
     }
 }

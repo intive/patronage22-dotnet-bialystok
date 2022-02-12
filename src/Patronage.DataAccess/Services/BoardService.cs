@@ -78,6 +78,26 @@ namespace Patronage.DataAccess.Services
         {
             var board = tableContext.Boards.FirstOrDefault(x => x.Id == request.Id);
 
+            if (board is null)
+                return false;
+
+            mapper.Map(request, board);
+
+            if (tableContext.SaveChanges() > 0)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        public bool UpdateBoardLight(PartialBoardDto request)
+        {
+            var board = tableContext.Boards.FirstOrDefault(x => x.Id == request.Id);
+
+            if (board is null)
+                return false;
+
             mapper.Map(request, board);
 
             if (tableContext.SaveChanges() > 0)
