@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Patronage.Contracts.Interfaces;
+﻿using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using Patronage.Api.Commands;
+using Patronage.Api.Queries;
 using Patronage.Contracts.ModelDtos;
+using Patronage.DataAccess;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace Patronage.Api.Controllers
@@ -9,30 +12,56 @@ namespace Patronage.Api.Controllers
     [ApiController]
     public class BoardController : Controller
     {
-        private readonly IBoardService boardService;
-
-        public BoardController(IBoardService boardService)
+        private readonly IMediator mediator;
+        public BoardController(IMediator mediator)
         {
-            this.boardService = boardService;
+            this.mediator = mediator;
         }
 
         [SwaggerOperation(Summary = "Create Board.")]
         [HttpPost("create")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public ActionResult CreateBoard([FromBody] BoardDto filter)
+        public ActionResult CreateBoard([FromBody] CreateBoardCommand boardDto)
         {
-            var result = boardService.CreateBoard(filter);
-            return Ok();
+            var result = mediator.Send(boardDto);
+
+            if (!result.Result)
+            {
+                return NotFound(new BaseResponse<bool>
+                {
+                    ResponseCode = StatusCodes.Status404NotFound
+                });
+            }
+
+            return Ok(new BaseResponse<bool>
+            {
+                ResponseCode = StatusCodes.Status200OK,
+                Data = result.Result
+            });
         }
 
         [SwaggerOperation(Summary = "Returns all Boards or filter Boards by Alias, Name, Description.")]
         [HttpGet("list")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult<IEnumerable<BoardDto>> GetBoards([FromQuery] FilterBoardDto? filter = null)
+        public ActionResult<BaseResponse<IEnumerable<BoardDto>>> GetBoards([FromQuery] FilterBoardDto filter)
         {
-            var boards = boardService.GetBoards(filter);
-            return Ok(boards);
+            var query = new GetBoardsQuery(filter);
+
+            var result = mediator.Send(query);
+
+            if(result is null)
+            {
+                return NotFound(new BaseResponse<IEnumerable<BoardDto>>{
+                    ResponseCode = StatusCodes.Status404NotFound
+                });
+            }
+
+            return Ok(new BaseResponse<IEnumerable<BoardDto>>
+            {
+                ResponseCode = StatusCodes.Status200OK,
+                Data = result.Result             
+            });
         }
 
         [SwaggerOperation(Summary = "Return Board by Id.")]
@@ -41,35 +70,69 @@ namespace Patronage.Api.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult<BoardDto> GetBoardById(int id)
         {
-            var board = boardService.GetBoardById(id);
-            if (board is null)
-                return NotFound();
+            var query = new GetBoardByIdQuery(id);
 
-            return Ok(board);
+            var result = mediator.Send(query);
+
+            if (result is null)
+            {
+                return NotFound(new BaseResponse<BoardDto>
+                {
+                    ResponseCode = StatusCodes.Status404NotFound
+                });
+            }
+
+            return Ok(new BaseResponse<BoardDto>
+            {
+                ResponseCode = StatusCodes.Status200OK,
+                Data = result.Result
+            });
         }
 
         [SwaggerOperation(Summary = "Full Board update. Expect complete Board's data.")]
         [HttpPut("update")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult UpdateBoard([FromBody] BoardDto boardDto)
+        public ActionResult UpdateBoard([FromBody] UpdateBoardCommand boardDto)
         {
-            var result = boardService.UpdateBoard(boardDto);
-            return Ok();
+            var result = mediator.Send(boardDto);
+
+            if (!result.Result)
+            {
+                return NotFound(new BaseResponse<bool>
+                {
+                    ResponseCode = StatusCodes.Status404NotFound
+                });
+            }
+
+            return Ok(new BaseResponse<bool>
+            {
+                ResponseCode = StatusCodes.Status200OK,
+                Data = result.Result
+            });
         }
 
         [SwaggerOperation(Summary = "Updates Board - only selected properties")]
         [HttpPatch("updateLight")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult UpdateBoardLight([FromBody] PartialBoardDto boardDto)
+        public ActionResult UpdateBoardLight([FromBody] UpdateBoardLightCommand boardDto)
         {
-            var result = boardService.UpdateBoardLight(boardDto);
-            if (!result)
+            var result = mediator.Send(boardDto);
+
+            if (!result.Result)
             {
-                return NotFound();
+                return NotFound(new BaseResponse<bool>
+                {
+                    ResponseCode = StatusCodes.Status404NotFound
+                });
             }
-            return Ok();
+
+            return Ok(new BaseResponse<bool>
+            {
+                ResponseCode = StatusCodes.Status200OK,
+                Data = result.Result
+            });
         }
 
         [SwaggerOperation(Summary = "Soft delete Board by Id")]
@@ -78,12 +141,21 @@ namespace Patronage.Api.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult DeleteBoard(int id)
         {
-            var result = boardService.DeleteBoard(id);
-            if (!result)
+            var result = mediator.Send(new DeleteBoardCommand { Id = id });
+
+            if (!result.Result)
             {
-                return NotFound();
+                return NotFound(new BaseResponse<bool>
+                {
+                    ResponseCode = StatusCodes.Status404NotFound
+                });
             }
-            return Ok();
+
+            return Ok(new BaseResponse<bool>
+            {
+                ResponseCode = StatusCodes.Status200OK,
+                Data = result.Result
+            });
         }
     }
 }
