@@ -31,7 +31,7 @@ namespace Patronage.DataAccess.Services
 
         public void Delete(int issueId)
         {
-            var issue = GetIssueById(issueId);
+            var issue = GetById(issueId);
 
             issue.IsActive = false;
 
@@ -58,12 +58,13 @@ namespace Patronage.DataAccess.Services
         {
             var issue = GetById(issueId);
 
-            issue.Alias = dto.Alias;
+            // Error CS0029  Cannot implicitly convert type 'Patronage.Contracts.ModelDtos.PropInfo<string>' to 'string' Patronage.DataAccess F:\Kamil\.Net\intive - patronage\src\Patronage.DataAccess\Services\IssueService.cs    63  Active
+            /*issue.Alias = dto.Alias;
             issue.Name = dto.Name;
             issue.Description = dto.Description;
             issue.ModifiedOn = DateTime.UtcNow;
             issue.ProjectId = dto.ProjectId;
-            issue.BoardId = dto.BoardId;
+            issue.BoardId = dto.BoardId;*/
 
             _dbContext.SaveChanges();
         }

@@ -22,7 +22,7 @@ namespace Patronage.Api.Controllers
 
         [SwaggerOperation(Summary = "Returns all Issues")]
         [HttpGet("list")]
-        public async Task<ActionResult<IQueryable<IssueDto>>> GetAllIssues([FromQuery] GetIssuesListQuery query)
+        public async Task<ActionResult<IEnumerable<IssueDto>>> GetAllIssues([FromQuery] GetIssuesListQuery query)
         {
             var result = await _mediator.Send(query);
 
