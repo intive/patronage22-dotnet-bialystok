@@ -4,7 +4,7 @@ namespace Patronage.Contracts.Interfaces
 {
     public interface IBoardService
     {
-        IEnumerable<BoardDto> GetBoards(BoardDto? filter = null);
+        IEnumerable<BoardDto> GetBoards(FilterBoardDto? filter = null);
         bool CreateBoard(BoardDto request);
         BoardDto GetBoardById(int id);
         bool UpdateBoard(BoardDto request);
