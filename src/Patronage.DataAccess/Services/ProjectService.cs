@@ -16,8 +16,6 @@ namespace Patronage.DataAccess.Services
         private readonly TableContext _dbContext;
         private readonly IMapper _mapper;
 
-        // I had to add project reference Patronage.DataAccess -> Patronage.Models
-        // to can inject dependency to database context. Don't know if it was good solution.
         public ProjectService(TableContext context, IMapper mapper)
         {
             _dbContext = context;
