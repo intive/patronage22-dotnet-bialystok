@@ -1,10 +1,8 @@
-﻿using AutoMapper;
-using MediatR;
-using Patronage.Api.Queries;
+﻿using MediatR;
 using Patronage.Contracts.Interfaces;
 using Patronage.Contracts.ModelDtos;
 
-namespace Patronage.Api.Handlers.Handlers.Queries
+namespace Patronage.Api.Handlers.Queries.Board
 {
     public class GetBoardsHandler : IRequestHandler<GetBoardsQuery, IEnumerable<BoardDto>>
     {
@@ -15,9 +13,9 @@ namespace Patronage.Api.Handlers.Handlers.Queries
             this.boardService = boardService;
         }
 
-        public Task<IEnumerable<BoardDto>> Handle(GetBoardsQuery request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<BoardDto>> Handle(GetBoardsQuery request, CancellationToken cancellationToken)
         {
-            return Task.FromResult(boardService.GetBoards(request.filter));
+            return await boardService.GetBoardsAsync(request.filter);
         }
     }
 }

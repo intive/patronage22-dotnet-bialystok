@@ -1,8 +1,8 @@
 ﻿using MediatR;
-using Patronage.Api.Commands;
+using Patronage.Api.MediatR.Commands;
 using Patronage.Contracts.Interfaces;
 
-namespace Patronage.Api.Handlers.Handlers.Commands
+namespace Patronage.Api.MediatR.Handler.Board
 {
     public class DeleteBoardCommandHandler : IRequestHandler<DeleteBoardCommand, bool>
     {
@@ -13,9 +13,9 @@ namespace Patronage.Api.Handlers.Handlers.Commands
             this.boardService = boardService;
         }
 
-        public Task<bool> Handle(DeleteBoardCommand request, CancellationToken cancellationToken)
+        public async Task<bool> Handle(DeleteBoardCommand request, CancellationToken cancellationToken)
         {
-            return Task.FromResult(boardService.DeleteBoard(request.Id));
+            return await boardService.DeleteBoardAsync(request.Id);
         }
     }
 }

@@ -1,9 +1,8 @@
 ﻿using MediatR;
-using Patronage.Api.Queries;
 using Patronage.Contracts.Interfaces;
 using Patronage.Contracts.ModelDtos;
 
-namespace Patronage.Api.Handlers.Handlers.Queries
+namespace Patronage.Api.MediatR.Queries.Board
 {
     public class GetBoardByIdHandler : IRequestHandler<GetBoardByIdQuery, BoardDto>
     {
@@ -14,9 +13,9 @@ namespace Patronage.Api.Handlers.Handlers.Queries
             this.boardService = boardService;
         }
 
-        public Task<BoardDto> Handle(GetBoardByIdQuery request, CancellationToken cancellationToken)
+        public async Task<BoardDto> Handle(GetBoardByIdQuery request, CancellationToken cancellationToken)
         {
-            return Task.FromResult(boardService.GetBoardById(request.Id));
+            return await boardService.GetBoardByIdAsync(request.Id);
         }
     }
 }

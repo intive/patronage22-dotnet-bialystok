@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Patronage.Contracts.ModelDtos;
 
-namespace Patronage.Api.Commands
+namespace Patronage.Api.MediatR.Commands
 {
     public class UpdateBoardLightCommand : IRequest<bool>
     {

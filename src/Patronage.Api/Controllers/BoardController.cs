@@ -1,7 +1,8 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Patronage.Api.Commands;
-using Patronage.Api.Queries;
+using Patronage.Api.Handlers.Queries.Board;
+using Patronage.Api.MediatR.Commands;
+using Patronage.Api.MediatR.Queries.Board;
 using Patronage.Contracts.ModelDtos;
 using Patronage.DataAccess;
 using Swashbuckle.AspNetCore.Annotations;

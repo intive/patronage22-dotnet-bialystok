@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Patronage.Contracts.ModelDtos;
 
-namespace Patronage.Api.Queries
+namespace Patronage.Api.MediatR.Queries.Board
 {
     public class GetBoardByIdQuery : IRequest<BoardDto>
     {

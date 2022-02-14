@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using MediatR;
-using Patronage.Api.Commands;
+using Patronage.Api.MediatR.Commands;
 using Patronage.Contracts.Interfaces;
 
-namespace Patronage.Api.Handlers.Handlers.Commands
+namespace Patronage.Api.MediatR.Handler.Board
 {
     public class UpdateBoardCommandHandler : IRequestHandler<UpdateBoardCommand, bool>
     {
@@ -14,9 +14,9 @@ namespace Patronage.Api.Handlers.Handlers.Commands
             this.boardService = boardService;
         }
 
-        public Task<bool> Handle(UpdateBoardCommand request, CancellationToken cancellationToken)
+        public async Task<bool> Handle(UpdateBoardCommand request, CancellationToken cancellationToken)
         {
-            return Task.FromResult(boardService.UpdateBoard(request.Data));
+            return await boardService.UpdateBoardAsync(request.Data);
         }
     }
 }
