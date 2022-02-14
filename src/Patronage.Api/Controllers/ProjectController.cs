@@ -1,11 +1,11 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Patronage.Api.MediatR.Projects.Commands.CreateProject;
-using Patronage.Api.MediatR.Projects.Commands.DeleteProject;
-using Patronage.Api.MediatR.Projects.Commands.LightUpdateProject;
-using Patronage.Api.MediatR.Projects.Commands.UpdateProject;
-using Patronage.Api.MediatR.Projects.Queries.GetAllProjects;
-using Patronage.Api.MediatR.Projects.Queries.GetSingleProject;
+using Patronage.Api.Functions.Commands.CreateProject;
+using Patronage.Api.Functions.Commands.DeleteProject;
+using Patronage.Api.Functions.Commands.LightUpdateProject;
+using Patronage.Api.Functions.Commands.UpdateProject;
+using Patronage.Api.Functions.Queries.GetAllProjects;
+using Patronage.Api.Functions.Queries.GetSingleProject;
 using Patronage.Contracts.Interfaces;
 using Patronage.Contracts.ModelDtos.Projects;
 using Swashbuckle.AspNetCore.Annotations;

@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace Patronage.Api.MediatR.Projects.Commands.DeleteProject
+namespace Patronage.Api.Functions.Commands.DeleteProject
 {
     public record DeleteProjectCommand(int id) : IRequest;
 }

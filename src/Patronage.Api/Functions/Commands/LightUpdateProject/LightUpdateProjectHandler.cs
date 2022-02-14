@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Patronage.Api.MediatR.Projects.Commands.LightUpdateProject
+namespace Patronage.Api.Functions.Commands.LightUpdateProject
 {
     public class LightUpdateProjectHandler : IRequestHandler<LightUpdateProjectCommand>
     {

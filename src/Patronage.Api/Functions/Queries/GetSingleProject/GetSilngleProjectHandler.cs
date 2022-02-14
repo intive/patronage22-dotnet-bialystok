@@ -2,7 +2,7 @@
 using Patronage.Contracts.Interfaces;
 using Patronage.Contracts.ModelDtos.Projects;
 
-namespace Patronage.Api.MediatR.Projects.Queries.GetSingleProject
+namespace Patronage.Api.Functions.Queries.GetSingleProject
 {
     public class GetSilngleProjectHandler : IRequestHandler<GetSingleProjectQuery, ProjectDto>
     {

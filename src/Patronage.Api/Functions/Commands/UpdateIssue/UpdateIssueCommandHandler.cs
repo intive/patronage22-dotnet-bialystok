@@ -3,7 +3,7 @@ using MediatR;
 using Patronage.Contracts.Interfaces;
 using Patronage.Models;
 
-namespace Patronage.Api.Functions.Command.UpdateIssue
+namespace Patronage.Api.Functions.Commands.UpdateIssue
 {
     public class UpdateIssueCommandHandler : IRequestHandler<UpdateIssueCommand, Unit>
     {

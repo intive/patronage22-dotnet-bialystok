@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Patronage.Api.MediatR.Projects.Commands.UpdateProject
+namespace Patronage.Api.Functions.Commands.UpdateProject
 {
     public record UpdateProjectCommand(int id, CreateOrUpdateProjectDto dto) : IRequest;
 }

@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Patronage.Api.MediatR.Projects.Commands.LightUpdateProject
+namespace Patronage.Api.Functions.Queries.GetSingleProject
 {
-    public record LightUpdateProjectCommand(int id, PartialProjectDto dto) : IRequest;
+    public record GetSingleProjectQuery(int id) : IRequest<ProjectDto>;
 }

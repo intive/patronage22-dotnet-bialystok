@@ -48,6 +48,10 @@
     <ProjectReference Include="..\Patronage.Migrations\Patronage.Migrations.csproj" />
     <ProjectReference Include="..\Patronage.Models\Patronage.Models.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="MediatR\Projects\Commands\" />
+  </ItemGroup>
   <PropertyGroup>
 	<ErrorOnDuplicatePublishOutputFiles>false</ErrorOnDuplicatePublishOutputFiles>
   </PropertyGroup>

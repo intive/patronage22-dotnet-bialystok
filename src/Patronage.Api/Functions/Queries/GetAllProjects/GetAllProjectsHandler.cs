@@ -3,7 +3,7 @@ using MediatR;
 using Patronage.Contracts.Interfaces;
 using Patronage.Contracts.ModelDtos.Projects;
 
-namespace Patronage.Api.MediatR.Projects.Queries.GetAllProjects
+namespace Patronage.Api.Functions.Queries.GetAllProjects
 {
     public class GetAllProjectsHandler : IRequestHandler<GetAllProjectsQuery, IEnumerable<ProjectDto>>
     {

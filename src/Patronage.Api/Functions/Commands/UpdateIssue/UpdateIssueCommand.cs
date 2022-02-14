@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace Patronage.Api.Functions.Queries.UpdateIssue
+namespace Patronage.Api.Functions.Commands.UpdateIssue
 {
     public class UpdateIssueCommand : IRequest
     {

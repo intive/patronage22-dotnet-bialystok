@@ -63,7 +63,6 @@ namespace Patronage.DataAccess.Services
             issue.Description = dto.Description.value;
             issue.ModifiedOn = DateTime.UtcNow;
             issue.ProjectId = dto.ProjectId;
-            issue.BoardId = dto.BoardId;
 
             _dbContext.SaveChanges();
         }

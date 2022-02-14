@@ -6,22 +6,22 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Patronage.Api.MediatR.Projects.Commands.DeleteProject
+namespace Patronage.Api.Functions.Commands.CreateProject
 {
-    public class DeleteProjectHandler : IRequestHandler<DeleteProjectCommand>
+    public class CreateProjectHandler : IRequestHandler<CreateProjectCommand>
     {
         private readonly IProjectService _projectService;
 
-        public DeleteProjectHandler(IProjectService projectService)
+        public CreateProjectHandler(IProjectService projectService)
         {
             _projectService = projectService;
         }
 
 
 
-        public Task<Unit> Handle(DeleteProjectCommand request, CancellationToken cancellationToken)
+        public Task<Unit> Handle(CreateProjectCommand request, CancellationToken cancellationToken)
         {
-            _projectService.Delete(request.id);
+            _projectService.Create(request.dto);
 
             return Task.FromResult(Unit.Value);
         }
