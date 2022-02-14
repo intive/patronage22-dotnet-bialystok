@@ -23,15 +23,5 @@ namespace Patronage.Models
         public bool IsActive { get; set; }
         public DateTime CreatedOn { get; set; }
         public DateTime? ModifiedOn { get; set; }
-
-        public void OnCreate()
-        {
-            CreatedOn = DateTime.UtcNow;
-        }
-
-        public void OnModify()
-        {
-            ModifiedOn = DateTime.UtcNow;
-        }
     }
 }

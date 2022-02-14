@@ -9,6 +9,5 @@ namespace Patronage.Common
     public interface IModifable
     {        
         public DateTime? ModifiedOn { get; set; }
-        void OnModify();
     }
 }

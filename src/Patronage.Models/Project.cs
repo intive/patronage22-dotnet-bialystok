@@ -7,7 +7,7 @@ using Patronage.Common;
 
 namespace Patronage.Models
 {
-    public class Project
+    public class Project : ICreatable, IModifable
     {
         public int Id { get; set; }
         public string Alias { get; set; }

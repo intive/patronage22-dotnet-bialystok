@@ -7,23 +7,33 @@ using MediatR;
 using Patronage.Contracts.Interfaces;
 using Patronage.DataAccess.Services;
 using System.Reflection;
+using FluentValidation;
+using Patronage.Contracts.ModelDtos.Projects;
+using FluentValidation.AspNetCore;
+using Patronage.DataAccess.Validators;
 using Patronage.Common.Middleware;
 using Patronage.DataAccess;
+
+
+
+
+var builder = WebApplication.CreateBuilder(args);
 
 try
 {
     var logger = NLog.LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
     logger.Debug("init main");
 
-    var builder = WebApplication.CreateBuilder(args);
-    builder.Services.AddControllers();
-    // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-    builder.Services.AddEndpointsApiExplorer();
-    builder.Services.AddSwaggerGen(c =>
-    {
-        c.EnableAnnotations();
-        c.SwaggerDoc("v1", new OpenApiInfo { Title = "Patronage 2022 API", Version = "v1" });
-    });
+// Add services to the container.
+
+builder.Services.AddControllers().AddFluentValidation();
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.EnableAnnotations();
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Patronage 2022 API", Version = "v1" });
+});
 
     builder.Services.AddDbContext<TableContext>((DbContextOptionsBuilder options) =>
     {
@@ -36,6 +46,9 @@ try
     builder.Services.AddScoped<IIssueService, IssueService>();
     builder.Services.AddScoped<IProjectService, ProjectService>();
 
+builder.Services.AddScoped<IValidator<CreateOrUpdateProjectDto>, CreateOrUpdateProjectDtoValidator>();
+
+builder.Services.AddMediatR(typeof(Program));
     builder.Services.AddScoped<ErrorHandlingMiddleware>();
 
     builder.Services.AddTransient<DataSeeder>();
