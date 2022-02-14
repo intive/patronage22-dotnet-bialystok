@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Patronage.Contracts;
 using Patronage.Contracts.ModelDtos.Projects;
+using Patronage.Contracts.ModelDtos;
 using Patronage.Models;
 using System;
 using System.Collections.Generic;
@@ -18,6 +19,8 @@ namespace Patronage.DataAccess.Mappings
             CreateMap<CreateOrUpdateProjectDto, Project>();
             CreateMap<PartialProjectDto, Project>()
                 .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+
+            CreateMap<Issue, IssueDto>();
         }
     }
 }

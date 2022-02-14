@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Patronage.Contracts.Interfaces;
 using Patronage.Contracts.ModelDtos.Projects;
+using Patronage.Contracts.ModelDtos;
 using Patronage.Models;
 
 namespace Patronage.DataAccess.Services
