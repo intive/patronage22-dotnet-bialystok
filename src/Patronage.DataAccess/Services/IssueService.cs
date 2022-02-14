@@ -58,9 +58,9 @@ namespace Patronage.DataAccess.Services
         {
             var issue = GetById(issueId);
 
-            issue.Alias = dto.Alias.Data;
-            issue.Name = dto.Name.Data;
-            issue.Description = dto.Description.Data;
+            issue.Alias = dto.Alias.value;
+            issue.Name = dto.Name.value;
+            issue.Description = dto.Description.value;
             issue.ModifiedOn = DateTime.UtcNow;
             issue.ProjectId = dto.ProjectId;
             issue.BoardId = dto.BoardId;

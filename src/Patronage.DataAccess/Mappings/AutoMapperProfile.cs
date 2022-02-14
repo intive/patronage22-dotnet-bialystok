@@ -21,17 +21,17 @@ namespace Patronage.DataAccess.Mappings
                 .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
 
             CreateMap<Issue, IssueDto>()
-                .ForMember(m => m.Alias.Data, c => c.MapFrom(s => s.Alias))
-                .ForMember(m => m.Name.Data, c => c.MapFrom(s => s.Name))
-                .ForMember(m => m.Description.Data, c => c.MapFrom(s => s.Description));
+                .ForMember(m => m.Alias.value, c => c.MapFrom(s => s.Alias))
+                .ForMember(m => m.Name.value, c => c.MapFrom(s => s.Name))
+                .ForMember(m => m.Description.value, c => c.MapFrom(s => s.Description));
             CreateMap<BaseIssueDto, Issue>();
 
             CreateMap<Board, BoardDto>().ReverseMap();
 
             CreateMap<PartialBoardDto, Board>()               
-                .ForMember(x => x.Name, y => { y.Condition(src => src.Name != null); y.MapFrom(z => z.Name.Data); })
-                .ForMember(x => x.Description, y => { y.Condition(src => src.Description != null); y.MapFrom(z => z.Description.Data); })
-                .ForMember(x => x.IsActive, y => { y.Condition(src => src.IsActive != null); y.MapFrom(z => z.IsActive.Data); });           
+                .ForMember(x => x.Name, y => { y.Condition(src => src.Name != null); y.MapFrom(z => z.Name.value); })
+                .ForMember(x => x.Description, y => { y.Condition(src => src.Description != null); y.MapFrom(z => z.Description.value); })
+                .ForMember(x => x.IsActive, y => { y.Condition(src => src.IsActive != null); y.MapFrom(z => z.IsActive.value); });           
         }
     }
 }

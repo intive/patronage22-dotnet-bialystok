@@ -17,12 +17,10 @@ namespace Patronage.Api.Controllers
     public class ProjectController : ControllerBase
     {
         private readonly IMediator _mediator;
-        private readonly IProjectService _projectService;
 
         public ProjectController(IMediator mediator, IProjectService projectService)
         {
             _mediator = mediator;
-            _projectService = projectService;
         }
 
 
@@ -34,7 +32,6 @@ namespace Patronage.Api.Controllers
         //[ProducesDefaultResponseType]
         public ActionResult<IEnumerable<ProjectDto>> GetAll([FromQuery] string? searchedProject)
         {
-            //var projects = _projectService.GetAll(searchedProject);
             var projects = _mediator.Send(new GetAllProjectsQuery(searchedProject));
 
             return Ok(projects);
@@ -48,7 +45,6 @@ namespace Patronage.Api.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult<ProjectDto> GetById([FromRoute] int id)
         {
-            //var project = _projectService.GetById(id);
             var project = _mediator.Send(new GetSingleProjectQuery(id));
 
             if (project.Result is null) return NotFound();
@@ -66,7 +62,6 @@ namespace Patronage.Api.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public ActionResult CreateProject([FromBody] CreateOrUpdateProjectDto projectDto)
         {
-            //var id = _projectService.Create(projectDto);
             var id = _mediator.Send(new CreateProjectCommand(projectDto));
 
             return Created($"/api/project/{id}", null);
@@ -82,7 +77,6 @@ namespace Patronage.Api.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult UpdateProject([FromRoute] int id, [FromBody] CreateOrUpdateProjectDto projectDto)
         {
-            //var isUpdated = _projectService.Update(id, projectDto);
             var isUpdated = _mediator.Send(new UpdateProjectCommand(id, projectDto));
 
             //if (!isUpdated) return NotFound();
@@ -100,7 +94,6 @@ namespace Patronage.Api.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult LightUpdateProject([FromRoute] int id, [FromBody] PartialProjectDto projectDto)
         {
-            //var isUpdated = _projectService.LightUpdate(id, projectDto);
             var isUpdated = _mediator.Send(new LightUpdateProjectCommand(id, projectDto));
 
             //if (!isUpdated) return NotFound();
@@ -118,7 +111,6 @@ namespace Patronage.Api.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult<ProjectDto> DeleteProject([FromRoute] int id)
         {
-            //var isDeleted = _projectService.Delete(id);
             _mediator.Send(new DeleteProjectCommand(id));
 
             //if (isDeleted) return NoContent();
