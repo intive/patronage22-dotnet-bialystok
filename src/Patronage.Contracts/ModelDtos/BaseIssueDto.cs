@@ -12,7 +12,7 @@ namespace Patronage.Contracts.ModelDtos
         public PropInfo<string> Name { get; set; }
         public PropInfo<string> Description { get; set; }
         public int ProjectId { get; set; }
-        public int BoardId { get; set; }
-        public int StatusId { get; set; }
+        public PropInfo<int> BoardId { get; set; }
+        public PropInfo<int> StatusId { get; set; }
     }
 }
