@@ -1,10 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using FluentValidation;
+using Microsoft.AspNetCore.Http;
 using Patronage.Common.Exceptions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Text.Json;
 
 namespace Patronage.Common.Middleware
 {
@@ -14,7 +11,20 @@ namespace Patronage.Common.Middleware
         {
             try
             {
-                await next.Invoke(context);
+                await next(context);
+            }
+            catch (ValidationException validationException)
+            {
+                var response = new
+                {
+                    title = "One or more validation error has occured.",
+                    status = StatusCodes.Status422UnprocessableEntity,
+                    detail = validationException.Message,
+                    //errors = GetErrors(exception)
+                };
+                context.Response.ContentType = "application/json";
+                context.Response.StatusCode = StatusCodes.Status422UnprocessableEntity;
+                await context.Response.WriteAsync(JsonSerializer.Serialize(response));
             }
             catch (NotFoundException notFoundException)
             {

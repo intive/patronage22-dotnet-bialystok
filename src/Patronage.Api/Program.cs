@@ -7,9 +7,10 @@ using MediatR;
 using Patronage.Contracts.Interfaces;
 using Patronage.Models.Services;
 using Patronage.DataAccess.Services;
-using System.Reflection;
 using Patronage.Common.Middleware;
 using Patronage.DataAccess;
+using FluentValidation;
+using Patronage.Common;
 
 try
 {
@@ -46,6 +47,9 @@ try
 
     builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
+    builder.Services.AddValidatorsFromAssembly(typeof(Program).Assembly);
+
+    builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
     var app = builder.Build();
 
@@ -78,7 +82,8 @@ try
     app.UseHttpsRedirection();
 
     app.UseAuthorization();
-    app.UseDeveloperExceptionPage();
+    // ErrorHandlingMiddleware does not work if UseDeveloperExceptionPage is enabled so I commented it
+    //app.UseDeveloperExceptionPage();
 
     app.MapControllers();
 
