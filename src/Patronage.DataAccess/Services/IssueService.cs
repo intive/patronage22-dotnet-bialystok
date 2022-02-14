@@ -2,15 +2,11 @@
 using Patronage.Common.Exceptions;
 using Patronage.Contracts.Interfaces;
 using Patronage.Contracts.ModelDtos;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Patronage.Models;
 
-namespace Patronage.Models.Services
+namespace Patronage.DataAccess.Services
 {
-    public class IssueService : IIssueService, IEntityService<Issue>
+    public class IssueService : IIssueService
     {
         private readonly TableContext _dbContext;
         private readonly IMapper _mapper;
@@ -35,7 +31,7 @@ namespace Patronage.Models.Services
 
         public void Delete(int issueId)
         {
-            var issue = GetIssueById(issueId);
+            var issue = GetById(issueId);
 
             issue.IsActive = false;
 
@@ -44,11 +40,10 @@ namespace Patronage.Models.Services
 
         public IQueryable<Issue> GetAllIssues()
         {
-            var issue = _dbContext
-                .Issues
-                .AsQueryable();
+            var issues = _dbContext
+                .Issues;
 
-            return issue;
+            return issues;
         }
 
         public IssueDto GetIssueById(int issueId)
@@ -63,9 +58,9 @@ namespace Patronage.Models.Services
         {
             var issue = GetById(issueId);
 
-            issue.Alias = dto.Alias;
-            issue.Name = dto.Name;
-            issue.Description = dto.Description;
+            issue.Alias = dto.Alias.Data;
+            issue.Name = dto.Name.Data;
+            issue.Description = dto.Description.Data;
             issue.ModifiedOn = DateTime.UtcNow;
             issue.ProjectId = dto.ProjectId;
             issue.BoardId = dto.BoardId;

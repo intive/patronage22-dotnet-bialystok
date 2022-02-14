@@ -1,5 +1,4 @@
-﻿using Patronage.Contracts.ModelDtos;
-using Patronage.DataAccess.Queries;
+﻿using Patronage.Api.Functions.Queries.GetIssues;
 using Patronage.Models;
 using System;
 using System.Collections.Generic;
@@ -8,11 +7,11 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Patronage.DataAccess
+namespace Patronage.Api.Functions.Extensions
 {
-    public static class IssueFilter
+    public static class IssueQueryExtensions
     {
-        public static IQueryable<Issue> FilterBy(this IQueryable<Issue> value, GetAllIssuesQuery filter)
+        public static IQueryable<Issue> FilterBy(this IQueryable<Issue> value, GetIssuesListQuery filter)
         {
             if (!string.IsNullOrEmpty(filter.SearchPhrase))
             {
