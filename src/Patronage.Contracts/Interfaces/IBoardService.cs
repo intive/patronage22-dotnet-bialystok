@@ -4,11 +4,11 @@ namespace Patronage.Contracts.Interfaces
 {
     public interface IBoardService
     {
-        IEnumerable<BoardDto> GetBoards(FilterBoardDto? filter = null);
-        bool CreateBoard(BoardDto request);
-        BoardDto GetBoardById(int id);
-        bool UpdateBoard(BoardDto request);
-        bool UpdateBoardLight(PartialBoardDto request);
-        bool DeleteBoard(int id);
+        Task<IEnumerable<BoardDto>> GetBoardsAsync(FilterBoardDto? filter = null);
+        Task<bool> CreateBoardAsync(BoardDto request);
+        Task<BoardDto> GetBoardByIdAsync(int id);
+        Task<bool> UpdateBoardAsync(BoardDto request);
+        Task<bool> UpdateBoardLightAsync(PartialBoardDto request);
+        Task<bool> DeleteBoardAsync(int id);
     }
 }

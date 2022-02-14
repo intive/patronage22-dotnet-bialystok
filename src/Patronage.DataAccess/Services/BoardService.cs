@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Patronage.Contracts.Interfaces;
 using Patronage.Contracts.ModelDtos;
 using Patronage.Models;
@@ -16,7 +17,7 @@ namespace Patronage.DataAccess.Services
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-        public bool CreateBoard(BoardDto request)
+        public async Task<bool> CreateBoardAsync(BoardDto request)
         {
             if (request is null)
                 return false;
@@ -25,23 +26,23 @@ namespace Patronage.DataAccess.Services
             board.IsActive = true;
             tableContext.Boards.Add(board);
 
-            if (tableContext.SaveChanges() > 0)
+            if (await tableContext.SaveChangesAsync() > 0)
             {
                 return true;
             }
             return false;
         }
 
-        public bool DeleteBoard(int id)
+        public async Task<bool> DeleteBoardAsync(int id)
         {
-            var board = tableContext.Boards.FirstOrDefault(x => x.Id == id);
+            var board = await tableContext.Boards.FirstOrDefaultAsync(x => x.Id == id);
 
             if (board is null)
                 return false;
 
             board.IsActive = false;
 
-            if (tableContext.SaveChanges() > 0)
+            if ((await tableContext.SaveChangesAsync()) > 0)
             {
                 return true;
             }
@@ -49,41 +50,41 @@ namespace Patronage.DataAccess.Services
             return false;
         }
 
-        public BoardDto GetBoardById(int id)
+        public async Task<BoardDto> GetBoardByIdAsync(int id)
         {
-            var board = tableContext.Boards.FirstOrDefault(x => x.Id == id);
+            var board = await tableContext.Boards.FirstOrDefaultAsync(x => x.Id == id);
 
             return mapper.Map<BoardDto>(board);
         }
 
-        public IEnumerable<BoardDto> GetBoards(FilterBoardDto? filter = null)
+        public async Task<IEnumerable<BoardDto>> GetBoardsAsync(FilterBoardDto? filter = null)
         {
             if (filter is null)
             {
                 return mapper
-                    .Map<IEnumerable<BoardDto>>(tableContext.Boards.AsEnumerable());
+                    .Map<IEnumerable<BoardDto>>(await tableContext.Boards.ToArrayAsync());
             }
 
-            var boards = tableContext.Boards
+            var boards = await tableContext.Boards
                 .Where(x =>
                     x.Alias.Equals(filter.Alias ?? x.Alias) &&
                     x.Name.Equals(filter.Name ?? x.Name) &&
                     x.Description.Equals(filter.Description ?? x.Description))
-                .ToArray();
+                .ToArrayAsync();
 
             return mapper.Map<IEnumerable<BoardDto>>(boards);
         }
 
-        public bool UpdateBoard(BoardDto request)
+        public async Task<bool> UpdateBoardAsync(BoardDto request)
         {
-            var board = tableContext.Boards.FirstOrDefault(x => x.Id == request.Id);
+            var board = await tableContext.Boards.FirstOrDefaultAsync(x => x.Id == request.Id);
 
             if (board is null)
                 return false;
 
             mapper.Map(request, board);
 
-            if (tableContext.SaveChanges() > 0)
+            if ((await tableContext.SaveChangesAsync()) > 0)
             {
                 return true;
             }
@@ -91,16 +92,16 @@ namespace Patronage.DataAccess.Services
             return false;
         }
 
-        public bool UpdateBoardLight(PartialBoardDto request)
+        public async Task<bool> UpdateBoardLightAsync(PartialBoardDto request)
         {
-            var board = tableContext.Boards.FirstOrDefault(x => x.Id == request.Id);
+            var board = await tableContext.Boards.FirstOrDefaultAsync(x => x.Id == request.Id);
 
             if (board is null)
                 return false;
 
             mapper.Map(request, board);
 
-            if (tableContext.SaveChanges() > 0)
+            if ((await tableContext.SaveChangesAsync()) > 0)
             {
                 return true;
             }
