@@ -17,14 +17,6 @@ namespace Patronage.Api.Functions.Extensions
             {
                 value = value.Where(x => x.Alias.Contains(filter.SearchPhrase) || x.Name.Contains(filter.SearchPhrase) || x.Description.Contains(filter.SearchPhrase));
             }
-            if (filter.Date > DateTime.MinValue)
-            {
-
-            }
-            if (filter.IsActive.HasValue)
-            {
-                value = value.Where(x => x.IsActive == filter.IsActive);
-            }
 
             return value;
         }

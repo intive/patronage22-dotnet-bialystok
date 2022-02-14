@@ -15,7 +15,10 @@ namespace Patronage.DataAccess.Mappings
         {
             CreateMap<Project, ProjectDto>();
 
-            CreateMap<Issue, IssueDto>();
+            CreateMap<Issue, IssueDto>()
+                .ForMember(m => m.Alias.Data, c => c.MapFrom(s => s.Alias))
+                .ForMember(m => m.Name.Data, c => c.MapFrom(s => s.Name))
+                .ForMember(m => m.Description.Data, c => c.MapFrom(s => s.Description));
             CreateMap<BaseIssueDto, Issue>();
 
             CreateMap<Board, BoardDto>().ReverseMap();
