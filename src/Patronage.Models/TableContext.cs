@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
-using Patronage.Common;
+using Patronage.Api;
 
 namespace Patronage.Models;
 public class TableContext : DbContext
