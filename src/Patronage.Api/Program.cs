@@ -56,8 +56,6 @@ try
 
     builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-    //builder.WebHost.ConfigureKestrel(options => options.ListenLocalhost(int.Parse(port)));
-
     var app = builder.Build();
 
     SendData(app);
