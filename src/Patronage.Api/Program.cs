@@ -11,6 +11,7 @@ using Patronage.Common.Middleware;
 using Patronage.DataAccess;
 using FluentValidation;
 using Patronage.Common;
+using Patronage.Api;
 
 try
 {
@@ -62,7 +63,7 @@ try
         using (var scope = scopedFactory.CreateScope())
         {
             var service = scope.ServiceProvider.GetService<DataSeeder>();
-            service.Seed();
+            //service.Seed();
         }
     }
 

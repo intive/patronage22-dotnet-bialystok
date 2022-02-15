@@ -1,6 +1,8 @@
 ﻿using FluentValidation;
+using FluentValidation.Results;
 using Microsoft.AspNetCore.Http;
 using Patronage.Common.Exceptions;
+using Patronage.DataAccess;
 using System.Text.Json;
 
 namespace Patronage.Common.Middleware
@@ -15,12 +17,17 @@ namespace Patronage.Common.Middleware
             }
             catch (ValidationException validationException)
             {
-                var response = new
+                var response = new BaseResponse<IEnumerable<ValidationFailure>>
                 {
-                    title = "One or more validation error has occured.",
-                    status = StatusCodes.Status422UnprocessableEntity,
-                    detail = validationException.Message,
-                    //errors = GetErrors(exception)
+                    ResponseCode = StatusCodes.Status422UnprocessableEntity,
+                    Message = validationException.Message,
+                    BaseResponseError = validationException.Errors
+                        .Select(x => new BaseResponseError
+                        {
+                            PropertyName = x.PropertyName,
+                            Code = x.ErrorCode,
+                            Message = x.ErrorMessage
+                        }).ToList()            
                 };
                 context.Response.ContentType = "application/json";
                 context.Response.StatusCode = StatusCodes.Status422UnprocessableEntity;

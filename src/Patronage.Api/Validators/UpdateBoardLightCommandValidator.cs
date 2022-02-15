@@ -3,11 +3,11 @@ using Patronage.Api.MediatR.Commands;
 
 namespace Patronage.Api.Validators
 {
-    public class UpdateBoardLightCommandValidator : AbstractValidator<UpdateBoardCommand>
+    public class UpdateBoardLightCommandValidator : AbstractValidator<UpdateBoardLightCommand>
     {
-        public UpdateBoardLightCommandValidator()
+        public UpdateBoardLightCommandValidator(PartialBoardValidator partialBoardValidator)
         {
-            RuleFor(x => x.Data.Name).MaximumLength(1024).WithMessage("Can contain to 1024 characters.");
+            RuleFor(x => x.Data).SetValidator(partialBoardValidator);
         }
     }
 }
