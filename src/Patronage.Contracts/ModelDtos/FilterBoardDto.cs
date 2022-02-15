@@ -6,8 +6,10 @@ using System.Threading.Tasks;
 
 namespace Patronage.Contracts.ModelDtos
 {
-    public class PropInfo<T>
+    public class FilterBoardDto
     {
-        public T Data { get; set; }
+        public string? Alias { get; set; }
+        public string? Name { get; set; }
+        public string? Description { get; set; }
     }
 }

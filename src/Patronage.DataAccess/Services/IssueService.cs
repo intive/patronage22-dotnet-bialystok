@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Patronage.Common.Exceptions;
 using Patronage.Contracts.Interfaces;
 using Patronage.Contracts.ModelDtos;
 using Patronage.Models;
@@ -58,9 +57,9 @@ namespace Patronage.DataAccess.Services
         {
             var issue = GetById(issueId);
 
-            issue.Alias = dto.Alias.value;
-            issue.Name = dto.Name.value;
-            issue.Description = dto.Description.value;
+            issue.Alias = dto.Alias.Data;
+            issue.Name = dto.Name.Data;
+            issue.Description = dto.Description.Data;
             issue.ModifiedOn = DateTime.UtcNow;
             issue.ProjectId = dto.ProjectId;
 
@@ -84,7 +83,7 @@ namespace Patronage.DataAccess.Services
 
             if (issue is null)
             {
-                throw new NotFoundException("Issues not found");
+                //throw new NotFoundException("Issues not found");
             }
 
             return issue;
