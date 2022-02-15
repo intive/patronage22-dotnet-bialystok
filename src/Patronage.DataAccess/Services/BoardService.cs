@@ -88,12 +88,6 @@ namespace Patronage.DataAccess.Services
 
         public async Task<bool> UpdateBoardAsync(BoardDto request)
         {
-            var result = tableContext.Boards
-                .FirstOrDefaultAsync(x => x.Alias.Equals(request.Alias) || x.Name.Equals(request.Name));
-
-            if (result is not null)
-                return false;
-
             var board = await tableContext.Boards.FirstOrDefaultAsync(x => x.Id == request.Id);
 
             if (board is null)
@@ -112,27 +106,6 @@ namespace Patronage.DataAccess.Services
         public async Task<bool> UpdateBoardLightAsync(PartialBoardDto request)
         {
             if (request is null)
-                return false;
-
-            Board? result = null;
-
-            if(request.Alias is not null && request.Name is not null)
-            {
-                result = await tableContext.Boards
-                    .FirstOrDefaultAsync(x => x.Alias.Equals(request.Alias.Data) || x.Name.Equals(request.Name.Data));
-            }
-            else if (request.Alias is not null)
-            {
-                result = await tableContext.Boards
-                    .FirstOrDefaultAsync(x => x.Alias.Equals(request.Alias.Data));
-            }
-            else if (request.Name is not null)
-            {
-                result = await tableContext.Boards
-                    .FirstOrDefaultAsync(x => x.Name.Equals(request.Name.Data));
-            }
-
-            if (result is not null)
                 return false;
 
             var board = await tableContext.Boards.FirstOrDefaultAsync(x => x.Id == request.Id);
