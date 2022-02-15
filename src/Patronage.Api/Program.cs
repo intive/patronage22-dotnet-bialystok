@@ -6,26 +6,18 @@ using Microsoft.OpenApi.Models;
 using MediatR;
 using Patronage.Contracts.Interfaces;
 using Patronage.DataAccess.Services;
-using System.Reflection;
-using FluentValidation;
-using Patronage.Contracts.ModelDtos.Projects;
-using FluentValidation.AspNetCore;
-using Patronage.DataAccess.Validators;
-using Patronage.Common.Middleware;
 using Patronage.DataAccess;
-
-
-
-
-var builder = WebApplication.CreateBuilder(args);
+using FluentValidation;
+using Patronage.Api;
+using Patronage.Api.Middleware;
 
 try
 {
     var logger = NLog.LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
     logger.Debug("Starting initializing");
 
-    // Add services to the container.
-    builder.Services.AddControllers().AddFluentValidation();
+    var builder = WebApplication.CreateBuilder(args);
+    builder.Services.AddControllers();
     // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen(c =>
@@ -44,17 +36,19 @@ try
 
     builder.Services.AddScoped<IIssueService, IssueService>();
     builder.Services.AddScoped<IProjectService, ProjectService>();
-    builder.Services.AddScoped<IValidator<CreateOrUpdateProjectDto>, CreateOrUpdateProjectDtoValidator>();
-
-    builder.Services.AddMediatR(typeof(Program));
+    builder.Services.AddScoped<IBoardService, BoardService>();
 
     builder.Services.AddScoped<ErrorHandlingMiddleware>();
 
     builder.Services.AddTransient<DataSeeder>();
 
-    builder.Services.AddMediatR(AppDomain.CurrentDomain.GetAssemblies());
+    builder.Services.AddMediatR(typeof(Program));
 
     builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+    builder.Services.AddValidatorsFromAssembly(typeof(Program).Assembly);
+
+    builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
     var app = builder.Build();
 
@@ -67,7 +61,7 @@ try
         using (var scope = scopedFactory.CreateScope())
         {
             var service = scope.ServiceProvider.GetService<DataSeeder>();
-            service.Seed();
+            //service.Seed();
         }
     }
 
@@ -93,7 +87,8 @@ try
     app.UseHttpsRedirection();
 
     app.UseAuthorization();
-    app.UseDeveloperExceptionPage();
+    // ErrorHandlingMiddleware does not work if UseDeveloperExceptionPage is enabled so I commented it
+    //app.UseDeveloperExceptionPage();
 
     app.MapControllers();
 
@@ -112,10 +107,10 @@ catch (Exception exception)
 {
     string type = exception.GetType().Name;
     if (type.Equals("StopTheHostException", StringComparison.Ordinal))
-    { 
+    {
         throw;
     }
-        // NLog: catch setup errors
+    // NLog: catch setup errors
     throw;
 }
 finally

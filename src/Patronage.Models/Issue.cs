@@ -1,4 +1,4 @@
-﻿using Patronage.Common;
+﻿using Patronage.Api;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;

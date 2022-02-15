@@ -8,6 +8,6 @@ namespace Patronage.Contracts.ModelDtos
 {
     public class PropInfo<T>
     {
-        public T value { get; set; }
+        public T Data { get; set; }
     }
 }
