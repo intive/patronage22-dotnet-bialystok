@@ -1,13 +1,8 @@
 ﻿using AutoMapper;
-using Patronage.Contracts;
 using Patronage.Contracts.Interfaces;
+using Patronage.Contracts.ModelDtos.Projects;
 using Patronage.Contracts.ModelDtos;
 using Patronage.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Patronage.DataAccess.Services
 {
@@ -16,8 +11,7 @@ namespace Patronage.DataAccess.Services
         private readonly TableContext _dbContext;
         private readonly IMapper _mapper;
 
-        // I had to add project reference Patronage.DataAccess -> Patronage.Models
-        // to can inject dependency to database context. Don't know if it was good solution.
+
         public ProjectService(TableContext context, IMapper mapper)
         {
             _dbContext = context;
@@ -27,11 +21,10 @@ namespace Patronage.DataAccess.Services
 
 
 
-        public int Create(ProjectDto projectDto)
+        public int Create(CreateOrUpdateProjectDto projectDto)
         {
             var newProject = _mapper.Map<Project>(projectDto);
             newProject.IsActive = true;
-            newProject.CreatedOn = DateTime.UtcNow;
 
             _dbContext.Projects.Add(newProject);
             _dbContext.SaveChanges();
@@ -41,11 +34,11 @@ namespace Patronage.DataAccess.Services
 
 
 
-
-        public IEnumerable<ProjectDto> GetAll()
+        public IEnumerable<ProjectDto> GetAll(string searchedProject)
         {
             var projects = _dbContext
                 .Projects
+                .Where(p => searchedProject == null || p.Name.Contains(searchedProject))
                 .ToList();
 
             var projectsDto = _mapper.Map<List<ProjectDto>>(projects);
@@ -70,7 +63,7 @@ namespace Patronage.DataAccess.Services
 
 
 
-        public bool Update(int id, ProjectDto projectDto)
+        public bool Update(int id, CreateOrUpdateProjectDto projectDto)
         {
             var project = _dbContext
                 .Projects
@@ -78,10 +71,24 @@ namespace Patronage.DataAccess.Services
 
             if (project is null) return false;
 
-            project.Alias = projectDto.Alias;
-            project.Name = projectDto.Name;
-            project.Description = projectDto.Description;
-            project.ModifiedOn = DateTime.UtcNow;
+            _mapper.Map(projectDto, project);
+
+            _dbContext.SaveChanges();
+
+            return true;
+        }
+
+
+
+        public bool LightUpdate(int id, PartialProjectDto projectDto)
+        {
+            var project = _dbContext
+                .Projects
+                .FirstOrDefault(p => p.Id == id);
+
+            if (project is null) return false;
+
+            _mapper.Map(projectDto, project);
 
             _dbContext.SaveChanges();
 

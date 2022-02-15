@@ -5,13 +5,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using MediatR;
 using Patronage.Contracts.Interfaces;
-using Patronage.Models.Services;
 using Patronage.DataAccess.Services;
-using Patronage.Common.Middleware;
 using Patronage.DataAccess;
 using FluentValidation;
-using Patronage.Common;
 using Patronage.Api;
+using Patronage.Api.Middleware;
 
 try
 {
@@ -95,10 +93,10 @@ catch (Exception exception)
 {
     string type = exception.GetType().Name;
     if (type.Equals("StopTheHostException", StringComparison.Ordinal))
-    { 
+    {
         throw;
     }
-        // NLog: catch setup errors
+    // NLog: catch setup errors
     throw;
 }
 finally

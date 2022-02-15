@@ -4,11 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Patronage.Common
+namespace Patronage.Api
 {
     public interface IModifable
     {        
         public DateTime? ModifiedOn { get; set; }
-        void OnModify();
     }
 }

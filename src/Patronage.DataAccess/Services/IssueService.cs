@@ -1,14 +1,9 @@
 ﻿using AutoMapper;
-using Patronage.Common.Exceptions;
 using Patronage.Contracts.Interfaces;
 using Patronage.Contracts.ModelDtos;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Patronage.Models;
 
-namespace Patronage.Models.Services
+namespace Patronage.DataAccess.Services
 {
     public class IssueService : IIssueService
     {
@@ -21,68 +16,77 @@ namespace Patronage.Models.Services
             _mapper = mapper;
         }
 
-        public int Create(CreateIssueDto dto)
+        public int Create(BaseIssueDto dto)
         {
+            var issue = _mapper.Map<Issue>(dto);
+            issue.IsActive = true;
+            issue.CreatedOn = DateTime.UtcNow;
 
-            /* create Create issue
-               return id issue */
+            _dbContext.Issues.Add(issue);
+            _dbContext.SaveChanges();
 
-            return 0;
+            return issue.Id;
         }
 
         public void Delete(int issueId)
         {
-            var issue = _dbContext
-                .Issues
-                .FirstOrDefault(x => x.Id == issueId);
-
-            if (issue is null)
-            {
-                throw new NotFoundException("Issues not found");
-            }
+            var issue = GetById(issueId);
 
             issue.IsActive = false;
 
             _dbContext.SaveChanges();
         }
 
-        public IEnumerable<IssueDto> GetAll()
+        public IQueryable<Issue> GetAllIssues()
         {
+            var issues = _dbContext
+                .Issues;
 
-
-            throw new NotImplementedException();
+            return issues;
         }
 
-        public IssueDto GetById(int issueId)
+        public IssueDto GetIssueById(int issueId)
         {
-            var issue = _dbContext
-                .Issues
-                .FirstOrDefault(x => x.Id == issueId);
+            var issue = GetById(issueId);
+            var result = _mapper.Map<IssueDto>(issue);
 
-            if (issue is null)
-            {
-                throw new NotFoundException("Issues not found");
-            }
-
-            /* create GetById issue */
-
-            return new IssueDto();
+            return result;
         }
 
-        public void Update(int issueId, UpdateIssueDto dto)
+        public void Update(int issueId, BaseIssueDto dto)
         {
-            var issue = _dbContext
-                .Issues
-                .FirstOrDefault(x => x.Id == issueId);
+            var issue = GetById(issueId);
 
-            if (issue is null)
-            {
-                throw new NotFoundException("Issues not found");
-            }
-
-            /* create Update */
+            issue.Alias = dto.Alias.Data;
+            issue.Name = dto.Name.Data;
+            issue.Description = dto.Description.Data;
+            issue.ModifiedOn = DateTime.UtcNow;
+            issue.ProjectId = dto.ProjectId;
 
             _dbContext.SaveChanges();
+        }
+
+        public void LightUpdate(int issueId, BaseIssueDto dto)
+        {
+            var issue = GetById(issueId);
+
+            /* waiting for validator */
+
+            _dbContext.SaveChanges();
+        }
+
+        public Issue GetById(int issueId)
+        {
+            var issue = _dbContext
+                .Issues
+                .FirstOrDefault(x => x.Id == issueId);
+
+            if (issue is null)
+            {
+                //throw new NotFoundException("Issues not found");
+            }
+
+            return issue;
         }
     }
 }

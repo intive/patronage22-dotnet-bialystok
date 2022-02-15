@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using Patronage.Api.Functions.Queries.GetIssues;
 using Patronage.Contracts.Interfaces;
 using Patronage.Contracts.ModelDtos;
 using Swashbuckle.AspNetCore.Annotations;
@@ -10,41 +12,55 @@ namespace Patronage.Api.Controllers
     public class IssueController : ControllerBase
     {
         private readonly IIssueService _issueService;
+        private readonly IMediator _mediator;
 
-        public IssueController(IIssueService issueService)
+        public IssueController(IIssueService issueService, IMediator mediator)
         {
             _issueService = issueService;
+            _mediator = mediator;
         }
 
         [SwaggerOperation(Summary = "Returns all Issues")]
         [HttpGet("list")]
-        public ActionResult<IEnumerable<IssueDto>> GetAll()
+        public async Task<ActionResult<IEnumerable<IssueDto>>> GetAllIssues([FromQuery] GetIssuesListQuery query)
         {
+            var result = await _mediator.Send(query);
 
-            return Ok();
+            return Ok(result);
         }
 
         [SwaggerOperation(Summary = "Returns Issue by id")]
         [HttpGet("{issueId}")]
-        public ActionResult<IssueDto> GetById([FromRoute] int issueId)
+        public ActionResult<IssueDto> GetIssueById([FromRoute] int issueId)
         {
-            var issue = _issueService.GetById(issueId);
+            var issue = _issueService.GetIssueById(issueId);
 
             return Ok(issue);
         }
 
         [SwaggerOperation(Summary = "Creates Issue")]
         [HttpPost("create")]
-        public ActionResult Create([FromBody] CreateIssueDto dto)
+        public ActionResult Create([FromBody] BaseIssueDto dto)
         {
+            var id = _issueService.Create(dto);
 
-            return Ok();
+            return Created($"/api/issue/{id}", null);
         }
 
         [SwaggerOperation(Summary = "Updates Issue")]
         [HttpPost("update/{issueId}")]
-        public ActionResult Update([FromBody] UpdateIssueDto dto, [FromRoute] int issueId)
+        public ActionResult Update([FromBody] BaseIssueDto dto, [FromRoute] int issueId)
         {
+            _issueService.Update(issueId, dto);
+
+            return Ok();
+        }
+
+        [SwaggerOperation(Summary = "Light Updates Issue")]
+        [HttpPost("updateLight/{issueId}")]
+        public ActionResult UpdateLight([FromBody] BaseIssueDto dto, [FromRoute] int issueId)
+        {
+            _issueService.LightUpdate(issueId, dto);
 
             return Ok();
         }

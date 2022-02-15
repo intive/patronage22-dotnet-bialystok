@@ -22,11 +22,6 @@ namespace Patronage.DataAccess.Services
             if (request is null)
                 return null;
 
-            var result = tableContext.Boards.FirstOrDefaultAsync(x => x.Alias.Equals(request.Alias) || x.Name.Equals(request.Name));
-
-            if (result is not null)
-                return null;
-
             var board = mapper.Map<Board>(request);
             tableContext.Boards.Add(board);
 

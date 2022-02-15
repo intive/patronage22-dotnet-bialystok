@@ -1,11 +1,11 @@
 ﻿using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Http;
-using Patronage.Common.Exceptions;
+using Patronage.Api.Exceptions;
 using Patronage.DataAccess;
 using System.Text.Json;
 
-namespace Patronage.Common.Middleware
+namespace Patronage.Api.Middleware
 {
     public class ErrorHandlingMiddleware : IMiddleware
     {
@@ -20,7 +20,7 @@ namespace Patronage.Common.Middleware
                 var response = new BaseResponse<IEnumerable<ValidationFailure>>
                 {
                     ResponseCode = StatusCodes.Status422UnprocessableEntity,
-                    Message = validationException.Message,
+                    Message = "One or more validation errors has occured.",
                     BaseResponseError = validationException.Errors
                         .Select(x => new BaseResponseError
                         {

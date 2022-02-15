@@ -1,4 +1,4 @@
-﻿using Patronage.Common;
+﻿using Patronage.Api;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -25,7 +25,9 @@ namespace Patronage.Models
         public DateTime CreatedOn { get; set; }
 
         public DateTime? ModifiedOn { get; set; }
-       
+
+        public ICollection<Issue> Issues { get; set; }
+
 
         public void OnCreate()
         {
