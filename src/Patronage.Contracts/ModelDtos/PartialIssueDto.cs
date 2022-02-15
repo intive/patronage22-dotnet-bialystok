@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace Patronage.Contracts.ModelDtos
 {
-    public class IssueDto : BaseIssueDto
+    public  class PartialIssueDto
     {
         public int Id { get; set; }
-        public DateTime CreatedOn { get; set; }
-        public DateTime? ModifiedOn { get; set; }
+        public PropInfo<string> Name { get; set; }
+        public PropInfo<string> Description { get; set; }
         public PropInfo<bool> IsActive { get; set; }
     }
 }

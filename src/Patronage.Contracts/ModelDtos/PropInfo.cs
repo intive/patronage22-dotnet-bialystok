@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Patronage.Common
+namespace Patronage.Contracts.ModelDtos
 {
-    public interface IModifable
-    {        
-        public DateTime? ModifiedOn { get; set; }
+    public class PropInfo<T>
+    {
+        public T value { get; set; }
     }
 }

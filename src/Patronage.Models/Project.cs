@@ -7,7 +7,7 @@ using Patronage.Common;
 
 namespace Patronage.Models
 {
-    public class Project
+    public class Project : ICreatable, IModifable
     {
         public int Id { get; set; }
         public string Alias { get; set; }
@@ -16,5 +16,7 @@ namespace Patronage.Models
         public bool IsActive { get; set; }
         public DateTime CreatedOn { get; set; }
         public DateTime? ModifiedOn { get; set; }
+
+        public ICollection<Issue> Issues { get; set; }
     }
 }
