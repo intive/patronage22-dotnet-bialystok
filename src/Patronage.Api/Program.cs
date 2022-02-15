@@ -97,14 +97,15 @@ try
 
     app.MapControllers();
 
-
-
-    app.Run();
-
     logger.Debug("Initializing complete!");
-    string? port = Environment.GetEnvironmentVariable("PORT") == null ? Environment.GetEnvironmentVariable("PORT") : "80";
+    string? port = Environment.GetEnvironmentVariable("PORT");
+    if(port == null)
+    {
+        port = "80";
+    }
     logger.Debug("App listening on port:" + port);
 
+    app.Run();
 
 }
 catch (Exception exception)
