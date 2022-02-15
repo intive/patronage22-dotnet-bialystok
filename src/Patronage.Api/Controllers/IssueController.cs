@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Patronage.Api.Functions.Queries.GetIssues;
+using Patronage.Api.MediatR.Issues.Queries.GetIssues;
 using Patronage.Contracts.Interfaces;
 using Patronage.Contracts.ModelDtos;
 using Swashbuckle.AspNetCore.Annotations;

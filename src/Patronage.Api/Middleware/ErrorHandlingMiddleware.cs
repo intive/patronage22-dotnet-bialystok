@@ -1,6 +1,5 @@
 ﻿using FluentValidation;
 using FluentValidation.Results;
-using Microsoft.AspNetCore.Http;
 using Patronage.Api.Exceptions;
 using Patronage.DataAccess;
 using System.Text.Json;

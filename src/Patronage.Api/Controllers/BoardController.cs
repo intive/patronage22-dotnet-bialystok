@@ -1,11 +1,11 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Patronage.Api.Functions.Commands.Board.Create;
-using Patronage.Api.Functions.Commands.Board.Delete;
-using Patronage.Api.Functions.Commands.Board.Update;
-using Patronage.Api.Functions.Commands.Board.UpdateLight;
-using Patronage.Api.Functions.Queries.Board.GetAll;
-using Patronage.Api.Functions.Queries.Board.GetSingle;
+using Patronage.Api.MediatR.Board.Commands.Create;
+using Patronage.Api.MediatR.Board.Commands.Delete;
+using Patronage.Api.MediatR.Board.Commands.Update;
+using Patronage.Api.MediatR.Board.Commands.UpdateLight;
+using Patronage.Api.MediatR.Board.Queries.GetAll;
+using Patronage.Api.MediatR.Board.Queries.GetSingle;
 using Patronage.Contracts.ModelDtos;
 using Patronage.DataAccess;
 using Swashbuckle.AspNetCore.Annotations;

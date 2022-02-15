@@ -53,10 +53,6 @@
   <ItemGroup>
     <Folder Include="mssql\" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="MediatR\Projects\Commands\" />
-  </ItemGroup>
   <PropertyGroup>
 	<ErrorOnDuplicatePublishOutputFiles>false</ErrorOnDuplicatePublishOutputFiles>
   </PropertyGroup>
