@@ -22,18 +22,17 @@ var builder = WebApplication.CreateBuilder(args);
 try
 {
     var logger = NLog.LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
-    logger.Debug("init main");
+    logger.Debug("Starting initializing");
 
-// Add services to the container.
-
-builder.Services.AddControllers().AddFluentValidation();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(c =>
-{
-    c.EnableAnnotations();
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Patronage 2022 API", Version = "v1" });
-});
+    // Add services to the container.
+    builder.Services.AddControllers().AddFluentValidation();
+    // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+    builder.Services.AddEndpointsApiExplorer();
+    builder.Services.AddSwaggerGen(c =>
+    {
+        c.EnableAnnotations();
+        c.SwaggerDoc("v1", new OpenApiInfo { Title = "Patronage 2022 API", Version = "v1" });
+    });
 
     builder.Services.AddDbContext<TableContext>((DbContextOptionsBuilder options) =>
     {
@@ -45,10 +44,10 @@ builder.Services.AddSwaggerGen(c =>
 
     builder.Services.AddScoped<IIssueService, IssueService>();
     builder.Services.AddScoped<IProjectService, ProjectService>();
+    builder.Services.AddScoped<IValidator<CreateOrUpdateProjectDto>, CreateOrUpdateProjectDtoValidator>();
 
-builder.Services.AddScoped<IValidator<CreateOrUpdateProjectDto>, CreateOrUpdateProjectDtoValidator>();
+    builder.Services.AddMediatR(typeof(Program));
 
-builder.Services.AddMediatR(typeof(Program));
     builder.Services.AddScoped<ErrorHandlingMiddleware>();
 
     builder.Services.AddTransient<DataSeeder>();
@@ -57,6 +56,7 @@ builder.Services.AddMediatR(typeof(Program));
 
     builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
+    //builder.WebHost.ConfigureKestrel(options => options.ListenLocalhost(int.Parse(port)));
 
     var app = builder.Build();
 
@@ -75,14 +75,20 @@ builder.Services.AddMediatR(typeof(Program));
 
 
     // Configure the HTTP request pipeline.
-    if (app.Environment.IsDevelopment())
+    /*if (app.Environment.IsDevelopment())
     {
         app.UseSwagger();
         app.UseSwaggerUI(c =>
         {
             c.SwaggerEndpoint("/swagger/v1/swagger.json", "Patronage 2022 API v1");
         });
-    }
+    }*/
+    //Temporarily let's run swagger on realease too
+    app.UseSwagger();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Patronage 2022 API v1");
+    });
 
     app.UseMiddleware<ErrorHandlingMiddleware>();
 
@@ -93,7 +99,14 @@ builder.Services.AddMediatR(typeof(Program));
 
     app.MapControllers();
 
+
+
     app.Run();
+
+    logger.Debug("Initializing complete!");
+    string? port = Environment.GetEnvironmentVariable("PORT") == null ? Environment.GetEnvironmentVariable("PORT") : "80";
+    logger.Debug("App listening on port:" + port);
+
 
 }
 catch (Exception exception)
