@@ -26,15 +26,15 @@ namespace Patronage.Api.Controllers
         {
             var result = await mediator.Send(boardDto);
 
-            if (!result)
+            if (result is null)
             {
-                return NotFound(new BaseResponse<bool>
+                return NotFound(new BaseResponse<BoardDto>
                 {
                     ResponseCode = StatusCodes.Status404NotFound
                 });
             }
 
-            return Ok(new BaseResponse<bool>
+            return Ok(new BaseResponse<BoardDto>
             {
                 ResponseCode = StatusCodes.Status200OK,
                 Data = result
