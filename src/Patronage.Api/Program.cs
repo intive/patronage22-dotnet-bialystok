@@ -10,6 +10,8 @@ using Patronage.DataAccess;
 using FluentValidation;
 using Patronage.Api;
 using Patronage.Api.Middleware;
+using Patronage.Contracts.ModelDtos.Projects;
+using Patronage.DataAccess.Validators;
 
 try
 {
@@ -37,6 +39,8 @@ try
     builder.Services.AddScoped<IIssueService, IssueService>();
     builder.Services.AddScoped<IProjectService, ProjectService>();
     builder.Services.AddScoped<IBoardService, BoardService>();
+    builder.Services.AddScoped<IValidator<CreateOrUpdateProjectDto>, CreateOrUpdateProjectDtoValidator>();
+
 
     builder.Services.AddScoped<ErrorHandlingMiddleware>();
 
