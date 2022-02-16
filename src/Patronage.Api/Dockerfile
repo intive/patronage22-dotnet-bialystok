@@ -22,6 +22,10 @@ RUN dotnet publish "Patronage.Api.csproj" -c Release -o /app/publish
 FROM base AS final
 WORKDIR /src
 COPY --from=publish /app/publish .
+USER root
+RUN apt-get update
+RUN apt-get install -y dos2unix
 COPY ["src/Patronage.Api/wait-for-it.sh", "."]
+RUN dos2unix ./wait-for-it.sh
 RUN chmod +x ./wait-for-it.sh
 ENTRYPOINT ["./wait-for-it.sh", "database:1433", "-t", "20","--", "dotnet", "Patronage.Api.dll"]
