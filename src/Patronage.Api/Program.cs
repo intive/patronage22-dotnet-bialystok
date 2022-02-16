@@ -14,7 +14,7 @@ using Patronage.Api.Middleware;
 try
 {
     var logger = NLog.LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
-    logger.Debug("init main");
+    logger.Debug("Starting initializing");
 
     var builder = WebApplication.CreateBuilder(args);
     builder.Services.AddControllers();
@@ -67,7 +67,7 @@ try
 
 
     // Configure the HTTP request pipeline.
-    if (app.Environment.IsDevelopment())
+    if (app.Environment.IsDevelopment() || Environment.GetEnvironmentVariable("USE_SWAGGER") == "true")
     {
         app.UseSwagger();
         app.UseSwaggerUI(c =>
@@ -85,6 +85,14 @@ try
     //app.UseDeveloperExceptionPage();
 
     app.MapControllers();
+
+    logger.Debug("Initializing complete!");
+    string? port = Environment.GetEnvironmentVariable("PORT");
+    if(port == null)
+    {
+        port = "80";
+    }
+    logger.Debug("App listening on port:" + port);
 
     app.Run();
 
