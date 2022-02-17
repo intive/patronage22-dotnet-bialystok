@@ -34,5 +34,12 @@
       "publishAllPorts": true,
       "useSSL": true
     }
+    "DockerCompose": {
+      "commandName": "DockerCompose",
+      "launchBrowser": true,
+      "launchUrl": "http://localhost:7009/swagger",
+      "publishAllPorts": true,
+      "useSSL": true
+    }
   }
 }
