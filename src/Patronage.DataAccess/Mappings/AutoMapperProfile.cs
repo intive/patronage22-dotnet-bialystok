@@ -1,8 +1,9 @@
 ﻿using AutoMapper;
 using Patronage.Contracts;
 using Patronage.Contracts.ModelDtos.Projects;
-using Patronage.Contracts.ModelDtos;
+using Patronage.Contracts.ModelDtos.Issues;
 using Patronage.Models;
+using Patronage.Contracts.ModelDtos;
 
 namespace Patronage.DataAccess.Mappings
 {

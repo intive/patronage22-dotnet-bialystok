@@ -1,8 +1,9 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Patronage.Api.MediatR.Issues.Queries.GetIssues;
+using Patronage.Api.MediatR.Issues.Queries.GetSingleIssue;
 using Patronage.Contracts.Interfaces;
-using Patronage.Contracts.ModelDtos;
+using Patronage.Contracts.ModelDtos.Issues;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace Patronage.Api.Controllers
@@ -31,11 +32,11 @@ namespace Patronage.Api.Controllers
 
         [SwaggerOperation(Summary = "Returns Issue by id")]
         [HttpGet("{issueId}")]
-        public ActionResult<IssueDto> GetIssueById([FromRoute] int issueId)
+        public async Task<ActionResult<IssueDto>> GetIssueById([FromRoute] int issueId)
         {
-            var issue = _issueService.GetIssueById(issueId);
+            var result = await _mediator.Send(new GetSingleIssueQuery(issueId));
 
-            return Ok(issue);
+            return Ok(result);
         }
 
         [SwaggerOperation(Summary = "Creates Issue")]

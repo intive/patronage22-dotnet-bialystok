@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Patronage.Contracts.Interfaces;
-using Patronage.Contracts.ModelDtos;
+using Patronage.Contracts.ModelDtos.Issues;
 using Patronage.Models;
 
 namespace Patronage.DataAccess.Services
@@ -45,21 +45,13 @@ namespace Patronage.DataAccess.Services
             return issues;
         }
 
-        public IssueDto GetIssueById(int issueId)
-        {
-            var issue = GetById(issueId);
-            var result = _mapper.Map<IssueDto>(issue);
-
-            return result;
-        }
-
         public void Update(int issueId, BaseIssueDto dto)
         {
             var issue = GetById(issueId);
 
-            issue.Alias = dto.Alias.Data;
-            issue.Name = dto.Name.Data;
-            issue.Description = dto.Description.Data;
+            issue.Alias = dto.Alias;
+            issue.Name = dto.Name;
+            issue.Description = dto.Description;
             issue.ModifiedOn = DateTime.UtcNow;
             issue.ProjectId = dto.ProjectId;
 
@@ -77,16 +69,11 @@ namespace Patronage.DataAccess.Services
 
         public Issue GetById(int issueId)
         {
-            var issue = _dbContext
+            var result = _dbContext
                 .Issues
                 .FirstOrDefault(x => x.Id == issueId);
 
-            if (issue is null)
-            {
-                //throw new NotFoundException("Issues not found");
-            }
-
-            return issue;
+            return result;
         }
     }
 }

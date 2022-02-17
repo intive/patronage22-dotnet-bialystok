@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Patronage.Contracts.ModelDtos
+namespace Patronage.Contracts.ModelDtos.Issues
 {
     public  class PartialIssueDto
     {

@@ -1,4 +1,4 @@
-﻿using Patronage.Contracts.ModelDtos;
+﻿using Patronage.Contracts.ModelDtos.Issues;
 using Patronage.Models;
 using System;
 using System.Collections.Generic;
@@ -11,7 +11,6 @@ namespace Patronage.Contracts.Interfaces
     public interface IIssueService : IEntityService<Issue>
     {
         IQueryable<Issue> GetAllIssues();
-        IssueDto GetIssueById(int issueId);
         int Create(BaseIssueDto dto);
         void Delete(int issueId);
         void Update(int issueId, BaseIssueDto dto);
