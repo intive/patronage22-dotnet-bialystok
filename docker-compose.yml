@@ -2,7 +2,6 @@ version: '3.4'
 
 services:
   patronage.api:
-    #image: ${DOCKER_REGISTRY-}patronageapi
     build:
       context: .
       dockerfile: src/Patronage.Api/Dockerfile
@@ -16,7 +15,6 @@ services:
     depends_on:
       - database
   database:
-    #image: mcr.microsoft.com/mssql/server:2019-latest
     build: ./src/Patronage.Api/mssql
     image: papuzkas/patronage_database
     environment:
