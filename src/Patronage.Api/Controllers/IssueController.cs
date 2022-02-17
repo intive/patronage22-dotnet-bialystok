@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Patronage.Api.MediatR.Issues.Commands.CreateIssue;
+using Patronage.Api.MediatR.Issues.Commands.UpdateIssue;
 using Patronage.Api.MediatR.Issues.Queries.GetIssues;
 using Patronage.Api.MediatR.Issues.Queries.GetSingleIssue;
 using Patronage.Contracts.Interfaces;
@@ -42,18 +43,18 @@ namespace Patronage.Api.Controllers
 
         [SwaggerOperation(Summary = "Creates Issue")]
         [HttpPost("create")]
-        public ActionResult Create([FromBody] BaseIssueDto dto)
+        public async Task<ActionResult> Create([FromBody] BaseIssueDto dto)
         {
-            var id = _mediator.Send(new CreateIssueCommand(dto));
+            var id = await _mediator.Send(new CreateIssueCommand(dto));
 
             return Created($"/api/issue/{id}", null);
         }
 
         [SwaggerOperation(Summary = "Updates Issue")]
         [HttpPost("update/{issueId}")]
-        public ActionResult Update([FromBody] BaseIssueDto dto, [FromRoute] int issueId)
+        public async Task<ActionResult> Update([FromBody] BaseIssueDto dto, [FromRoute] int issueId)
         {
-            _issueService.Update(issueId, dto);
+            await _mediator.Send(new UpdateIssueCommand(issueId, dto));
 
             return Ok();
         }

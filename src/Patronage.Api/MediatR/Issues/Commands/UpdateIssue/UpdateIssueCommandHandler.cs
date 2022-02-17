@@ -7,17 +7,15 @@ namespace Patronage.Api.MediatR.Issues.Commands.UpdateIssue
     public class UpdateIssueCommandHandler : IRequestHandler<UpdateIssueCommand, Unit>
     {
         private readonly IIssueService _issueService;
-        private readonly IMapper _mapper;
 
-        public UpdateIssueCommandHandler(IIssueService issueService, IMapper mapper)
+        public UpdateIssueCommandHandler(IIssueService issueService)
         {
             _issueService = issueService;
-            _mapper = mapper;
         }
 
         public Task<Unit> Handle(UpdateIssueCommand request, CancellationToken cancellationToken)
         {
-
+            _issueService.Update(request.issueId, request.dto);
 
             return Task.FromResult(Unit.Value);
         }

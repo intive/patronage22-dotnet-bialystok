@@ -4,11 +4,11 @@ using Patronage.Contracts.Interfaces;
 
 namespace Patronage.Api.MediatR.Projects.Commands.CreateProject
 {
-    public class CreateIssueHandler : IRequestHandler<CreateIssueCommand>
+    public class CreateIssueCommandHandler : IRequestHandler<CreateIssueCommand>
     {
         private readonly IIssueService _issueService;
 
-        public CreateIssueHandler(IIssueService issueService)
+        public CreateIssueCommandHandler(IIssueService issueService)
         {
             _issueService = issueService;
         }
