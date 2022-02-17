@@ -18,9 +18,16 @@ namespace Patronage.DataAccess.Services
 
         public int Create(BaseIssueDto dto)
         {
-            var issue = _mapper.Map<Issue>(dto);
-            issue.IsActive = true;
-            issue.CreatedOn = DateTime.UtcNow;
+            var issue = new Issue
+            {
+                Alias = dto.Alias,
+                Name = dto.Name,
+                Description = dto.Description,
+                ProjectId = dto.ProjectId,
+                BoardId = dto.BoardId,
+                StatusId = dto.StatusId,
+                IsActive = true
+            };
 
             _dbContext.Issues.Add(issue);
             _dbContext.SaveChanges();

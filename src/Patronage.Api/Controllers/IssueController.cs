@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Patronage.Api.MediatR.Issues.Commands.CreateIssue;
 using Patronage.Api.MediatR.Issues.Queries.GetIssues;
 using Patronage.Api.MediatR.Issues.Queries.GetSingleIssue;
 using Patronage.Contracts.Interfaces;
@@ -43,7 +44,7 @@ namespace Patronage.Api.Controllers
         [HttpPost("create")]
         public ActionResult Create([FromBody] BaseIssueDto dto)
         {
-            var id = _issueService.Create(dto);
+            var id = _mediator.Send(new CreateIssueCommand(dto));
 
             return Created($"/api/issue/{id}", null);
         }
