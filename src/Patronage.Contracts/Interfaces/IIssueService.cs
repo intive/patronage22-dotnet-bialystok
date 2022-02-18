@@ -11,7 +11,7 @@ namespace Patronage.Contracts.Interfaces
     public interface IIssueService : IEntityService<Issue>
     {
         IQueryable<Issue> GetAllIssues();
-        int Create(BaseIssueDto dto);
+        int Create(Issue dto);
         void Delete(int issueId);
         void Update(int issueId, BaseIssueDto dto);
         void LightUpdate(int issueId, BaseIssueDto dto);

@@ -43,15 +43,15 @@ namespace Patronage.Api.Controllers
 
         [SwaggerOperation(Summary = "Creates Issue")]
         [HttpPost("create")]
-        public async Task<ActionResult> Create([FromBody] BaseIssueDto dto)
+        public async Task<ActionResult> Create([FromBody] CreateIssueCommand command)
         {
-            var id = await _mediator.Send(new CreateIssueCommand(dto));
+            var id = await _mediator.Send(command);
 
             return Created($"/api/issue/{id}", null);
         }
 
         [SwaggerOperation(Summary = "Updates Issue")]
-        [HttpPost("update/{issueId}")]
+        [HttpPut("update/{issueId}")]
         public async Task<ActionResult> Update([FromBody] BaseIssueDto dto, [FromRoute] int issueId)
         {
             await _mediator.Send(new UpdateIssueCommand(issueId, dto));
@@ -60,7 +60,7 @@ namespace Patronage.Api.Controllers
         }
 
         [SwaggerOperation(Summary = "Light Updates Issue")]
-        [HttpPost("updateLight/{issueId}")]
+        [HttpPut("updateLight/{issueId}")]
         public ActionResult UpdateLight([FromBody] BaseIssueDto dto, [FromRoute] int issueId)
         {
             _issueService.LightUpdate(issueId, dto);
