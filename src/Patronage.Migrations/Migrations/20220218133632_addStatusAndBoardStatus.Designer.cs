@@ -12,8 +12,8 @@ using Patronage.Models;
 namespace Patronage.Migrations.Migrations
 {
     [DbContext(typeof(TableContext))]
-    [Migration("20220209173303_init")]
-    partial class init
+    [Migration("20220218133632_addStatusAndBoardStatus")]
+    partial class addStatusAndBoardStatus
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -23,49 +23,6 @@ namespace Patronage.Migrations.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
-
-            modelBuilder.Entity("Patronage.Common.Entities.Issue", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("Alias")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("BoardId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime>("ModifiedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("ProjectId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("StatusId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Issues");
-                });
 
             modelBuilder.Entity("Patronage.Models.Board", b =>
                 {
@@ -119,6 +76,55 @@ namespace Patronage.Migrations.Migrations
                     b.HasIndex("StatusId");
 
                     b.ToTable("BoardsStatus");
+                });
+
+            modelBuilder.Entity("Patronage.Models.Issue", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Alias")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<int?>("BoardId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(1024)
+                        .HasColumnType("nvarchar(1024)");
+
+                    b.Property<int>("ProjectId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("StatusId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BoardId");
+
+                    b.HasIndex("ProjectId");
+
+                    b.ToTable("Issues");
                 });
 
             modelBuilder.Entity("Patronage.Models.Log", b =>
@@ -175,7 +181,8 @@ namespace Patronage.Migrations.Migrations
                         .HasColumnType("nvarchar(256)");
 
                     b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("datetime2");
+                        .HasPrecision(0)
+                        .HasColumnType("datetime2(0)");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -185,7 +192,8 @@ namespace Patronage.Migrations.Migrations
                         .HasColumnType("bit");
 
                     b.Property<DateTime?>("ModifiedOn")
-                        .HasColumnType("datetime2");
+                        .HasPrecision(0)
+                        .HasColumnType("datetime2(0)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -214,28 +222,6 @@ namespace Patronage.Migrations.Migrations
                     b.ToTable("Statuses");
                 });
 
-            modelBuilder.Entity("Patronage.Models.Table", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Tables");
-                });
-
             modelBuilder.Entity("Patronage.Models.BoardStatus", b =>
                 {
                     b.HasOne("Patronage.Models.Board", "Board")
@@ -255,9 +241,29 @@ namespace Patronage.Migrations.Migrations
                     b.Navigation("Status");
                 });
 
+            modelBuilder.Entity("Patronage.Models.Issue", b =>
+                {
+                    b.HasOne("Patronage.Models.Board", null)
+                        .WithMany("Issues")
+                        .HasForeignKey("BoardId");
+
+                    b.HasOne("Patronage.Models.Project", null)
+                        .WithMany("Issues")
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Patronage.Models.Board", b =>
                 {
                     b.Navigation("BoardStatuses");
+
+                    b.Navigation("Issues");
+                });
+
+            modelBuilder.Entity("Patronage.Models.Project", b =>
+                {
+                    b.Navigation("Issues");
                 });
 
             modelBuilder.Entity("Patronage.Models.Status", b =>
