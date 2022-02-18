@@ -20,7 +20,6 @@ public class TableContext : DbContext
         //Very important!!!
         //Set every string field to .IsUnicode(false);
         //Every string field should have maxlen defined so migrations doesn't create varchar(max) (not supported by postgre)
-        //Every datetime column should be exclicitely set to datetime (not datetime2)
         //Do not use .HasColumnType("datetime"); it breaks postgre
 
         modelBuilder.HasDefaultSchema("public");
