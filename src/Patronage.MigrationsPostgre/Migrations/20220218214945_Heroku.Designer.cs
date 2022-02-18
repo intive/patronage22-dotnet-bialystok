@@ -12,8 +12,8 @@ using Patronage.Models;
 namespace Patronage.MigrationsPostgre.Migrations
 {
     [DbContext(typeof(TableContext))]
-    [Migration("20220218023411_Heroku2")]
-    partial class Heroku2
+    [Migration("20220218214945_Heroku")]
+    partial class Heroku
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

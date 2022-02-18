@@ -32,7 +32,7 @@ try
     ///If environmental variable "DATABASE_URL" is set we will build connection string to connect to remove database
     ///Won't work on local! Else uses our "Default connection string.
     ///Why do we have to build connection string dynamically? Heroku periodically changes credentials, so we have to keep up with that.
-    if(Environment.GetEnvironmentVariable("DATABASE_URL") != null || true)
+    if(Environment.GetEnvironmentVariable("DATABASE_URL") != null || builder.Configuration.GetValue("provider", "mysql").ToLower() == "postgre")
     {
         string connection_string = "";
         if(Environment.GetEnvironmentVariable("DATABASE_URL") != null){
