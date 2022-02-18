@@ -20,7 +20,7 @@ namespace Patronage.Api.MediatR.Issues.Commands.UpdateIssue
 
             if (issue == null)
             {
-                throw new NotFoundException("Issues not found");
+                throw new NotFoundException("Issue not found");
             }
 
             issue.Alias = request.Dto.Alias;
@@ -30,7 +30,7 @@ namespace Patronage.Api.MediatR.Issues.Commands.UpdateIssue
             issue.BoardId = request.Dto.BoardId;
             issue.StatusId = request.Dto.StatusId;
 
-            _issueService.Update(issue);
+            _issueService.Update();
 
             return Task.FromResult(Unit.Value);
         }

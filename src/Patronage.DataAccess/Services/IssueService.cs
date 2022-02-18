@@ -41,17 +41,13 @@ namespace Patronage.DataAccess.Services
             return issues;
         }
 
-        public void Update(Issue issue)
+        public void Update()
         {
             _dbContext.SaveChanges();
         }
 
-        public void LightUpdate(int issueId, BaseIssueDto dto)
+        public void LightUpdate()
         {
-            var issue = GetById(issueId);
-
-            /* waiting for validator */
-
             _dbContext.SaveChanges();
         }
 

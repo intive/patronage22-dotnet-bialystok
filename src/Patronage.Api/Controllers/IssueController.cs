@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Patronage.Api.MediatR.Issues.Commands.CreateIssue;
+using Patronage.Api.MediatR.Issues.Commands.LightUpdateIssue;
 using Patronage.Api.MediatR.Issues.Commands.UpdateIssue;
 using Patronage.Api.MediatR.Issues.Queries.GetIssues;
 using Patronage.Api.MediatR.Issues.Queries.GetSingleIssue;
@@ -66,9 +67,14 @@ namespace Patronage.Api.Controllers
 
         [SwaggerOperation(Summary = "Light Updates Issue")]
         [HttpPut("updateLight/{issueId}")]
-        public ActionResult UpdateLight([FromBody] BaseIssueDto dto, [FromRoute] int issueId)
+        public async Task<ActionResult> UpdateLight([FromBody] PartialIssueDto dto, [FromRoute] int issueId)
         {
-            _issueService.LightUpdate(issueId, dto);
+            var command = new UpdateLightIssueCommand()
+            {
+                Id = issueId,
+                Dto = dto
+            };
+            await _mediator.Send(command);
 
             return Ok();
         }
