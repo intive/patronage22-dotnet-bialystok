@@ -1,5 +1,5 @@
 # Your workflow name.
-name: Deploy to heroku.
+name: Run tests and deploy to heroku.
 
 # Run workflow on every push to master branch.
 on:
@@ -14,8 +14,18 @@ jobs:
       # Check-out your repository.
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Build, Push and Release a Docker container to Heroku. # Your custom step name
-        uses: gonuit/heroku-docker-deploy@v1.3.3 # GitHub action name (leave it as it is).
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 6.0.x
+      - name: Restore dependencies
+        run: dotnet restore patronage22-dotnet-bialystok.sln
+      - name: Build
+        run: dotnet build patronage22-dotnet-bialystok.sln --no-restore --configuration Release
+      - name: Test
+        run: dotnet test /home/runner/work/patronage22-dotnet-bialystok/patronage22-dotnet-bialystok/src/Patronage.Tests/bin/Release/net6.0/Patronage.Tests.dll --no-build --verbosity normal
+      - name: Build, Push and Release a Docker container to Heroku
+        uses: gonuit/heroku-docker-deploy@v1.3.3
         with:
           email: ${{ secrets.HEROKU_MAIL }}
           heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
