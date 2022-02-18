@@ -117,8 +117,7 @@ try
         using (var scope = scopedFactory.CreateScope())
         {
             var service = scope.ServiceProvider.GetService<DataSeeder>();
-            //Doesn't work ~MZ
-            //service.Seed();
+            service.Seed();
         }
     }
 

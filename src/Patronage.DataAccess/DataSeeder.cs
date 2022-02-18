@@ -19,14 +19,7 @@ namespace Patronage.DataAccess
 
         public void Seed()
         {
-            if (_dbContext.Database.CanConnect())
-            {
-                var pendingMigrations = _dbContext.Database.GetPendingMigrations();
-                if (pendingMigrations != null && pendingMigrations.Any())
-                {
-                    _dbContext.Database.Migrate();
-                }
-            }
+
         }
     }
 }
