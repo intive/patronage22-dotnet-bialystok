@@ -4,11 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Patronage.Common
+namespace Patronage.Api
 {
     public interface ICreatable
     {
         public DateTime CreatedOn { get; set; }
-        void OnCreate();
     }
 }

@@ -6,9 +6,12 @@ using Microsoft.OpenApi.Models;
 using MediatR;
 using Patronage.Contracts.Interfaces;
 using Patronage.DataAccess.Services;
-using System.Reflection;
-using Patronage.Common.Middleware;
 using Patronage.DataAccess;
+using FluentValidation;
+using Patronage.Api;
+using Patronage.Api.Middleware;
+using Patronage.Api.Validators;
+using Patronage.Api.MediatR.Issues.Queries.GetIssues;
 
 try
 {
@@ -33,18 +36,23 @@ try
     });
 
 
-builder.Services.AddScoped<IIssueService, IssueService>();
-builder.Services.AddScoped<IProjectService, ProjectService>();
-builder.Services.AddScoped<IBoardStatusService, BoardStatusService>();
+    builder.Services.AddScoped<IIssueService, IssueService>();
+    builder.Services.AddScoped<IProjectService, ProjectService>();
+    builder.Services.AddScoped<IBoardService, BoardService>();
+
+    builder.Services.AddScoped<IValidator<GetIssuesListQuery>, IssueQueryValidator>();
 
     builder.Services.AddScoped<ErrorHandlingMiddleware>();
 
     builder.Services.AddTransient<DataSeeder>();
 
-    builder.Services.AddMediatR(AppDomain.CurrentDomain.GetAssemblies());
+    builder.Services.AddMediatR(typeof(Program));
 
     builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
+    builder.Services.AddValidatorsFromAssembly(typeof(Program).Assembly);
+
+    builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
     var app = builder.Build();
 
@@ -77,7 +85,8 @@ builder.Services.AddScoped<IBoardStatusService, BoardStatusService>();
     app.UseHttpsRedirection();
 
     app.UseAuthorization();
-    app.UseDeveloperExceptionPage();
+    // ErrorHandlingMiddleware does not work if UseDeveloperExceptionPage is enabled so I commented it
+    //app.UseDeveloperExceptionPage();
 
     app.MapControllers();
 
@@ -88,10 +97,10 @@ catch (Exception exception)
 {
     string type = exception.GetType().Name;
     if (type.Equals("StopTheHostException", StringComparison.Ordinal))
-    { 
+    {
         throw;
     }
-        // NLog: catch setup errors
+    // NLog: catch setup errors
     throw;
 }
 finally

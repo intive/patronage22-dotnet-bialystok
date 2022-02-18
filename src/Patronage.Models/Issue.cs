@@ -1,4 +1,4 @@
-﻿using Patronage.Common;
+﻿using Patronage.Api;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -14,24 +14,11 @@ namespace Patronage.Models
         public string Alias { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        [ForeignKey("Project")]
         public int ProjectId { get; set; }
-        [ForeignKey("Board")]
         public int? BoardId { get; set; }
-        [ForeignKey("Status")]
         public int StatusId { get; set; }
         public bool IsActive { get; set; }
         public DateTime CreatedOn { get; set; }
         public DateTime? ModifiedOn { get; set; }
-
-        public void OnCreate()
-        {
-            CreatedOn = DateTime.UtcNow;
-        }
-
-        public void OnModify()
-        {
-            ModifiedOn = DateTime.UtcNow;
-        }
     }
 }

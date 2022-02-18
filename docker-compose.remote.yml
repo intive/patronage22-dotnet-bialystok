@@ -1,0 +1,25 @@
+version: '3.4'
+
+services:
+  patronage.api:
+    image: papuzkas/patronageapi
+    ports:
+      - "5000:80"
+    environment:
+      - COMPOSE_TLS_VERSION= "TLSv1_2"
+    volumes:
+      - ./logs:/src/logs
+    depends_on:
+      - database
+  database:
+    image: papuzkas/patronage_database
+    environment:
+     ACCEPT_EULA: "Y"
+     SA_PASSWORD: "Pwd12345"
+     MSSQL_DB: "patronageDB"
+     MSSQL_USER: "user1"
+     MSSQL_PASSWORD: "Pwd12345"
+    ports:
+     - "1433:1433"
+    volumes:
+      - ./mssql/data:/var/opt/mssql/data

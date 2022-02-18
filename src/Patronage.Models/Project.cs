@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Patronage.Common;
+using Patronage.Api;
 
 namespace Patronage.Models
 {
-    public class Project
+    public class Project : ICreatable, IModifable
     {
         public int Id { get; set; }
         public string Alias { get; set; }
