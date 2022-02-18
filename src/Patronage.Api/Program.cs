@@ -10,6 +10,8 @@ using Patronage.DataAccess;
 using FluentValidation;
 using Patronage.Api;
 using Patronage.Api.Middleware;
+using Patronage.Api.Validators;
+using Patronage.Api.MediatR.Issues.Queries.GetIssues;
 
 try
 {
@@ -37,6 +39,8 @@ try
     builder.Services.AddScoped<IIssueService, IssueService>();
     builder.Services.AddScoped<IProjectService, ProjectService>();
     builder.Services.AddScoped<IBoardService, BoardService>();
+
+    builder.Services.AddScoped<IValidator<GetIssuesListQuery>, IssueQueryValidator>();
 
     builder.Services.AddScoped<ErrorHandlingMiddleware>();
 
