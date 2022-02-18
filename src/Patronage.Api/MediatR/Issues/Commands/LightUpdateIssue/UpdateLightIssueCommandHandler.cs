@@ -31,7 +31,7 @@ namespace Patronage.Api.MediatR.Issues.Commands.LightUpdateIssue
             issue.StatusId = request.Dto.StatusId?.Data ?? issue.StatusId;
             issue.IsActive = request.Dto.IsActive?.Data ?? issue.IsActive;
 
-            _issueService.LightUpdate();
+            _issueService.Save();
 
             return Task.FromResult(Unit.Value);
         }

@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Patronage.Api.MediatR.Issues.Commands.CreateIssue;
+using Patronage.Api.MediatR.Issues.Commands.DeleteIssue;
 using Patronage.Api.MediatR.Issues.Commands.LightUpdateIssue;
 using Patronage.Api.MediatR.Issues.Commands.UpdateIssue;
 using Patronage.Api.MediatR.Issues.Queries.GetIssues;
@@ -15,12 +16,10 @@ namespace Patronage.Api.Controllers
     [ApiController]
     public class IssueController : ControllerBase
     {
-        private readonly IIssueService _issueService;
         private readonly IMediator _mediator;
 
-        public IssueController(IIssueService issueService, IMediator mediator)
+        public IssueController(IMediator mediator)
         {
-            _issueService = issueService;
             _mediator = mediator;
         }
 
@@ -81,11 +80,9 @@ namespace Patronage.Api.Controllers
 
         [SwaggerOperation(Summary = "Deletes Issue")]
         [HttpDelete("delete/{issueId}")]
-        public ActionResult Delete([FromRoute] int issueId)
+        public async Task<IActionResult> Delete([FromRoute] int issueId)
         {
-            _issueService.Delete(issueId);
-
-            return Ok();
+            return Ok(await _mediator.Send(new DeleteIssueCommand { Id = issueId }));
         }
     }
 }

@@ -8,12 +8,10 @@ namespace Patronage.DataAccess.Services
     public class IssueService : IIssueService
     {
         private readonly TableContext _dbContext;
-        private readonly IMapper _mapper;
 
-        public IssueService(TableContext dbContext, IMapper mapper)
+        public IssueService(TableContext dbContext)
         {
             _dbContext = dbContext;
-            _mapper = mapper;
         }
 
         public int Create(Issue issue)
@@ -24,15 +22,6 @@ namespace Patronage.DataAccess.Services
             return issue.Id;
         }
 
-        public void Delete(int issueId)
-        {
-            var issue = GetById(issueId);
-
-            issue.IsActive = false;
-
-            _dbContext.SaveChanges();
-        }
-
         public IQueryable<Issue> GetAllIssues()
         {
             var issues = _dbContext
@@ -41,12 +30,7 @@ namespace Patronage.DataAccess.Services
             return issues;
         }
 
-        public void Update()
-        {
-            _dbContext.SaveChanges();
-        }
-
-        public void LightUpdate()
+        public void Save()
         {
             _dbContext.SaveChanges();
         }

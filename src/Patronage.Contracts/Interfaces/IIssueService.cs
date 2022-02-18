@@ -7,8 +7,6 @@ namespace Patronage.Contracts.Interfaces
     {
         IQueryable<Issue> GetAllIssues();
         int Create(Issue issue);
-        void Delete(int issueId);
-        void Update();
-        void LightUpdate();
+        void Save();
     }
 }

@@ -30,7 +30,7 @@ namespace Patronage.Api.MediatR.Issues.Commands.UpdateIssue
             issue.BoardId = request.Dto.BoardId;
             issue.StatusId = request.Dto.StatusId;
 
-            _issueService.Update();
+            _issueService.Save();
 
             return Task.FromResult(Unit.Value);
         }
