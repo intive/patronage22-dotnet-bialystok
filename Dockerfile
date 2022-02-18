@@ -8,7 +8,7 @@ COPY ["src/Patronage.Common/Patronage.Common.csproj", "src/Patronage.Common/"]
 COPY ["src/Patronage.Contracts/Patronage.Contracts.csproj", "src/Patronage.Contracts/"]
 COPY ["src/Patronage.DataAccess/Patronage.DataAccess.csproj", "src/Patronage.DataAccess/"]
 COPY ["src/Patronage.Models/Patronage.Models.csproj", "src/Patronage.Models/"]
-COPY ["src/Patronage.Migrations/Patronage.Migrations.csproj", "src/Patronage.Migrations/"]
+COPY ["src/Patronage.MigrationsPostgre/Patronage.MigrationsPostgre.csproj", "src/Patronage.MigrationsPostgre/"]
 
 
 RUN dotnet restore "src/Patronage.Api/Patronage.Api.csproj"
