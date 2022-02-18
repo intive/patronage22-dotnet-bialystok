@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
+using Patronage.Api.Exceptions;
 using Patronage.Contracts.Interfaces;
 
 namespace Patronage.Api.MediatR.Issues.Commands.UpdateIssue
@@ -16,6 +17,11 @@ namespace Patronage.Api.MediatR.Issues.Commands.UpdateIssue
         public Task<Unit> Handle(UpdateIssueCommand request, CancellationToken cancellationToken)
         {
             var issue = _issueService.GetById(request.Id);
+
+            if (issue == null)
+            {
+                throw new NotFoundException("Issues not found");
+            }
 
             issue.Alias = request.Dto.Alias;
             issue.Name = request.Dto.Name;
