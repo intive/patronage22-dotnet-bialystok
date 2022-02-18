@@ -41,16 +41,8 @@ namespace Patronage.DataAccess.Services
             return issues;
         }
 
-        public void Update(int issueId, BaseIssueDto dto)
+        public void Update(Issue issue)
         {
-            var issue = GetById(issueId);
-
-            issue.Alias = dto.Alias;
-            issue.Name = dto.Name;
-            issue.Description = dto.Description;
-            issue.ModifiedOn = DateTime.UtcNow;
-            issue.ProjectId = dto.ProjectId;
-
             _dbContext.SaveChanges();
         }
 

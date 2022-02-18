@@ -54,7 +54,12 @@ namespace Patronage.Api.Controllers
         [HttpPut("update/{issueId}")]
         public async Task<ActionResult> Update([FromBody] BaseIssueDto dto, [FromRoute] int issueId)
         {
-            await _mediator.Send(new UpdateIssueCommand(issueId, dto));
+            var command = new UpdateIssueCommand()
+            {
+                Id = issueId,
+                Dto = dto
+            };
+            await _mediator.Send(command);
 
             return Ok();
         }
