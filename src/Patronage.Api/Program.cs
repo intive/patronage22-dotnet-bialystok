@@ -94,11 +94,11 @@ try
 
     var app = builder.Build();
 
-    logger.Info("Trying to apply migrations");
     ApplyMigrations();
 
     void ApplyMigrations()
     {
+        logger.Info("Trying to apply migrations");
         using (var scope = app.Services.CreateScope())
         {
             var services = scope.ServiceProvider;
