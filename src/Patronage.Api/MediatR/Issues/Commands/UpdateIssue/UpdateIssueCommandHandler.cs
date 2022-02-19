@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
+using Patronage.Api.Exceptions;
 using Patronage.Contracts.Interfaces;
 
 namespace Patronage.Api.MediatR.Issues.Commands.UpdateIssue
@@ -7,17 +8,29 @@ namespace Patronage.Api.MediatR.Issues.Commands.UpdateIssue
     public class UpdateIssueCommandHandler : IRequestHandler<UpdateIssueCommand, Unit>
     {
         private readonly IIssueService _issueService;
-        private readonly IMapper _mapper;
 
-        public UpdateIssueCommandHandler(IIssueService issueService, IMapper mapper)
+        public UpdateIssueCommandHandler(IIssueService issueService)
         {
             _issueService = issueService;
-            _mapper = mapper;
         }
 
         public Task<Unit> Handle(UpdateIssueCommand request, CancellationToken cancellationToken)
         {
+            var issue = _issueService.GetById(request.Id);
 
+            if (issue == null)
+            {
+                throw new NotFoundException("Issue not found");
+            }
+
+            issue.Alias = request.Dto.Alias;
+            issue.Name = request.Dto.Name;
+            issue.Description = request.Dto.Description;
+            issue.ProjectId = request.Dto.ProjectId;
+            issue.BoardId = request.Dto.BoardId;
+            issue.StatusId = request.Dto.StatusId;
+
+            _issueService.Save();
 
             return Task.FromResult(Unit.Value);
         }

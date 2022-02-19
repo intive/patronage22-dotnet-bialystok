@@ -1,8 +1,13 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Patronage.Api.MediatR.Issues.Commands.CreateIssue;
+using Patronage.Api.MediatR.Issues.Commands.DeleteIssue;
+using Patronage.Api.MediatR.Issues.Commands.LightUpdateIssue;
+using Patronage.Api.MediatR.Issues.Commands.UpdateIssue;
 using Patronage.Api.MediatR.Issues.Queries.GetIssues;
+using Patronage.Api.MediatR.Issues.Queries.GetSingleIssue;
 using Patronage.Contracts.Interfaces;
-using Patronage.Contracts.ModelDtos;
+using Patronage.Contracts.ModelDtos.Issues;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace Patronage.Api.Controllers
@@ -11,12 +16,10 @@ namespace Patronage.Api.Controllers
     [ApiController]
     public class IssueController : ControllerBase
     {
-        private readonly IIssueService _issueService;
         private readonly IMediator _mediator;
 
-        public IssueController(IIssueService issueService, IMediator mediator)
+        public IssueController(IMediator mediator)
         {
-            _issueService = issueService;
             _mediator = mediator;
         }
 
@@ -31,47 +34,55 @@ namespace Patronage.Api.Controllers
 
         [SwaggerOperation(Summary = "Returns Issue by id")]
         [HttpGet("{issueId}")]
-        public ActionResult<IssueDto> GetIssueById([FromRoute] int issueId)
+        public async Task<ActionResult<IssueDto>> GetIssueById([FromRoute] int issueId)
         {
-            var issue = _issueService.GetIssueById(issueId);
+            var result = await _mediator.Send(new GetSingleIssueQuery(issueId));
 
-            return Ok(issue);
+            return Ok(result);
         }
 
         [SwaggerOperation(Summary = "Creates Issue")]
         [HttpPost("create")]
-        public ActionResult Create([FromBody] BaseIssueDto dto)
+        public async Task<ActionResult> Create([FromBody] CreateIssueCommand command)
         {
-            var id = _issueService.Create(dto);
+            var id = await _mediator.Send(command);
 
             return Created($"/api/issue/{id}", null);
         }
 
         [SwaggerOperation(Summary = "Updates Issue")]
-        [HttpPost("update/{issueId}")]
-        public ActionResult Update([FromBody] BaseIssueDto dto, [FromRoute] int issueId)
+        [HttpPut("update/{issueId}")]
+        public async Task<ActionResult> Update([FromBody] BaseIssueDto dto, [FromRoute] int issueId)
         {
-            _issueService.Update(issueId, dto);
+            var command = new UpdateIssueCommand()
+            {
+                Id = issueId,
+                Dto = dto
+            };
+            await _mediator.Send(command);
 
             return Ok();
         }
 
         [SwaggerOperation(Summary = "Light Updates Issue")]
-        [HttpPost("updateLight/{issueId}")]
-        public ActionResult UpdateLight([FromBody] BaseIssueDto dto, [FromRoute] int issueId)
+        [HttpPut("updateLight/{issueId}")]
+        public async Task<ActionResult> UpdateLight([FromBody] PartialIssueDto dto, [FromRoute] int issueId)
         {
-            _issueService.LightUpdate(issueId, dto);
+            var command = new UpdateLightIssueCommand()
+            {
+                Id = issueId,
+                Dto = dto
+            };
+            await _mediator.Send(command);
 
             return Ok();
         }
 
         [SwaggerOperation(Summary = "Deletes Issue")]
         [HttpDelete("delete/{issueId}")]
-        public ActionResult Delete([FromRoute] int issueId)
+        public async Task<IActionResult> Delete([FromRoute] int issueId)
         {
-            _issueService.Delete(issueId);
-
-            return Ok();
+            return Ok(await _mediator.Send(new DeleteIssueCommand { Id = issueId }));
         }
     }
 }

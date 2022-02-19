@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Patronage.Models;
 
@@ -11,9 +12,10 @@ using Patronage.Models;
 namespace Patronage.Migrations.Migrations
 {
     [DbContext(typeof(TableContext))]
-    partial class TableContextModelSnapshot : ModelSnapshot
+    [Migration("20220218133632_addStatusAndBoardStatus")]
+    partial class addStatusAndBoardStatus
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -183,6 +185,7 @@ namespace Patronage.Migrations.Migrations
                         .HasColumnType("datetime2(0)");
 
                     b.Property<string>("Description")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsActive")
