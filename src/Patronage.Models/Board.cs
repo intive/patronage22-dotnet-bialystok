@@ -27,16 +27,5 @@ namespace Patronage.Models
         public DateTime? ModifiedOn { get; set; }
 
         public ICollection<Issue> Issues { get; set; }
-
-
-        public void OnCreate()
-        {
-            CreatedOn = DateTime.UtcNow;
-        }
-
-        public void OnModify()
-        {
-            ModifiedOn = DateTime.UtcNow;
-        }
     }
 }

@@ -4,7 +4,7 @@ using Patronage.Models;
 
 namespace Patronage.DataAccess.Validators
 {
-    public class CreateOrUpdateProjectDtoValidator : AbstractValidator<CreateOrUpdateProjectDto>
+    public class CreateOrUpdateProjectDtoValidator : AbstractValidator<CreateProjectDto>
     {
         public CreateOrUpdateProjectDtoValidator(TableContext tableContext)
         {

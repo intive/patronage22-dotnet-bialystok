@@ -3,52 +3,72 @@ using Patronage.Contracts.Interfaces;
 using Patronage.Contracts.ModelDtos.Projects;
 using Patronage.Contracts.ModelDtos;
 using Patronage.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Patronage.DataAccess.Services
 {
     public class ProjectService : IProjectService
     {
         private readonly TableContext _dbContext;
-        private readonly IMapper _mapper;
 
 
-        public ProjectService(TableContext context, IMapper mapper)
+        public ProjectService(TableContext context)
         {
             _dbContext = context;
-            _mapper = mapper;
         }
 
 
 
 
-        public int Create(CreateOrUpdateProjectDto projectDto)
+        public async Task<int> Create(CreateProjectDto projectDto)
         {
-            var newProject = _mapper.Map<Project>(projectDto);
-            newProject.IsActive = true;
+            Project newProject = new Project();
 
-            _dbContext.Projects.Add(newProject);
-            _dbContext.SaveChanges();
+            newProject.Name = projectDto.Name;
+            newProject.Alias = projectDto.Alias;
+            newProject.Description = projectDto.Description;
+            newProject.IsActive = projectDto.IsActive;
+
+            await _dbContext.Projects.AddAsync(newProject);
+            await _dbContext.SaveChangesAsync();
 
             return newProject.Id;
         }
 
 
 
-        public IEnumerable<ProjectDto> GetAll(string searchedProject)
+        public async Task<IEnumerable<ProjectDto>> GetAll(string searchedPhrase)
         {
-            var projects = _dbContext
+            var  projects = _dbContext
                 .Projects
-                .Where(p => searchedProject == null || p.Name.Contains(searchedProject))
+                .Where(p => searchedPhrase == null || (p.Name.Contains(searchedPhrase)) ||
+                                                       p.Alias.Contains(searchedPhrase) ||
+                                                       p.Description.Contains(searchedPhrase))
                 .ToList();
 
-            var projectsDto = _mapper.Map<List<ProjectDto>>(projects);
+
+            var projectsDto = new List<ProjectDto>();
+
+            foreach (var project in projects)
+            {
+                projectsDto.Add(new ProjectDto
+                {
+                    Id = project.Id,
+                    Name = project.Name,
+                    Alias = project.Alias,
+                    Description = project.Description,
+                    IsActive = project.IsActive,
+                    CreatedOn = project.CreatedOn,
+                    ModifiedOn = project.ModifiedOn
+                });
+            }
 
             return projectsDto;
         }
 
 
 
-        public ProjectDto GetById(int id)
+        public async Task<ProjectDto> GetById(int id)
         {
             var project = _dbContext
                 .Projects
@@ -56,14 +76,24 @@ namespace Patronage.DataAccess.Services
 
             if (project is null) return null;
 
-            var projectDto = _mapper.Map<ProjectDto>(project);
+
+            ProjectDto projectDto = new ProjectDto
+            {
+                Id = project.Id,
+                Name = project.Name,
+                Alias = project.Alias,
+                Description = project.Description,
+                IsActive = project.IsActive,
+                CreatedOn = project.CreatedOn,
+                ModifiedOn = project.ModifiedOn
+            };
 
             return projectDto;
         }
 
 
 
-        public bool Update(int id, CreateOrUpdateProjectDto projectDto)
+        public async Task<bool> Update(int id, UpdateProjectDto projectDto)
         {
             var project = _dbContext
                 .Projects
@@ -71,16 +101,19 @@ namespace Patronage.DataAccess.Services
 
             if (project is null) return false;
 
-            _mapper.Map(projectDto, project);
+            project.Name = projectDto.Name;
+            project.Alias = projectDto.Alias;
+            project.Description = projectDto.Description;
+            project.IsActive = projectDto.IsActive;
 
-            _dbContext.SaveChanges();
+            await _dbContext.SaveChangesAsync();
 
             return true;
         }
 
 
 
-        public bool LightUpdate(int id, PartialProjectDto projectDto)
+        public async Task<bool> LightUpdate(int id, PartialProjectDto projectDto)
         {
             var project = _dbContext
                 .Projects
@@ -88,16 +121,21 @@ namespace Patronage.DataAccess.Services
 
             if (project is null) return false;
 
-            _mapper.Map(projectDto, project);
+            //if (projectDto.Description.Data is null) project.Description = null;
 
-            _dbContext.SaveChanges();
+            project.Name = projectDto.Name?.Data ?? project.Name;
+            project.Alias = projectDto.Alias?.Data ?? project.Alias;
+            project.Description = projectDto.Description?.Data ?? project.Description;
+            project.IsActive = projectDto.IsActive?.Data ?? project.IsActive;
+
+            await _dbContext.SaveChangesAsync();
 
             return true;
         }
 
 
 
-        public bool Delete(int id)
+        public async Task<bool> Delete(int id)
         {
             var project = _dbContext
                 .Projects
@@ -107,7 +145,7 @@ namespace Patronage.DataAccess.Services
 
             project.IsActive = false;
 
-            _dbContext.SaveChanges();
+            await _dbContext.SaveChangesAsync();
 
             return true;
         }
