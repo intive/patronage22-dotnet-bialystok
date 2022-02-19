@@ -94,17 +94,39 @@ try
 
     var app = builder.Build();
 
-    using (var scope = app.Services.CreateScope())
+    logger.Info("Trying to apply migrations");
+    ApplyMigrations();
+
+    void ApplyMigrations()
     {
-        var services = scope.ServiceProvider;
-        try
+        using (var scope = app.Services.CreateScope())
         {
-            var db = services.GetRequiredService<TableContext>();
-            db.Database.Migrate();
-        }
-        catch (Exception ex)
-        {
-            logger.Error(ex);
+            var services = scope.ServiceProvider;
+            try
+            {
+                var db = services.GetRequiredService<TableContext>();
+                if (!db.Database.CanConnect())
+                {
+                    logger.Error("No database connection! Migrations not applied");
+                    return;
+                }
+                var pendingMigrations = db.Database.GetPendingMigrations();
+                if(pendingMigrations.Any())
+                {
+                    db.Database.Migrate();
+                    logger.Info($"{pendingMigrations.Count()} pending migrations applied");
+                }
+                else
+                {
+                    logger.Info("No migrations need to be applied");
+                }
+                var lastAppliedMigration = ( db.Database.GetAppliedMigrations()).Last();
+                logger.Info($"You are on schema version: {lastAppliedMigration}");
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
         }
     }
 
