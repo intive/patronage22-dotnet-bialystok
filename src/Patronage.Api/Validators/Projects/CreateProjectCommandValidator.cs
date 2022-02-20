@@ -1,28 +1,29 @@
 ﻿using FluentValidation;
+using Patronage.Api.MediatR.Projects.Commands;
 using Patronage.Contracts.ModelDtos.Projects;
 using Patronage.Models;
 
-namespace Patronage.DataAccess.Validators
+namespace Patronage.Api.Validators.Projects
 {
-    public class CreateOrUpdateProjectDtoValidator : AbstractValidator<CreateProjectDto>
+    public class CreateProjectCommandValidator : AbstractValidator<CreateProjectCommand>
     {
-        public CreateOrUpdateProjectDtoValidator(TableContext tableContext)
+        public CreateProjectCommandValidator(TableContext tableContext)
         {
-            RuleFor(p => p.Alias)
+            RuleFor(p => p.dto.Alias)
                 .MaximumLength(256)
                 .NotEmpty()
                 .NotNull()
                 .Custom((value, context) =>
-                 {
-                     var isAliasAlreadyTaken = tableContext.Projects.Any(p => p.Alias == value);
-                     if (isAliasAlreadyTaken)
-                     {
-                         context.AddFailure("Alias", "This project's alias has been already taken");
-                     }
-                 });
+                {
+                    var isAliasAlreadyTaken = tableContext.Projects.Any(p => p.Alias == value);
+                    if (isAliasAlreadyTaken)
+                    {
+                        context.AddFailure("Alias", "This project's alias has been already taken");
+                    }
+                });
 
 
-            RuleFor(p => p.Name)
+            RuleFor(p => p.dto.Name)
                 .MaximumLength(1024)
                 .NotEmpty()
                 .NotNull()

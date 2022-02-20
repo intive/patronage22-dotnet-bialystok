@@ -121,12 +121,25 @@ namespace Patronage.DataAccess.Services
 
             if (project is null) return false;
 
-            //if (projectDto.Description.Data is null) project.Description = null;
 
-            project.Name = projectDto.Name?.Data ?? project.Name;
-            project.Alias = projectDto.Alias?.Data ?? project.Alias;
-            project.Description = projectDto.Description?.Data ?? project.Description;
-            project.IsActive = projectDto.IsActive?.Data ?? project.IsActive;
+            if (projectDto.Description == null) project.Description = project.Description;
+            else if (projectDto.Description?.Data == null && projectDto.Description != null) project.Description = null;
+            else project.Description = projectDto.Description.Data;
+
+            if (projectDto.Name == null) project.Name = project.Name;
+            else if (projectDto.Name?.Data == null && projectDto.Name != null) return false;
+            else if (_dbContext.Projects.Any(p => p.Name == projectDto.Name.Data)) return false;
+            else project.Name = projectDto.Name.Data;
+
+            if (projectDto.Alias == null) project.Alias = project.Alias;
+            else if (projectDto.Alias?.Data == null && projectDto.Alias != null) return false;
+            else if (_dbContext.Projects.Any(p => p.Alias == projectDto.Alias.Data)) return false;
+            else project.Alias = projectDto.Alias.Data;
+
+            if (projectDto.IsActive == null) project.IsActive = project.IsActive;
+            else if (projectDto.IsActive?.Data == null && projectDto.IsActive != null) return false;
+            else project.IsActive = projectDto.IsActive.Data;
+
 
             await _dbContext.SaveChangesAsync();
 

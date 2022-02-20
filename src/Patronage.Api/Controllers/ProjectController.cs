@@ -131,7 +131,8 @@ namespace Patronage.Api.Controllers
                 return NotFound(new BaseResponse<ProjectDto>
                 {
                     ResponseCode = StatusCodes.Status404NotFound,
-                    Message = "Project with this id doesn't exist"
+                    Message = "Project with this id doesn't exist or you try to insert null value to property that can not be null or Name/Alias" +
+                    "has been used to another project (these properties must be unique)"
                 });
             }
 
@@ -163,16 +164,6 @@ namespace Patronage.Api.Controllers
                 });
             }
 
-/*
-            if (project.IsActive == false)
-            {
-                return Ok(new BaseResponse<ProjectDto>
-                {
-                    ResponseCode = StatusCodes.Status404NotFound,
-                    Message = "This project has been already deleted"
-                });
-            }
-*/
 
             return Ok(new BaseResponse<ProjectDto>
             {

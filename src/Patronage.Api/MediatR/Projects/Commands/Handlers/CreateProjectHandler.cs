@@ -14,7 +14,7 @@ namespace Patronage.Api.MediatR.Projects.Commands.Handlers
         }
 
 
-
+        
 
         public async Task<int> Handle(CreateProjectCommand request, CancellationToken cancellationToken)
         {
