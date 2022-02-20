@@ -40,8 +40,6 @@ try
     builder.Services.AddScoped<IProjectService, ProjectService>();
     builder.Services.AddScoped<IBoardService, BoardService>();
 
-    builder.Services.AddScoped<IValidator<GetIssuesListQuery>, IssueQueryValidator>();
-
     builder.Services.AddScoped<ErrorHandlingMiddleware>();
 
     builder.Services.AddTransient<DataSeeder>();
