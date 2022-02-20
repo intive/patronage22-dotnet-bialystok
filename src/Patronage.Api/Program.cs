@@ -165,11 +165,7 @@ try
     app.MapControllers();
 
     logger.Info("Initializing complete!");
-    string? port = Environment.GetEnvironmentVariable("PORT");
-    if(port == null)
-    {
-        port = "80";
-    }
+    string? port = Environment.GetEnvironmentVariable("PORT") ?? "80";
     logger.Info("App listening on port:" + port);
 
     app.Run();
