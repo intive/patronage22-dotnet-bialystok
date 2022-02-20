@@ -63,12 +63,12 @@ namespace Patronage.DataAccess.Services
 
             }
         }
-        public int Create(BoardStatusDto dto)
+        public BoardStatusDto Create(BoardStatusDto dto)
         {
             var boardStatus = _mapper.Map<BoardStatus>(dto);
             _dbContext.BoardsStatus.Add(boardStatus);
             _dbContext.SaveChanges();
-            return boardStatus.BoardId;
+            return dto;
         }
         public void Delete(int boardId, int statusId)
         {

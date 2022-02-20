@@ -11,7 +11,7 @@ namespace Patronage.Contracts.Interfaces
     {
         IEnumerable<BoardStatusDto> GetAll();
         IEnumerable<BoardStatusDto> GetById(int boardId, int statusId);
-        public int Create(BoardStatusDto dto);
+        public BoardStatusDto Create(BoardStatusDto dto);
         public void Delete(int boardId, int statusId);
 
     }

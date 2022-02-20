@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using Patronage.Api.MediatR.BoardStatus.Commands;
+using Patronage.Api.MediatR.BoardStatus.Queries;
 using Patronage.Contracts.Interfaces;
 using Patronage.Contracts.ModelDtos;
 using Swashbuckle.AspNetCore.Annotations;
@@ -7,23 +10,23 @@ namespace Patronage.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class StatusBoardController : ControllerBase
+    public class BoardStatusController : ControllerBase
     {
         private readonly IBoardStatusService _boardStatusService;
+        private readonly IMediator _mediator;
 
-        public StatusBoardController(IBoardStatusService boardStatusService )
+        public BoardStatusController(IBoardStatusService boardStatusService, IMediator mediator )
         {
             _boardStatusService = boardStatusService;
+            _mediator = mediator;
         }
 
 
         [SwaggerOperation(Summary = "get all StatusBoards")]
         [HttpGet]
-        public ActionResult<IEnumerable<BoardStatusDto>> GetAll()
+        public async Task<IEnumerable<BoardStatusDto>> GetAll()
         {
-            var boards = _boardStatusService.GetAll();
-            return Ok(boards);
-
+            return await _mediator.Send(new GetAllBoardStatusQuery());
         }
 
 
@@ -42,10 +45,11 @@ namespace Patronage.Api.Controllers
 
         [SwaggerOperation(Summary = "create StatusBoard based on statusboardDto passed as parameter in request body")]
         [HttpPost]
-        public ActionResult Create([FromBody] BoardStatusDto dto)
+        public async Task<BoardStatusDto> Create([FromBody] BoardStatusDto dto)
         {
-            int id = _boardStatusService.Create(dto);
-            return Created($"{id}", null);
+            //int id = _boardStatusService.Create(dto);
+            //return Created($"{id}", null);
+            return await _mediator.Send(new CreateBoardStatusCommand(dto));
         }
 
 

@@ -39,7 +39,7 @@ try
     builder.Services.AddScoped<IIssueService, IssueService>();
     builder.Services.AddScoped<IProjectService, ProjectService>();
     builder.Services.AddScoped<IBoardService, BoardService>();
-
+    builder.Services.AddScoped<IBoardStatusService, BoardStatusService>();
     builder.Services.AddScoped<IValidator<GetIssuesListQuery>, IssueQueryValidator>();
 
     builder.Services.AddScoped<ErrorHandlingMiddleware>();
@@ -101,7 +101,7 @@ catch (Exception exception)
         throw;
     }
     // NLog: catch setup errors
-    throw;
+        throw;
 }
 finally
 {
