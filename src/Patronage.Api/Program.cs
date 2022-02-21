@@ -18,7 +18,7 @@ using Patronage.Api.MediatR.Issues.Queries.GetIssues;
 try
 {
     var logger = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
-    logger.Info("Starting initializing");
+    logger.Info("Starting");
 
     var builder = WebApplication.CreateBuilder(args);
     builder.Services.AddControllers();
