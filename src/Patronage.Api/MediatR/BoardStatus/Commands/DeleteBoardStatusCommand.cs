@@ -8,5 +8,5 @@ using System.Threading.Tasks;
 
 namespace Patronage.Api.MediatR.BoardStatus.Commands
 {
-    public record CreateBoardStatusCommand(BoardStatusDto Dto) : IRequest<bool>;
+    public record DeleteBoardStatusCommand(int boardId, int statusId) : IRequest<bool>;
 }

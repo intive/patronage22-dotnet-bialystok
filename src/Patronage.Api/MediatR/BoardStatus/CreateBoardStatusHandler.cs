@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Patronage.Api.MediatR.BoardStatus
 {
-    public class CreateBoardStatusHandler : IRequestHandler<CreateBoardStatusCommand, BoardStatusDto>
+    public class CreateBoardStatusHandler : IRequestHandler<CreateBoardStatusCommand, bool>
     {
         private readonly IBoardStatusService _boardStatusService;
 
@@ -20,7 +20,7 @@ namespace Patronage.Api.MediatR.BoardStatus
             _boardStatusService = boardStatusService;
         }
 
-        public Task<BoardStatusDto> Handle(CreateBoardStatusCommand request, CancellationToken cancellationToken)
+        public Task<bool> Handle(CreateBoardStatusCommand request, CancellationToken cancellationToken)
         {
             return Task.FromResult(_boardStatusService.Create(request.Dto));
         }
