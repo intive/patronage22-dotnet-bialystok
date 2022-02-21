@@ -28,11 +28,12 @@ try
         c.SwaggerDoc("v1", new OpenApiInfo { Title = "Patronage 2022 API", Version = "v1" });
     });
 
+    ///TODO: move this to data seeder ~MZ
     ///This determines which connection string are we going to use
     ///If environmental variable "DATABASE_URL" is set we will build connection string to connect to remove database
     ///Won't work on local! Else uses our "Default connection string.
     ///Why do we have to build connection string dynamically? Heroku periodically changes credentials, so we have to keep up with that.
-    if(Environment.GetEnvironmentVariable("DATABASE_URL") != null || builder.Configuration.GetValue("provider", "mysql").ToLower() == "postgre")
+    if(Environment.GetEnvironmentVariable("DATABASE_URL") != null || builder.Configuration.GetValue("provider", "mysql").Equals("postgre", StringComparison.InvariantCultureIgnoreCase))
     {
         string connection_string = "";
         if(Environment.GetEnvironmentVariable("DATABASE_URL") != null){

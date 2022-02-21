@@ -19,7 +19,6 @@ public class TableContext : DbContext
     {
         //Very important!!!
         //Set every string field to .IsUnicode(false);
-        //Every string field should have maxlen defined so migrations doesn't create varchar(max) (not supported by postgre)
         //Do not use .HasColumnType("datetime"); it breaks postgre
 
         modelBuilder.HasDefaultSchema("public");
@@ -28,18 +27,11 @@ public class TableContext : DbContext
 
         modelBuilder.Entity<Project>()
             .Property(p => p.Alias)
-            .HasMaxLength(256)
-            .IsUnicode(false);
+            .HasMaxLength(256);
 
         modelBuilder.Entity<Project>()
             .Property(p => p.Name)
-            .HasMaxLength(1024)
-            .IsUnicode(false);
-
-        modelBuilder.Entity<Project>()
-            .Property(p => p.Description)
-            .HasMaxLength(1024)
-            .IsUnicode(false);
+            .HasMaxLength(1024);
 
         modelBuilder.Entity<Project>()
             .Property(p => p.CreatedOn)
@@ -49,20 +41,16 @@ public class TableContext : DbContext
             .Property(p => p.ModifiedOn)
             .HasPrecision(0);
 
-        modelBuilder.Entity<Project>()
-             .Property(r => r.ModifiedOn);
-
         #endregion
 
         #region logTable
         modelBuilder.Entity<Log>()
-                .HasKey(e => e.Id);
+            .HasKey(e => e.Id);
 
         modelBuilder.Entity<Log>()
             .Property(r => r.MachineName)
             .IsRequired()
-            .HasMaxLength(50)
-            .IsUnicode(false);
+            .HasMaxLength(50);
 
         modelBuilder.Entity<Log>()
             .Property(r => r.Logged)
@@ -71,20 +59,16 @@ public class TableContext : DbContext
         modelBuilder.Entity<Log>()
             .Property(r => r.Level)
             .IsRequired()
-            .HasMaxLength(50)
-            .IsUnicode(false);
+            .HasMaxLength(50);
 
         modelBuilder.Entity<Log>()
             .Property(r => r.Message)
-            .IsRequired()
-            .HasMaxLength(1024)
-            .IsUnicode(false);
+            .IsRequired();
 
         modelBuilder.Entity<Log>()
             .Property(r => r.Logger)
             .IsRequired(false)
-            .HasMaxLength(250)
-            .IsUnicode(false);
+            .HasMaxLength(250);
 
         modelBuilder.Entity<Log>()
             .Property(r => r.Callsite)
@@ -93,9 +77,7 @@ public class TableContext : DbContext
 
         modelBuilder.Entity<Log>()
             .Property(r => r.Exception)
-            .IsRequired(false)
-            .HasMaxLength(1024)
-            .IsUnicode(false);
+            .IsRequired(false);
         #endregion
 
         #region Board
@@ -105,18 +87,11 @@ public class TableContext : DbContext
 
         modelBuilder.Entity<Board>()
             .Property(a => a.Alias)
-            .HasMaxLength(256)
-            .IsUnicode(false);
+            .HasMaxLength(256);
 
         modelBuilder.Entity<Board>()
             .Property(a => a.Name)
-            .HasMaxLength(1024)
-            .IsUnicode(false);
-
-        modelBuilder.Entity<Board>()
-            .Property(a => a.Description)
-            .HasMaxLength(1024)
-            .IsUnicode(false);
+            .HasMaxLength(1024);
 
         modelBuilder.Entity<Board>()
             .Property(a => a.ProjectId)
@@ -126,25 +101,16 @@ public class TableContext : DbContext
             .Property(a => a.CreatedOn)
             .IsRequired();
 
-        modelBuilder.Entity<Board>()
-             .Property(r => r.ModifiedOn);
         #endregion
 
         #region Issue
         modelBuilder.Entity<Issue>()
             .Property(r => r.Alias)
-            .HasMaxLength(256)
-            .IsUnicode(false);
+            .HasMaxLength(256);
 
         modelBuilder.Entity<Issue>()
              .Property(r => r.Name)
-             .HasMaxLength(1024)
-             .IsUnicode(false);
-
-        modelBuilder.Entity<Issue>()
-             .Property(r => r.Description)
-             .HasMaxLength(1024)
-             .IsUnicode(false);
+             .HasMaxLength(1024);
 
         modelBuilder.Entity<Issue>()
              .Property(r => r.ProjectId)
@@ -158,8 +124,6 @@ public class TableContext : DbContext
              .Property(r => r.CreatedOn)
              .IsRequired();
 
-        modelBuilder.Entity<Issue>()
-             .Property(r => r.ModifiedOn);
         #endregion
     }
 

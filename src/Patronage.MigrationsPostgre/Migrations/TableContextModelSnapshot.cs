@@ -34,7 +34,6 @@ namespace Patronage.MigrationsPostgre.Migrations
                     b.Property<string>("Alias")
                         .IsRequired()
                         .HasMaxLength(256)
-                        .IsUnicode(false)
                         .HasColumnType("character varying(256)");
 
                     b.Property<DateTime>("CreatedOn")
@@ -42,9 +41,7 @@ namespace Patronage.MigrationsPostgre.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasMaxLength(1024)
-                        .IsUnicode(false)
-                        .HasColumnType("character varying(1024)");
+                        .HasColumnType("text");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
@@ -55,7 +52,6 @@ namespace Patronage.MigrationsPostgre.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(1024)
-                        .IsUnicode(false)
                         .HasColumnType("character varying(1024)");
 
                     b.Property<int>("ProjectId")
@@ -77,7 +73,6 @@ namespace Patronage.MigrationsPostgre.Migrations
                     b.Property<string>("Alias")
                         .IsRequired()
                         .HasMaxLength(256)
-                        .IsUnicode(false)
                         .HasColumnType("character varying(256)");
 
                     b.Property<int?>("BoardId")
@@ -88,9 +83,7 @@ namespace Patronage.MigrationsPostgre.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasMaxLength(1024)
-                        .IsUnicode(false)
-                        .HasColumnType("character varying(1024)");
+                        .HasColumnType("text");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
@@ -101,7 +94,6 @@ namespace Patronage.MigrationsPostgre.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(1024)
-                        .IsUnicode(false)
                         .HasColumnType("character varying(1024)");
 
                     b.Property<int>("ProjectId")
@@ -132,14 +124,11 @@ namespace Patronage.MigrationsPostgre.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("Exception")
-                        .HasMaxLength(1024)
-                        .IsUnicode(false)
-                        .HasColumnType("character varying(1024)");
+                        .HasColumnType("text");
 
                     b.Property<string>("Level")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .IsUnicode(false)
                         .HasColumnType("character varying(50)");
 
                     b.Property<DateTime>("Logged")
@@ -147,20 +136,16 @@ namespace Patronage.MigrationsPostgre.Migrations
 
                     b.Property<string>("Logger")
                         .HasMaxLength(250)
-                        .IsUnicode(false)
                         .HasColumnType("character varying(250)");
 
                     b.Property<string>("MachineName")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .IsUnicode(false)
                         .HasColumnType("character varying(50)");
 
                     b.Property<string>("Message")
                         .IsRequired()
-                        .HasMaxLength(1024)
-                        .IsUnicode(false)
-                        .HasColumnType("character varying(1024)");
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -178,7 +163,6 @@ namespace Patronage.MigrationsPostgre.Migrations
                     b.Property<string>("Alias")
                         .IsRequired()
                         .HasMaxLength(256)
-                        .IsUnicode(false)
                         .HasColumnType("character varying(256)");
 
                     b.Property<DateTime>("CreatedOn")
@@ -187,9 +171,7 @@ namespace Patronage.MigrationsPostgre.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasMaxLength(1024)
-                        .IsUnicode(false)
-                        .HasColumnType("character varying(1024)");
+                        .HasColumnType("text");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
@@ -201,7 +183,6 @@ namespace Patronage.MigrationsPostgre.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(1024)
-                        .IsUnicode(false)
                         .HasColumnType("character varying(1024)");
 
                     b.HasKey("Id");

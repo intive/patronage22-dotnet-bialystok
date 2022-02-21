@@ -34,17 +34,14 @@ namespace Patronage.Migrations.Migrations
                     b.Property<string>("Alias")
                         .IsRequired()
                         .HasMaxLength(256)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(256)");
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasMaxLength(1024)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(1024)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
@@ -55,8 +52,7 @@ namespace Patronage.Migrations.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(1024)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(1024)");
+                        .HasColumnType("nvarchar(1024)");
 
                     b.Property<int>("ProjectId")
                         .HasColumnType("int");
@@ -77,8 +73,7 @@ namespace Patronage.Migrations.Migrations
                     b.Property<string>("Alias")
                         .IsRequired()
                         .HasMaxLength(256)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(256)");
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<int?>("BoardId")
                         .HasColumnType("int");
@@ -88,9 +83,7 @@ namespace Patronage.Migrations.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasMaxLength(1024)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(1024)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
@@ -101,8 +94,7 @@ namespace Patronage.Migrations.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(1024)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(1024)");
+                        .HasColumnType("nvarchar(1024)");
 
                     b.Property<int>("ProjectId")
                         .HasColumnType("int");
@@ -132,35 +124,28 @@ namespace Patronage.Migrations.Migrations
                         .HasColumnType("varchar(max)");
 
                     b.Property<string>("Exception")
-                        .HasMaxLength(1024)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(1024)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Level")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(50)");
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<DateTime>("Logged")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Logger")
                         .HasMaxLength(250)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(250)");
+                        .HasColumnType("nvarchar(250)");
 
                     b.Property<string>("MachineName")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(50)");
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Message")
                         .IsRequired()
-                        .HasMaxLength(1024)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(1024)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -178,8 +163,7 @@ namespace Patronage.Migrations.Migrations
                     b.Property<string>("Alias")
                         .IsRequired()
                         .HasMaxLength(256)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(256)");
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<DateTime>("CreatedOn")
                         .HasPrecision(0)
@@ -187,9 +171,7 @@ namespace Patronage.Migrations.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasMaxLength(1024)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(1024)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
@@ -201,8 +183,7 @@ namespace Patronage.Migrations.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(1024)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(1024)");
+                        .HasColumnType("nvarchar(1024)");
 
                     b.HasKey("Id");
 

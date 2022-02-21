@@ -20,9 +20,9 @@ namespace Patronage.MigrationsPostgre.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Alias = table.Column<string>(type: "character varying(256)", unicode: false, maxLength: 256, nullable: false),
-                    Name = table.Column<string>(type: "character varying(1024)", unicode: false, maxLength: 1024, nullable: false),
-                    Description = table.Column<string>(type: "character varying(1024)", unicode: false, maxLength: 1024, nullable: false),
+                    Alias = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
+                    Name = table.Column<string>(type: "character varying(1024)", maxLength: 1024, nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: false),
                     ProjectId = table.Column<int>(type: "integer", nullable: false),
                     IsActive = table.Column<bool>(type: "boolean", nullable: false),
                     CreatedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
@@ -40,13 +40,13 @@ namespace Patronage.MigrationsPostgre.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    MachineName = table.Column<string>(type: "character varying(50)", unicode: false, maxLength: 50, nullable: false),
+                    MachineName = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     Logged = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    Level = table.Column<string>(type: "character varying(50)", unicode: false, maxLength: 50, nullable: false),
-                    Message = table.Column<string>(type: "character varying(1024)", unicode: false, maxLength: 1024, nullable: false),
-                    Logger = table.Column<string>(type: "character varying(250)", unicode: false, maxLength: 250, nullable: true),
+                    Level = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    Message = table.Column<string>(type: "text", nullable: false),
+                    Logger = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: true),
                     Callsite = table.Column<string>(type: "text", unicode: false, nullable: true),
-                    Exception = table.Column<string>(type: "character varying(1024)", unicode: false, maxLength: 1024, nullable: true)
+                    Exception = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -60,9 +60,9 @@ namespace Patronage.MigrationsPostgre.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Alias = table.Column<string>(type: "character varying(256)", unicode: false, maxLength: 256, nullable: false),
-                    Name = table.Column<string>(type: "character varying(1024)", unicode: false, maxLength: 1024, nullable: false),
-                    Description = table.Column<string>(type: "character varying(1024)", unicode: false, maxLength: 1024, nullable: false),
+                    Alias = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
+                    Name = table.Column<string>(type: "character varying(1024)", maxLength: 1024, nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: false),
                     IsActive = table.Column<bool>(type: "boolean", nullable: false),
                     CreatedOn = table.Column<DateTime>(type: "timestamp(0) with time zone", precision: 0, nullable: false),
                     ModifiedOn = table.Column<DateTime>(type: "timestamp(0) with time zone", precision: 0, nullable: true)
@@ -79,9 +79,9 @@ namespace Patronage.MigrationsPostgre.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Alias = table.Column<string>(type: "character varying(256)", unicode: false, maxLength: 256, nullable: false),
-                    Name = table.Column<string>(type: "character varying(1024)", unicode: false, maxLength: 1024, nullable: false),
-                    Description = table.Column<string>(type: "character varying(1024)", unicode: false, maxLength: 1024, nullable: false),
+                    Alias = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
+                    Name = table.Column<string>(type: "character varying(1024)", maxLength: 1024, nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: false),
                     ProjectId = table.Column<int>(type: "integer", nullable: false),
                     BoardId = table.Column<int>(type: "integer", nullable: true),
                     StatusId = table.Column<int>(type: "integer", nullable: false),

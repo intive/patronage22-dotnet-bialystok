@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Patronage.Migrations.Migrations
 {
-    public partial class InitialMySQL : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -19,9 +19,9 @@ namespace Patronage.Migrations.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Alias = table.Column<string>(type: "varchar(256)", unicode: false, maxLength: 256, nullable: false),
-                    Name = table.Column<string>(type: "varchar(1024)", unicode: false, maxLength: 1024, nullable: false),
-                    Description = table.Column<string>(type: "varchar(1024)", unicode: false, maxLength: 1024, nullable: false),
+                    Alias = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(1024)", maxLength: 1024, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ProjectId = table.Column<int>(type: "int", nullable: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
                     CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -39,13 +39,13 @@ namespace Patronage.Migrations.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    MachineName = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: false),
+                    MachineName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Logged = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Level = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: false),
-                    Message = table.Column<string>(type: "varchar(1024)", unicode: false, maxLength: 1024, nullable: false),
-                    Logger = table.Column<string>(type: "varchar(250)", unicode: false, maxLength: 250, nullable: true),
+                    Level = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Message = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Logger = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
                     Callsite = table.Column<string>(type: "varchar(max)", unicode: false, nullable: true),
-                    Exception = table.Column<string>(type: "varchar(1024)", unicode: false, maxLength: 1024, nullable: true)
+                    Exception = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -59,9 +59,9 @@ namespace Patronage.Migrations.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Alias = table.Column<string>(type: "varchar(256)", unicode: false, maxLength: 256, nullable: false),
-                    Name = table.Column<string>(type: "varchar(1024)", unicode: false, maxLength: 1024, nullable: false),
-                    Description = table.Column<string>(type: "varchar(1024)", unicode: false, maxLength: 1024, nullable: false),
+                    Alias = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(1024)", maxLength: 1024, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
                     CreatedOn = table.Column<DateTime>(type: "datetime2(0)", precision: 0, nullable: false),
                     ModifiedOn = table.Column<DateTime>(type: "datetime2(0)", precision: 0, nullable: true)
@@ -78,9 +78,9 @@ namespace Patronage.Migrations.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Alias = table.Column<string>(type: "varchar(256)", unicode: false, maxLength: 256, nullable: false),
-                    Name = table.Column<string>(type: "varchar(1024)", unicode: false, maxLength: 1024, nullable: false),
-                    Description = table.Column<string>(type: "varchar(1024)", unicode: false, maxLength: 1024, nullable: false),
+                    Alias = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(1024)", maxLength: 1024, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ProjectId = table.Column<int>(type: "int", nullable: false),
                     BoardId = table.Column<int>(type: "int", nullable: true),
                     StatusId = table.Column<int>(type: "int", nullable: false),
