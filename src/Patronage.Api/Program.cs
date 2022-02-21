@@ -11,6 +11,8 @@ using FluentValidation;
 using Patronage.Api;
 using Patronage.Api.Middleware;
 using Npgsql;
+using Patronage.Api.Validators;
+using Patronage.Api.MediatR.Issues.Queries.GetIssues;
 
 
 try

@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using Patronage.Contracts.Helpers;
-using Patronage.Contracts.ModelDtos;
+using Patronage.Contracts.ModelDtos.Issues;
 
 namespace Patronage.Api.MediatR.Issues.Queries.GetIssues
 {

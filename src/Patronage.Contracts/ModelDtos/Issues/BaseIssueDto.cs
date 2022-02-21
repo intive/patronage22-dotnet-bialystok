@@ -1,24 +1,24 @@
-﻿using Patronage.Api;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Patronage.Models
-{
-    public class Issue : ICreatable, IModifable
+namespace Patronage.Contracts.ModelDtos.Issues
+{  
+    public class BaseIssueDto
     {
-        public int Id { get; set; }
+        [Required]
+        [MaxLength(256)]
         public string Alias { get; set; }
+        [Required]
+        [MaxLength(1024)]
         public string Name { get; set; }
         public string Description { get; set; }
+        [Required]
         public int ProjectId { get; set; }
         public int? BoardId { get; set; }
         public int StatusId { get; set; }
-        public bool IsActive { get; set; }
-        public DateTime CreatedOn { get; set; }
-        public DateTime? ModifiedOn { get; set; }
     }
 }

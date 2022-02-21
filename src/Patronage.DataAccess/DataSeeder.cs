@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Patronage.Models;
 using System;
 using System.Collections.Generic;
@@ -11,10 +12,12 @@ namespace Patronage.DataAccess
     public class DataSeeder
     {
         private readonly TableContext _dbContext;
+        private readonly ILogger<DataSeeder> _logger;
 
-        public DataSeeder(TableContext dbContext)
+        public DataSeeder(TableContext dbContext, ILogger<DataSeeder> logger)
         {
             _dbContext = dbContext;
+            _logger = logger;
         }
 
         public void Seed()
