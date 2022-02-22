@@ -26,6 +26,8 @@ try
     {
         c.EnableAnnotations();
         c.SwaggerDoc("v1", new OpenApiInfo { Title = "Patronage 2022 API", Version = "v1" });
+        var filePath = Path.Combine(System.AppContext.BaseDirectory, "Patronage.Api.xml");
+        c.IncludeXmlComments(filePath);
     });
 
     builder.Services.AddDbContext<TableContext>((DbContextOptionsBuilder options) =>

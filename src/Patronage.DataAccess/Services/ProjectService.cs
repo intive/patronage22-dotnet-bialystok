@@ -1,9 +1,7 @@
-﻿using AutoMapper;
+﻿using Microsoft.EntityFrameworkCore;
 using Patronage.Contracts.Interfaces;
 using Patronage.Contracts.ModelDtos.Projects;
-using Patronage.Contracts.ModelDtos;
 using Patronage.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace Patronage.DataAccess.Services
 {
@@ -11,14 +9,10 @@ namespace Patronage.DataAccess.Services
     {
         private readonly TableContext _dbContext;
 
-
         public ProjectService(TableContext context)
         {
             _dbContext = context;
         }
-
-
-
 
         public async Task<int> Create(CreateProjectDto projectDto)
         {
@@ -35,23 +29,21 @@ namespace Patronage.DataAccess.Services
             return newProject.Id;
         }
 
-
-
         public async Task<IEnumerable<ProjectDto>> GetAll(string searchedPhrase)
         {
-            var  projects = _dbContext
+            var projectsQueryable = _dbContext
                 .Projects
-                .Where(p => searchedPhrase == null || (p.Name.Contains(searchedPhrase)) ||
-                                                       p.Alias.Contains(searchedPhrase) ||
-                                                       p.Description.Contains(searchedPhrase))
-                .ToList();
+                .AsQueryable();
 
-
-            var projectsDto = new List<ProjectDto>();
-
-            foreach (var project in projects)
+            if (searchedPhrase != null)
             {
-                projectsDto.Add(new ProjectDto
+                projectsQueryable = projectsQueryable.Where(p => p.Name.Contains(searchedPhrase) ||
+                                                       p.Alias.Contains(searchedPhrase) ||
+                                                       p.Description.Contains(searchedPhrase));
+            }
+
+            var projects = await projectsQueryable
+                .Select(project => new ProjectDto
                 {
                     Id = project.Id,
                     Name = project.Name,
@@ -60,13 +52,11 @@ namespace Patronage.DataAccess.Services
                     IsActive = project.IsActive,
                     CreatedOn = project.CreatedOn,
                     ModifiedOn = project.ModifiedOn
-                });
-            }
+                })
+                .ToListAsync();
 
-            return projectsDto;
+            return projects;
         }
-
-
 
         public async Task<ProjectDto> GetById(int id)
         {
@@ -75,7 +65,6 @@ namespace Patronage.DataAccess.Services
                 .FirstOrDefault(p => p.Id == id);
 
             if (project is null) return null;
-
 
             ProjectDto projectDto = new ProjectDto
             {
@@ -90,8 +79,6 @@ namespace Patronage.DataAccess.Services
 
             return projectDto;
         }
-
-
 
         public async Task<bool> Update(int id, UpdateProjectDto projectDto)
         {
@@ -111,8 +98,6 @@ namespace Patronage.DataAccess.Services
             return true;
         }
 
-
-
         public async Task<bool> LightUpdate(int id, PartialProjectDto projectDto)
         {
             var project = _dbContext
@@ -121,32 +106,27 @@ namespace Patronage.DataAccess.Services
 
             if (project is null) return false;
 
+            if (projectDto.Description == null)
+            {
+                project.Description = project.Description;
+            }
+            else if (projectDto.Description?.Data == null && projectDto.Description != null)
+            {
+                project.Description = null;
+            }
+            else
+            {
+                project.Description = projectDto.Description.Data;
+            }
 
-            if (projectDto.Description == null) project.Description = project.Description;
-            else if (projectDto.Description?.Data == null && projectDto.Description != null) project.Description = null;
-            else project.Description = projectDto.Description.Data;
-
-            if (projectDto.Name == null) project.Name = project.Name;
-            else if (projectDto.Name?.Data == null && projectDto.Name != null) return false;
-            else if (_dbContext.Projects.Any(p => p.Name == projectDto.Name.Data)) return false;
-            else project.Name = projectDto.Name.Data;
-
-            if (projectDto.Alias == null) project.Alias = project.Alias;
-            else if (projectDto.Alias?.Data == null && projectDto.Alias != null) return false;
-            else if (_dbContext.Projects.Any(p => p.Alias == projectDto.Alias.Data)) return false;
-            else project.Alias = projectDto.Alias.Data;
-
-            if (projectDto.IsActive == null) project.IsActive = project.IsActive;
-            else if (projectDto.IsActive?.Data == null && projectDto.IsActive != null) return false;
-            else project.IsActive = projectDto.IsActive.Data;
-
+            project.Name = projectDto.Name?.Data ?? project.Name;
+            project.Alias = projectDto.Alias?.Data ?? project.Alias;
+            project.IsActive = projectDto.IsActive?.Data ?? project.IsActive;
 
             await _dbContext.SaveChangesAsync();
 
             return true;
         }
-
-
 
         public async Task<bool> Delete(int id)
         {
@@ -162,6 +142,5 @@ namespace Patronage.DataAccess.Services
 
             return true;
         }
-
     }
 }

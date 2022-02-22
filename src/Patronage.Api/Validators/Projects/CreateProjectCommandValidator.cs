@@ -10,9 +10,9 @@ namespace Patronage.Api.Validators.Projects
         public CreateProjectCommandValidator(TableContext tableContext)
         {
             RuleFor(p => p.dto.Alias)
-                .MaximumLength(256)
-                .NotEmpty()
-                .NotNull()
+                .NotEmpty().WithMessage("Field Alias can not be empty")
+                .NotNull().WithMessage("Field Alias can not be null")
+                .MaximumLength(256).WithMessage("Field name can have maximum 256 charakters")
                 .Custom((value, context) =>
                 {
                     var isAliasAlreadyTaken = tableContext.Projects.Any(p => p.Alias == value);
@@ -24,9 +24,9 @@ namespace Patronage.Api.Validators.Projects
 
 
             RuleFor(p => p.dto.Name)
-                .MaximumLength(1024)
-                .NotEmpty()
-                .NotNull()
+                .NotEmpty().WithMessage("Field Name can not be empty")
+                .NotNull().WithMessage("Field Name can not be null")
+                .MaximumLength(1024).WithMessage("Field alias can have maximum 1024 charakters")
                 .Custom((value, context) =>
                 {
                     var isNameAlreadyTaken = tableContext.Projects.Any(p => p.Name == value);
