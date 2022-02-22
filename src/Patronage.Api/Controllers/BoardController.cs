@@ -39,6 +39,7 @@ namespace Patronage.Api.Controllers
 
             return Ok(new BaseResponse<BoardDto>
             {
+                Message = "Board was created successfully",
                 ResponseCode = StatusCodes.Status200OK,
                 Data = result
             });
@@ -115,6 +116,7 @@ namespace Patronage.Api.Controllers
 
             return Ok(new BaseResponse<bool>
             {
+                Message = "Board was updated successfully",
                 ResponseCode = StatusCodes.Status200OK,
                 Data = result
             });
@@ -139,6 +141,7 @@ namespace Patronage.Api.Controllers
 
             return Ok(new BaseResponse<bool>
             {
+                Message = "Board was updated successfully",
                 ResponseCode = StatusCodes.Status200OK,
                 Data = result
             });
@@ -156,12 +159,14 @@ namespace Patronage.Api.Controllers
             {
                 return NotFound(new BaseResponse<bool>
                 {
-                    ResponseCode = StatusCodes.Status404NotFound
+                    ResponseCode = StatusCodes.Status404NotFound,
+                    Message = $"There's no board with Id: {id}"
                 });
             }
 
             return Ok(new BaseResponse<bool>
             {
+                Message = "Board was deleted successfully",
                 ResponseCode = StatusCodes.Status200OK,
                 Data = result
             });
