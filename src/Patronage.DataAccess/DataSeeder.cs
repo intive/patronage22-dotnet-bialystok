@@ -22,22 +22,7 @@ namespace Patronage.DataAccess
 
         public void Seed()
         {
-            _logger.LogInformation(_dbContext.Database.GetConnectionString());
-            if (_dbContext.Database.CanConnect())
-            {
-                _logger.LogInformation("Connected to Database");
-                var pendingMigrations = _dbContext.Database.GetPendingMigrations();
-                if (pendingMigrations != null && pendingMigrations.Any())
-                {
-                    _logger.LogInformation("Applying Migration");
-                    _dbContext.Database.Migrate();
-                }
-            }
-            else
-            {
-                _logger.LogInformation("Unable to connect to database");
-                throw new Exception("Unable to connect to database");
-            }
+
         }
     }
 }
