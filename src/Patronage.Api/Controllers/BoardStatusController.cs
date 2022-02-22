@@ -9,7 +9,7 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace Patronage.Api.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/boardStatus")]
     [ApiController]
     public class BoardStatusController : ControllerBase
     {
@@ -21,7 +21,6 @@ namespace Patronage.Api.Controllers
             _boardStatusService = boardStatusService;
             _mediator = mediator;
         }
-
         [SwaggerOperation(Summary = "Get all BoardStatus", Description ="Returns all BoardStatus records available in the database")]
         [HttpGet]        
         [SwaggerResponse(StatusCodes.Status200OK, "Returning all records from BoardStatus table")]
@@ -48,21 +47,22 @@ namespace Patronage.Api.Controllers
             });
         }
 
+        /// <param name="boardId" >boardId</param>
+        /// <param name="statusId" >statusId</param>
         [SwaggerOperation(Summary = "Get StatusBoard by boardId, statusId", Description ="Find all BoardStatus with specified boardId OR statusId OR both")]
         [HttpGet("id")]
         [SwaggerResponse(StatusCodes.Status200OK, "Returning all records matching provided criteria")]
-        [SwaggerResponse(StatusCodes.Status204NoContent, "No records with provided boardId or statusId were found")]
+        [SwaggerResponse(StatusCodes.Status404NotFound, "No records with provided boardId or statusId were found")]
         public async Task<ActionResult<IEnumerable<BoardStatusDto>>> GetById([FromQuery] int boardId,[FromQuery] int statusId)
         {
             var response = await _mediator.Send(new GetByIdBoardStatusQuery(boardId, statusId));
             if (response.Any() == false)
             {
-                return NoContent();
-                //TODO: Not found or no content? 
-                //    (new BaseResponse<bool>
-                //{
-                //    ResponseCode = StatusCodes.Status404NotFound
-                //});
+                return NotFound(new BaseResponse<BoardStatusDto>
+                {
+                    ResponseCode = StatusCodes.Status404NotFound, 
+                    Message = "No records with provided boardId or statusId were found"
+                });
             }
 
             return Ok(new BaseResponse<IEnumerable<BoardStatusDto>>
@@ -73,6 +73,7 @@ namespace Patronage.Api.Controllers
             });
         }
 
+        /// <param name="dto" >boardId</param>
         [SwaggerOperation(Summary = "Create BoardStatus", Description = "Create BoardStatus based on statusboardDto passed as parameter in request body")]
         [HttpPost]
         [SwaggerResponse(StatusCodes.Status201Created, "BoardStatus created successfully")]
@@ -99,7 +100,8 @@ namespace Patronage.Api.Controllers
             }
 
         }
-
+        /// <param name="boardId" >boardId</param>
+        /// <param name="statusId" >statusId</param>
         [SwaggerOperation(Summary = "Delete BoardStatus by id", Description ="Delete BoardStatus specifying boardId AND statusId")]
         [HttpDelete]
         [SwaggerResponse(StatusCodes.Status200OK, "Resource deleted successfully")]

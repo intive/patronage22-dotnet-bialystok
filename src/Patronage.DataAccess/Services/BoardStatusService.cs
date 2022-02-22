@@ -10,12 +10,10 @@ namespace Patronage.DataAccess.Services
     public class BoardStatusService : IBoardStatusService
     {
         private readonly TableContext _dbContext;
-        private readonly IMapper _mapper;
 
-        public BoardStatusService(TableContext dbContext, IMapper mapper)
+        public BoardStatusService(TableContext dbContext)
         {
             _dbContext = dbContext;
-            _mapper = mapper;
         }
         public IEnumerable<BoardStatusDto> GetAll()
         {
@@ -23,46 +21,81 @@ namespace Patronage.DataAccess.Services
                 .BoardsStatus
                 .ToList();
 
-            var boardStatuses = _mapper.Map<List<BoardStatusDto>>(boardSat);
+            var boardStatuses = new List<BoardStatusDto>();
+            foreach (var board in boardSat)
+            {
+                boardStatuses.Add(new BoardStatusDto
+                {
+                    BoardId = board.BoardId,
+                    StatusId = board.StatusId               
+                });
+            }
 
             return boardStatuses;
-
         }
+
         public IEnumerable<BoardStatusDto> GetById(int boardId, int statusId)
         {
+            var boardsStatus = _dbContext
+                    .BoardsStatus
+                    .AsQueryable();
+
+
             if (boardId != 0 && statusId == 0)
             {
-                var boardStatus = _dbContext
-                    .BoardsStatus
-                    .Where(b => b.BoardId.Equals(boardId))
-                    .ToList();
-                return _mapper.Map<List<BoardStatusDto>>(boardStatus);
+                var res = boardsStatus.Where(b => b.BoardId.Equals(boardId))
+                            .ToList();
+                var boardsStatusDto = new List<BoardStatusDto>();
+                foreach (var bs in res)
+                {
+                    boardsStatusDto.Add(new BoardStatusDto
+                    {
+                        BoardId = bs.BoardId,
+                        StatusId = bs.StatusId
+                    });
+                }
+
+                return boardsStatusDto;
 
             }
             else if (boardId == 0 && statusId != 0)
             {
-                var boardStatus = _dbContext
-                    .BoardsStatus
-                    .Where(b => b.StatusId.Equals(statusId))
-                    .ToList();
-                return _mapper.Map<List<BoardStatusDto>>(boardStatus);
-
+                var res = boardsStatus.Where(b => b.StatusId.Equals(statusId))
+                            .ToList();
+                var boardsStatusDto = new List<BoardStatusDto>();
+                foreach (var bs in res)
+                {
+                    boardsStatusDto.Add(new BoardStatusDto
+                    {
+                        BoardId = bs.BoardId,
+                        StatusId = bs.StatusId
+                    });
+                }
+                return boardsStatusDto;
             }
             else
             {
-                var boardStatus = _dbContext
-                   .BoardsStatus
-                   .Where(b => b.BoardId.Equals(boardId))
-                   .Where(b => b.StatusId.Equals(statusId));
-                return _mapper.Map<List<BoardStatusDto>>(boardStatus);
-
+                var res = boardsStatus.Where(b => b.StatusId.Equals(statusId))
+                            .Where(b => b.BoardId.Equals(boardId))
+                            .FirstOrDefault();
+                var boardsStatusDto = new List<BoardStatusDto>();
+                boardsStatusDto.Add(new BoardStatusDto()
+                {
+                    BoardId = res.BoardId,
+                    StatusId = res.StatusId
+                });        
+                return boardsStatusDto;
             }
         }
         public bool Create(BoardStatusDto dto)
         {
             try
             {
-                var boardStatus = _mapper.Map<BoardStatus>(dto);
+                var boardStatus = new BoardStatus();
+
+                boardStatus.BoardId = dto.BoardId;
+                boardStatus.StatusId = dto.StatusId;
+
                 _dbContext.BoardsStatus.Add(boardStatus);
                 _dbContext.SaveChanges();
                 return true;
@@ -72,7 +105,7 @@ namespace Patronage.DataAccess.Services
                 //TODO: Ask if it should also catch db savechanges exception
                 return false;
             }
-            
+
 
         }
         public bool Delete(int boardId, int statusId)
@@ -82,20 +115,18 @@ namespace Patronage.DataAccess.Services
                 var boardStatus = _dbContext
                     .BoardsStatus
                     .Where(b => b.BoardId.Equals(boardId))
-                    .Where(b => b.StatusId.Equals(statusId));
+                    .Where(b => b.StatusId.Equals(statusId))
+                    .FirstOrDefault();
 
                 try
                 {
-                    _dbContext.BoardsStatus.RemoveRange(boardStatus);
+                    _dbContext.BoardsStatus.Remove(boardStatus);
                     _dbContext.SaveChanges();
-
                 }
                 catch (Exception ex)
                 {
                     return false;
                 }
-
-                
             }
             return true;
         }
