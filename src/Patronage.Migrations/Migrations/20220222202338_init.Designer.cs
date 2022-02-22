@@ -12,14 +12,14 @@ using Patronage.Models;
 namespace Patronage.Migrations.Migrations
 {
     [DbContext(typeof(TableContext))]
-    [Migration("20220216080036_Init")]
-    partial class Init
+    [Migration("20220222202338_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.1")
+                .HasAnnotation("ProductVersion", "6.0.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
@@ -61,6 +61,21 @@ namespace Patronage.Migrations.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Boards");
+                });
+
+            modelBuilder.Entity("Patronage.Models.BoardStatus", b =>
+                {
+                    b.Property<int>("BoardId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("StatusId")
+                        .HasColumnType("int");
+
+                    b.HasKey("BoardId", "StatusId");
+
+                    b.HasIndex("StatusId");
+
+                    b.ToTable("BoardsStatus");
                 });
 
             modelBuilder.Entity("Patronage.Models.Issue", b =>
@@ -121,7 +136,8 @@ namespace Patronage.Migrations.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("Callsite")
-                        .HasColumnType("nvarchar(max)");
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(max)");
 
                     b.Property<string>("Exception")
                         .HasColumnType("nvarchar(max)");
@@ -190,6 +206,42 @@ namespace Patronage.Migrations.Migrations
                     b.ToTable("Projects");
                 });
 
+            modelBuilder.Entity("Patronage.Models.Status", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Statuses");
+                });
+
+            modelBuilder.Entity("Patronage.Models.BoardStatus", b =>
+                {
+                    b.HasOne("Patronage.Models.Board", "Board")
+                        .WithMany("BoardStatuses")
+                        .HasForeignKey("BoardId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Patronage.Models.Status", "Status")
+                        .WithMany("BoardStatuses")
+                        .HasForeignKey("StatusId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Board");
+
+                    b.Navigation("Status");
+                });
+
             modelBuilder.Entity("Patronage.Models.Issue", b =>
                 {
                     b.HasOne("Patronage.Models.Board", null)
@@ -205,12 +257,19 @@ namespace Patronage.Migrations.Migrations
 
             modelBuilder.Entity("Patronage.Models.Board", b =>
                 {
+                    b.Navigation("BoardStatuses");
+
                     b.Navigation("Issues");
                 });
 
             modelBuilder.Entity("Patronage.Models.Project", b =>
                 {
                     b.Navigation("Issues");
+                });
+
+            modelBuilder.Entity("Patronage.Models.Status", b =>
+                {
+                    b.Navigation("BoardStatuses");
                 });
 #pragma warning restore 612, 618
         }

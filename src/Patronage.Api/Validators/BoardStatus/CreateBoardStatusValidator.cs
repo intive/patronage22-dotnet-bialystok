@@ -41,8 +41,8 @@ namespace Patronage.Api.Validators.BoardStatus
         private bool ExistsBoardId(int boardId)
         {
             var _boardId = _context
-                .BoardsStatus
-                .Where(b => b.BoardId.Equals(boardId));
+                .Boards
+                .Where(b => b.Id.Equals(boardId));
             if (_boardId.Any())
             {
                 return true;
@@ -52,8 +52,8 @@ namespace Patronage.Api.Validators.BoardStatus
         private bool ExistsStatusId(int statusId)
         {
             var _statusId = _context
-                .BoardsStatus
-                .Where(b => b.BoardId.Equals(statusId));
+                .Statuses
+                .Where(b => b.Id.Equals(statusId));
             if (_statusId.Any())
             {
                 return true;
