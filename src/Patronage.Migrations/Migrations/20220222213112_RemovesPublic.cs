@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Patronage.Migrations.Migrations
 {
-    public partial class Init : Migration
+    public partial class RemovesPublic : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -39,7 +39,7 @@ namespace Patronage.Migrations.Migrations
                     Level = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Message = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Logger = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
-                    Callsite = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Callsite = table.Column<string>(type: "varchar(max)", unicode: false, nullable: true),
                     Exception = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>

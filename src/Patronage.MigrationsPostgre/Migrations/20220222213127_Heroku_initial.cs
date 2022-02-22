@@ -6,16 +6,12 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Patronage.MigrationsPostgre.Migrations
 {
-    public partial class Heroku : Migration
+    public partial class Heroku_initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.EnsureSchema(
-                name: "public");
-
             migrationBuilder.CreateTable(
                 name: "Boards",
-                schema: "public",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -35,7 +31,6 @@ namespace Patronage.MigrationsPostgre.Migrations
 
             migrationBuilder.CreateTable(
                 name: "Logs",
-                schema: "public",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -55,7 +50,6 @@ namespace Patronage.MigrationsPostgre.Migrations
 
             migrationBuilder.CreateTable(
                 name: "Projects",
-                schema: "public",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -74,7 +68,6 @@ namespace Patronage.MigrationsPostgre.Migrations
 
             migrationBuilder.CreateTable(
                 name: "Issues",
-                schema: "public",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -95,13 +88,11 @@ namespace Patronage.MigrationsPostgre.Migrations
                     table.ForeignKey(
                         name: "FK_Issues_Boards_BoardId",
                         column: x => x.BoardId,
-                        principalSchema: "public",
                         principalTable: "Boards",
                         principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Issues_Projects_ProjectId",
                         column: x => x.ProjectId,
-                        principalSchema: "public",
                         principalTable: "Projects",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -109,13 +100,11 @@ namespace Patronage.MigrationsPostgre.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "IX_Issues_BoardId",
-                schema: "public",
                 table: "Issues",
                 column: "BoardId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Issues_ProjectId",
-                schema: "public",
                 table: "Issues",
                 column: "ProjectId");
         }
@@ -123,20 +112,16 @@ namespace Patronage.MigrationsPostgre.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Issues",
-                schema: "public");
+                name: "Issues");
 
             migrationBuilder.DropTable(
-                name: "Logs",
-                schema: "public");
+                name: "Logs");
 
             migrationBuilder.DropTable(
-                name: "Boards",
-                schema: "public");
+                name: "Boards");
 
             migrationBuilder.DropTable(
-                name: "Projects",
-                schema: "public");
+                name: "Projects");
         }
     }
 }

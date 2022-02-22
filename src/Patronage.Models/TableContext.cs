@@ -21,8 +21,6 @@ public class TableContext : DbContext
         //Set every string field to .IsUnicode(false);
         //Do not use .HasColumnType("datetime"); it breaks postgre
 
-        modelBuilder.HasDefaultSchema("public");
-
         #region Project
 
         modelBuilder.Entity<Project>()

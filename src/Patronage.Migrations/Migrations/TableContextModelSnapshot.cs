@@ -17,7 +17,6 @@ namespace Patronage.Migrations.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasDefaultSchema("public")
                 .HasAnnotation("ProductVersion", "6.0.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
@@ -59,7 +58,7 @@ namespace Patronage.Migrations.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Boards", "public");
+                    b.ToTable("Boards");
                 });
 
             modelBuilder.Entity("Patronage.Models.Issue", b =>
@@ -108,7 +107,7 @@ namespace Patronage.Migrations.Migrations
 
                     b.HasIndex("ProjectId");
 
-                    b.ToTable("Issues", "public");
+                    b.ToTable("Issues");
                 });
 
             modelBuilder.Entity("Patronage.Models.Log", b =>
@@ -149,7 +148,7 @@ namespace Patronage.Migrations.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Logs", "public");
+                    b.ToTable("Logs");
                 });
 
             modelBuilder.Entity("Patronage.Models.Project", b =>
@@ -187,7 +186,7 @@ namespace Patronage.Migrations.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Projects", "public");
+                    b.ToTable("Projects");
                 });
 
             modelBuilder.Entity("Patronage.Models.Issue", b =>
