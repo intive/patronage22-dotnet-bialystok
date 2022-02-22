@@ -65,7 +65,7 @@ namespace Patronage.Api.Controllers
         }
 
         [SwaggerOperation(Summary = "Light Updates Issue")]
-        [HttpPut("updateLight/{issueId}")]
+        [HttpPatch("updateLight/{issueId}")]
         public async Task<ActionResult> UpdateLight([FromBody] PartialIssueDto dto, [FromRoute] int issueId)
         {
             var command = new UpdateLightIssueCommand()

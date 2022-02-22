@@ -3,11 +3,19 @@ using FluentValidation.Results;
 using Patronage.Api.Exceptions;
 using Patronage.DataAccess;
 using System.Text.Json;
+using System.Linq;
 
 namespace Patronage.Api.Middleware
 {
     public class ErrorHandlingMiddleware : IMiddleware
     {
+        private readonly ILoggerFactory logger;
+
+        public ErrorHandlingMiddleware(ILoggerFactory logger)
+        {
+            this.logger = logger;
+        }
+
         public async Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
             try
@@ -34,13 +42,37 @@ namespace Patronage.Api.Middleware
             }
             catch (NotFoundException notFoundException)
             {
-                context.Response.StatusCode = 404;
-                await context.Response.WriteAsync(notFoundException.Message);
+                var response = new BaseResponse<IEnumerable<string>>
+                {
+                    ResponseCode = StatusCodes.Status404NotFound,
+                    Message = notFoundException.Message,
+                    BaseResponseError = notFoundException.Data.Values
+                    .Cast<string>()
+                    .Select(x => new BaseResponseError
+                    {
+                        Message = x
+                    }).ToList()
+                };
+                context.Response.ContentType = "application/json";
+                context.Response.StatusCode = StatusCodes.Status404NotFound;
+                await context.Response.WriteAsync(JsonSerializer.Serialize(response));
             }
             catch (Exception e)
             {
-                context.Response.StatusCode = 500;
-                await context.Response.WriteAsync("Something went wrong.");
+                var response = new BaseResponse<IEnumerable<string>>
+                {
+                    ResponseCode = StatusCodes.Status500InternalServerError,
+                    Message = e.Message,
+                    BaseResponseError = e.Data.Values
+                    .Cast<string>()
+                    .Select(x => new BaseResponseError
+                    {
+                        Message = x
+                    }).ToList()
+                };
+                context.Response.ContentType = "application/json";
+                context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+                await context.Response.WriteAsync(JsonSerializer.Serialize(response));
             }
         }
     }
