@@ -9,15 +9,21 @@ public class TableContext : DbContext
     public virtual DbSet<Project> Projects { get; set; }
     public virtual DbSet<Log> Logs { get; set; }
     public virtual DbSet<Board> Boards { get; set; }
+    public virtual DbSet<Status> Statuses { get; set; }
+    public virtual DbSet<BoardStatus> BoardsStatus { get; set; }
 
     public TableContext(DbContextOptions options) : base(options)
     {
         ChangeTracker.StateChanged += Timestamps;
         ChangeTracker.Tracked += Timestamps;
     }
-   
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        //Very important!!!
+        //Set every string field to .IsUnicode(false);
+        //Do not use .HasColumnType("datetime"); it breaks postgre
+
         #region Project
 
         modelBuilder.Entity<Project>()
@@ -42,7 +48,7 @@ public class TableContext : DbContext
 
         #region logTable
         modelBuilder.Entity<Log>()
-                .HasKey(e => e.Id);
+            .HasKey(e => e.Id);
 
         modelBuilder.Entity<Log>()
             .Property(r => r.MachineName)
@@ -69,7 +75,8 @@ public class TableContext : DbContext
 
         modelBuilder.Entity<Log>()
             .Property(r => r.Callsite)
-            .IsRequired(false);
+            .IsRequired(false)
+            .IsUnicode(false);
 
         modelBuilder.Entity<Log>()
             .Property(r => r.Exception)
@@ -96,24 +103,54 @@ public class TableContext : DbContext
         modelBuilder.Entity<Board>()
             .Property(a => a.CreatedOn)
             .IsRequired();
+
+        #endregion
+
+        #region Status
+        modelBuilder.Entity<Status>()
+            .Property(s => s.Code)
+            .IsRequired();
+        #endregion
+
+        #region BoardStatus
+
+        modelBuilder.Entity<BoardStatus>()
+            .HasKey(bs => new { bs.BoardId, bs.StatusId });
+
+
+        modelBuilder.Entity<BoardStatus>()
+            .HasOne(b => b.Board)
+            .WithMany(s => s.BoardStatuses)
+            .HasForeignKey(bi => bi.BoardId);
+
+        modelBuilder.Entity<BoardStatus>()
+            .HasOne(b => b.Status)
+            .WithMany(s => s.BoardStatuses)
+            .HasForeignKey(si => si.StatusId);
+
         #endregion
 
         #region Issue
         modelBuilder.Entity<Issue>()
             .Property(r => r.Alias)
             .HasMaxLength(256);
+
         modelBuilder.Entity<Issue>()
              .Property(r => r.Name)
              .HasMaxLength(1024);
+
         modelBuilder.Entity<Issue>()
              .Property(r => r.ProjectId)
              .IsRequired();
+
         modelBuilder.Entity<Issue>()
              .Property(r => r.StatusId)
              .IsRequired();
+
         modelBuilder.Entity<Issue>()
              .Property(r => r.CreatedOn)
              .IsRequired();
+
         #endregion
     }
 
@@ -126,7 +163,7 @@ public class TableContext : DbContext
             createdEntity.CreatedOn = DateTime.UtcNow;
         }
 
-        if (e.Entry.Entity is IModifable modifiedEntity &&
+        else if (e.Entry.Entity is IModifable modifiedEntity &&
         e.Entry.State == EntityState.Modified)
         {
             modifiedEntity.ModifiedOn = DateTime.UtcNow;

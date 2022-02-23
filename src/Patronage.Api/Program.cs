@@ -10,13 +10,15 @@ using Patronage.DataAccess;
 using FluentValidation;
 using Patronage.Api;
 using Patronage.Api.Middleware;
+using Npgsql;
 using Patronage.Api.Validators;
 using Patronage.Api.MediatR.Issues.Queries.GetIssues;
 
+
 try
 {
-    var logger = NLog.LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
-    logger.Debug("init main");
+    var logger = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
+    logger.Info("Starting");
 
     var builder = WebApplication.CreateBuilder(args);
     builder.Services.AddControllers();
@@ -26,19 +28,63 @@ try
     {
         c.EnableAnnotations();
         c.SwaggerDoc("v1", new OpenApiInfo { Title = "Patronage 2022 API", Version = "v1" });
+        var filePath = Path.Combine(System.AppContext.BaseDirectory, "Patronage.Api.xml");
+        c.IncludeXmlComments(filePath);
     });
 
-    builder.Services.AddDbContext<TableContext>((DbContextOptionsBuilder options) =>
+    ///TODO: move this to data seeder ~MZ
+    ///This determines which connection string are we going to use
+    ///If environmental variable "DATABASE_URL" is set we will build connection string to connect to remove database
+    ///Won't work on local! Else uses our "Default connection string.
+    ///Why do we have to build connection string dynamically? Heroku periodically changes credentials, so we have to keep up with that.
+    if(Environment.GetEnvironmentVariable("DATABASE_URL") != null || builder.Configuration.GetValue("provider", "mysql").Equals("postgre", StringComparison.InvariantCultureIgnoreCase))
     {
-        options.UseSqlServer(
-            builder.Configuration.GetConnectionString("Default"),
-            x => x.MigrationsAssembly("Patronage.Migrations"));
-    });
+        string connection_string = "";
+        if(Environment.GetEnvironmentVariable("DATABASE_URL") != null){
+            logger.Info("Using remote database");
+            var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
+            var databaseUri = new Uri(databaseUrl);
+            var userInfo = databaseUri.UserInfo.Split(':');
 
+            var string_builder = new NpgsqlConnectionStringBuilder
+            {
+                Host = databaseUri.Host,
+                Port = databaseUri.Port,
+                Username = userInfo[0],
+                Password = userInfo[1],
+                Database = databaseUri.LocalPath.TrimStart('/')
+            };
+
+            connection_string = string_builder.ToString();
+        }
+        else
+        {
+            logger.Info("Using local PostgreSQL database");
+            connection_string = builder.Configuration.GetConnectionString("DefaultPostgre");
+        }
+
+        builder.Services.AddDbContext<TableContext>((DbContextOptionsBuilder options) =>
+        {
+            options.UseNpgsql(
+                connection_string,
+                x => x.MigrationsAssembly("Patronage.MigrationsPostgre"));
+        });
+    }
+    else
+    {
+        logger.Info("Using local MsSQL database");
+        builder.Services.AddDbContext<TableContext>((DbContextOptionsBuilder options) =>
+        {
+            options.UseSqlServer(
+                builder.Configuration.GetConnectionString("Default"),
+                x => x.MigrationsAssembly("Patronage.Migrations"));
+        });
+    }
 
     builder.Services.AddScoped<IIssueService, IssueService>();
     builder.Services.AddScoped<IProjectService, ProjectService>();
     builder.Services.AddScoped<IBoardService, BoardService>();
+    builder.Services.AddScoped<IBoardStatusService, BoardStatusService>();
 
     builder.Services.AddScoped<ErrorHandlingMiddleware>();
 
@@ -53,6 +99,42 @@ try
     builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
     var app = builder.Build();
+
+    ApplyMigrations();
+
+    void ApplyMigrations()
+    {
+        logger.Info("Trying to apply migrations");
+        using (var scope = app.Services.CreateScope())
+        {
+            var services = scope.ServiceProvider;
+            try
+            {
+                var db = services.GetRequiredService<TableContext>();
+                if (!db.Database.CanConnect())
+                {
+                    logger.Error("No database connection! Migrations not applied");
+                    return;
+                }
+                var pendingMigrations = db.Database.GetPendingMigrations();
+                if(pendingMigrations.Any())
+                {
+                    db.Database.Migrate();
+                    logger.Info($"{pendingMigrations.Count()} pending migrations applied");
+                }
+                else
+                {
+                    logger.Info("No migrations need to be applied");
+                }
+                var lastAppliedMigration = ( db.Database.GetAppliedMigrations()).Last();
+                logger.Info($"You are on schema version: {lastAppliedMigration}");
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+        }
+    }
 
     SendData(app);
 
@@ -69,7 +151,7 @@ try
 
 
     // Configure the HTTP request pipeline.
-    if (app.Environment.IsDevelopment())
+    if (app.Environment.IsDevelopment() || Environment.GetEnvironmentVariable("USE_SWAGGER") == "true") //TODO try replacing this with staging
     {
         app.UseSwagger();
         app.UseSwaggerUI(c =>
@@ -88,6 +170,10 @@ try
 
     app.MapControllers();
 
+    logger.Info("Initializing complete!");
+    string? port = Environment.GetEnvironmentVariable("PORT") ?? "80";
+    logger.Info("App listening on port:" + port);
+
     app.Run();
 
 }
@@ -99,7 +185,7 @@ catch (Exception exception)
         throw;
     }
     // NLog: catch setup errors
-    throw;
+        throw;
 }
 finally
 {
