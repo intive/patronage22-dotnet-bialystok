@@ -12,14 +12,13 @@ using Patronage.Models;
 namespace Patronage.MigrationsPostgre.Migrations
 {
     [DbContext(typeof(TableContext))]
-    [Migration("20220221180747_Heroku")]
-    partial class Heroku
+    [Migration("20220222213127_Heroku_initial")]
+    partial class Heroku_initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasDefaultSchema("public")
                 .HasAnnotation("ProductVersion", "6.0.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
@@ -61,7 +60,7 @@ namespace Patronage.MigrationsPostgre.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Boards", "public");
+                    b.ToTable("Boards");
                 });
 
             modelBuilder.Entity("Patronage.Models.Issue", b =>
@@ -110,7 +109,7 @@ namespace Patronage.MigrationsPostgre.Migrations
 
                     b.HasIndex("ProjectId");
 
-                    b.ToTable("Issues", "public");
+                    b.ToTable("Issues");
                 });
 
             modelBuilder.Entity("Patronage.Models.Log", b =>
@@ -151,7 +150,7 @@ namespace Patronage.MigrationsPostgre.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Logs", "public");
+                    b.ToTable("Logs");
                 });
 
             modelBuilder.Entity("Patronage.Models.Project", b =>
@@ -189,7 +188,7 @@ namespace Patronage.MigrationsPostgre.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Projects", "public");
+                    b.ToTable("Projects");
                 });
 
             modelBuilder.Entity("Patronage.Models.Issue", b =>
