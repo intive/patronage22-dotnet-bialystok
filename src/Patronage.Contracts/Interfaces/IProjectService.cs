@@ -4,11 +4,11 @@ namespace Patronage.Contracts.Interfaces
 {
     public interface IProjectService
     {
-        IEnumerable<ProjectDto> GetAll(string searchedProject);
-        ProjectDto GetById(int id);
-        int Create(CreateOrUpdateProjectDto projectDto);
-        bool Update(int id, CreateOrUpdateProjectDto projectDto);
-        bool LightUpdate(int id, PartialProjectDto projectDto);
-        bool Delete(int id);
+        Task<IEnumerable<ProjectDto>> GetAll(string searchedPhrase);
+        Task<ProjectDto> GetById(int id);
+        Task<int> Create(CreateProjectDto projectDto);
+        Task<bool> Update(int id, UpdateProjectDto projectDto);
+        Task<bool> LightUpdate(int id, PartialProjectDto projectDto);
+        Task<bool> Delete(int id);
     }
 }
