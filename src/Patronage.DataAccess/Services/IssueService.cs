@@ -18,42 +18,32 @@ namespace Patronage.DataAccess.Services
 
         public async Task<PageResult<IssueDto>?> GetAllIssuesAsync(FilterIssueDto filter)
         {
-            //TODO: replace AsQueryble with ToListAsync
-            var baseQuery = _dbContext
+            var results = await _dbContext
                 .Issues
-                .AsQueryable();
+                .ToListAsync();
 
-            if (!baseQuery.Any())
+            if (!results.Any())
             {
                 return null;
             }
 
-            baseQuery = baseQuery
-                .FilterBy(filter);
-            var totalItemCount = baseQuery.Count();
+            if(filter.SearchPhrase != null )
+            {
+                results = (List<Issue>) results.Where(x => x.Alias.Contains(filter.SearchPhrase) || 
+                x.Name.Contains(filter.SearchPhrase) || 
+                (x.Description != null && x.Description.Contains(filter.SearchPhrase)));
+            }
 
-            var issues = baseQuery
+            var issues = results
                 .Skip(filter.PageSize * (filter.PageNumber - 1))
                 .Take(filter.PageSize);
 
             List<IssueDto> issuesDto = new();
             foreach (var issue in issues)
             {
-                issuesDto.Add(new IssueDto
-                {
-                    Id = issue.Id,
-                    CreatedOn = issue.CreatedOn,
-                    ModifiedOn = issue.ModifiedOn,
-                    IsActive = issue.IsActive,
-                    Alias = issue.Alias,
-                    Name = issue.Name,
-                    Description = issue.Description,
-                    ProjectId = issue.ProjectId,
-                    BoardId = issue.BoardId,
-                    StatusId = issue.StatusId
-                });
+                issuesDto.Add(new IssueDto(issue));
             }
-            return new PageResult<IssueDto>(issuesDto, totalItemCount, filter.PageSize, filter.PageNumber);
+            return new PageResult<IssueDto>(issuesDto, results.Count, filter.PageSize, filter.PageNumber);
         }
 
         public async Task<IssueDto?> CreateAsync(IssueDto dto)

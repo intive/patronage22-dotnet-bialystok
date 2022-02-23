@@ -60,10 +60,9 @@ namespace Patronage.DataAccess.Services
 
         public async Task<ProjectDto?> GetById(int id)
         {
-            //TODO make it actually async (use to list async or something like that)
-            var project = _dbContext
+            var project = await _dbContext
                 .Projects
-                .FirstOrDefault(p => p.Id == id);
+                .FirstOrDefaultAsync(p => p.Id == id);
 
             if (project is null)
             {
