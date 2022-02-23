@@ -2,7 +2,7 @@
 using Patronage.Contracts.Interfaces;
 using Patronage.Contracts.ModelDtos.Projects;
 
-namespace Patronage.Api.MediatR.Projects.Queries.GetAllProjects
+namespace Patronage.Api.MediatR.Projects.Queries.Handlers
 {
     public class GetAllProjectsHandler : IRequestHandler<GetAllProjectsQuery, IEnumerable<ProjectDto>>
     {
@@ -13,9 +13,9 @@ namespace Patronage.Api.MediatR.Projects.Queries.GetAllProjects
             _projectService = projectService;
         }
 
-        public Task<IEnumerable<ProjectDto>> Handle(GetAllProjectsQuery request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<ProjectDto>> Handle(GetAllProjectsQuery request, CancellationToken cancellationToken)
         {
-            return Task.FromResult(_projectService.GetAll(request.searchedProject));
+            return await _projectService.GetAll(request.searchedProject);
         }
     }
 }
