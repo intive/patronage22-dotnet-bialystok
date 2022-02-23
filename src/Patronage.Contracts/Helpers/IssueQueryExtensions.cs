@@ -9,7 +9,7 @@ namespace Patronage.Contracts.Helpers
         {
             if (!string.IsNullOrEmpty(filter.SearchPhrase))
             {
-                value = value.Where(x => x.Alias.Contains(filter.SearchPhrase) || x.Name.Contains(filter.SearchPhrase) || x.Description.Contains(filter.SearchPhrase));
+                value = value.Where(x => x.Alias.Contains(filter.SearchPhrase) || x.Name.Contains(filter.SearchPhrase) || (x.Description != null && x.Description.Contains(filter.SearchPhrase)));
             }
 
             return value;

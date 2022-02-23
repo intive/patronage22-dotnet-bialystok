@@ -35,11 +35,11 @@ namespace Patronage.DataAccess.Services
                     .BoardsStatus
                     .AsQueryable();
 
+            var boardsStatusDto = new List<BoardStatusDto>();
             if (boardId != 0 && statusId == 0)
             {
                 var res = boardsStatus.Where(b => b.BoardId.Equals(boardId))
                             .ToList();
-                var boardsStatusDto = new List<BoardStatusDto>();
                 foreach (var bs in res)
                 {
                     boardsStatusDto.Add(new BoardStatusDto
@@ -48,14 +48,11 @@ namespace Patronage.DataAccess.Services
                         StatusId = bs.StatusId
                     });
                 }
-                return boardsStatusDto;
-
             }
             else if (boardId == 0 && statusId != 0)
             {
                 var res = boardsStatus.Where(b => b.StatusId.Equals(statusId))
                                       .ToList();
-                var boardsStatusDto = new List<BoardStatusDto>();
                 foreach (var bs in res)
                 {
                     boardsStatusDto.Add(new BoardStatusDto
@@ -64,30 +61,32 @@ namespace Patronage.DataAccess.Services
                         StatusId = bs.StatusId
                     });
                 }
-                return boardsStatusDto;
             }
             else
             {
                 var res = boardsStatus.Where(b => b.StatusId.Equals(statusId))
                             .Where(b => b.BoardId.Equals(boardId))
                             .FirstOrDefault();
-                var boardsStatusDto = new List<BoardStatusDto>();
-                boardsStatusDto.Add(new BoardStatusDto()
+                if (res != null)
                 {
-                    BoardId = res.BoardId,
-                    StatusId = res.StatusId
-                });
-                return boardsStatusDto;
+                    boardsStatusDto.Add(new BoardStatusDto()
+                    {
+                        BoardId = res.BoardId,
+                        StatusId = res.StatusId
+                    });
+                }
             }
+            return boardsStatusDto;
         }
         public bool Create(BoardStatusDto dto)
         {
             try
             {
-                var boardStatus = new BoardStatus();
-
-                boardStatus.BoardId = dto.BoardId;
-                boardStatus.StatusId = dto.StatusId;
+                var boardStatus = new BoardStatus
+                {
+                    BoardId = dto.BoardId,
+                    StatusId = dto.StatusId
+                };
 
                 _dbContext.BoardsStatus.Add(boardStatus);
                 _dbContext.SaveChanges();
@@ -109,12 +108,17 @@ namespace Patronage.DataAccess.Services
                     .Where(b => b.StatusId.Equals(statusId))
                     .FirstOrDefault();
 
+                if(boardStatus == null)
+                {
+                    return false;
+                }
+
                 try
                 {
                     _dbContext.BoardsStatus.Remove(boardStatus);
                     _dbContext.SaveChanges();
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     return false;
                 }

@@ -16,7 +16,7 @@ namespace Patronage.DataAccess.Services
 
         public async Task<int> Create(CreateProjectDto projectDto)
         {
-            Project newProject = new Project();
+            Project newProject = new();
 
             newProject.Name = projectDto.Name;
             newProject.Alias = projectDto.Alias;
@@ -29,7 +29,7 @@ namespace Patronage.DataAccess.Services
             return newProject.Id;
         }
 
-        public async Task<IEnumerable<ProjectDto>> GetAll(string searchedPhrase)
+        public async Task<IEnumerable<ProjectDto>> GetAll(string? searchedPhrase)
         {
             var projectsQueryable = _dbContext
                 .Projects
@@ -39,7 +39,7 @@ namespace Patronage.DataAccess.Services
             {
                 projectsQueryable = projectsQueryable.Where(p => p.Name.Contains(searchedPhrase) ||
                                                        p.Alias.Contains(searchedPhrase) ||
-                                                       p.Description.Contains(searchedPhrase));
+                                                       (p.Description != null && p.Description.Contains(searchedPhrase)));
             }
 
             var projects = await projectsQueryable
@@ -58,15 +58,19 @@ namespace Patronage.DataAccess.Services
             return projects;
         }
 
-        public async Task<ProjectDto> GetById(int id)
+        public async Task<ProjectDto?> GetById(int id)
         {
+            //TODO make it actually async (use to list async or something like that)
             var project = _dbContext
                 .Projects
                 .FirstOrDefault(p => p.Id == id);
 
-            if (project is null) return null;
+            if (project is null)
+            {
+                return null;
+            }
 
-            ProjectDto projectDto = new ProjectDto
+            ProjectDto projectDto = new()
             {
                 Id = project.Id,
                 Name = project.Name,
@@ -104,13 +108,16 @@ namespace Patronage.DataAccess.Services
                 .Projects
                 .FirstOrDefault(p => p.Id == id);
 
-            if (project is null) return false;
+            if (project == null)
+            {
+                return false;
+            }
 
             if (projectDto.Description == null)
             {
                 project.Description = project.Description;
             }
-            else if (projectDto.Description?.Data == null && projectDto.Description != null)
+            else if (projectDto.Description?.Data == null)
             {
                 project.Description = null;
             }

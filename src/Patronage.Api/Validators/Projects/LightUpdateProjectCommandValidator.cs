@@ -11,6 +11,7 @@ namespace Patronage.Api.Validators.Projects
         {
             When(p => p.dto.Alias != null, () =>
             {
+#pragma warning disable CS8602
                 RuleFor(p => p.dto.Alias.Data)
                 .NotEmpty().WithMessage("Field Alias can not be empty")
                 .NotNull().WithMessage("Field Alias can not be null")
@@ -47,6 +48,7 @@ namespace Patronage.Api.Validators.Projects
                     .NotNull().WithMessage("Field IsActive can not be null");
 
             });
+#pragma warning restore CS8602
         }
     }
 }

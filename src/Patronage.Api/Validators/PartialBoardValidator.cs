@@ -9,6 +9,7 @@ namespace Patronage.Api.Validators
     {
         public PartialBoardValidator(TableContext tableContext)
         {
+#pragma warning disable CS8602
             RuleFor(x => x.Alias.Data)
                 .NotNull().WithMessage("Can not be null.")
                 .NotEmpty().WithMessage("Can not be empty.")
@@ -45,6 +46,7 @@ namespace Patronage.Api.Validators
             RuleFor(x => x.ProjectId.Data)
                 .NotNull().WithMessage("Can not be null.")
                 .When(y => y.ProjectId != null);
+#pragma warning restore CS8602
         }
     }
 }

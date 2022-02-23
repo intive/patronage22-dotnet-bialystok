@@ -16,8 +16,9 @@ namespace Patronage.DataAccess.Services
             _dbContext = dbContext;
         }
 
-        public async Task<PageResult<IssueDto>> GetAllIssuesAsync(FilterIssueDto filter)
+        public async Task<PageResult<IssueDto>?> GetAllIssuesAsync(FilterIssueDto filter)
         {
+            //TODO: replace AsQueryble with ToListAsync
             var baseQuery = _dbContext
                 .Issues
                 .AsQueryable();
@@ -35,7 +36,7 @@ namespace Patronage.DataAccess.Services
                 .Skip(filter.PageSize * (filter.PageNumber - 1))
                 .Take(filter.PageSize);
 
-            List<IssueDto> issuesDto = new List<IssueDto>();
+            List<IssueDto> issuesDto = new();
             foreach (var issue in issues)
             {
                 issuesDto.Add(new IssueDto
@@ -52,9 +53,7 @@ namespace Patronage.DataAccess.Services
                     StatusId = issue.StatusId
                 });
             }
-
-            var result = new PageResult<IssueDto>(issuesDto, totalItemCount, filter.PageSize, filter.PageNumber);
-            return result;
+            return new PageResult<IssueDto>(issuesDto, totalItemCount, filter.PageSize, filter.PageNumber);
         }
 
         public async Task<IssueDto?> CreateAsync(IssueDto dto)
@@ -172,7 +171,7 @@ namespace Patronage.DataAccess.Services
         }
 
 
-        public async Task<Issue> GetByIdAsync(int issueId)
+        public async Task<Issue?> GetByIdAsync(int issueId)
         {
             var result = await _dbContext
                 .Issues

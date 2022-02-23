@@ -11,11 +11,11 @@ namespace Patronage.Contracts.ModelDtos.Issues
     {
         [Required]
         [MaxLength(256)]
-        public string Alias { get; set; }
+        public string Alias { get; set; } = null!;
         [Required]
         [MaxLength(1024)]
-        public string Name { get; set; }
-        public string Description { get; set; }
+        public string Name { get; set; } = null!;
+        public string? Description { get; set; }
         [Required]
         public int ProjectId { get; set; }
         public int? BoardId { get; set; }
