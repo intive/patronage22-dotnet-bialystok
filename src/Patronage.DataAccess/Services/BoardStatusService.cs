@@ -1,16 +1,12 @@
-﻿using AutoMapper;
-using Patronage.Contracts.Interfaces;
+﻿using Patronage.Contracts.Interfaces;
 using Patronage.Contracts.ModelDtos;
 using Patronage.Models;
 
 namespace Patronage.DataAccess.Services
 {
-
-
     public class BoardStatusService : IBoardStatusService
     {
         private readonly TableContext _dbContext;
-
         public BoardStatusService(TableContext dbContext)
         {
             _dbContext = dbContext;
@@ -27,10 +23,9 @@ namespace Patronage.DataAccess.Services
                 boardStatuses.Add(new BoardStatusDto
                 {
                     BoardId = board.BoardId,
-                    StatusId = board.StatusId               
+                    StatusId = board.StatusId
                 });
             }
-
             return boardStatuses;
         }
 
@@ -39,7 +34,6 @@ namespace Patronage.DataAccess.Services
             var boardsStatus = _dbContext
                     .BoardsStatus
                     .AsQueryable();
-
 
             if (boardId != 0 && statusId == 0)
             {
@@ -54,14 +48,13 @@ namespace Patronage.DataAccess.Services
                         StatusId = bs.StatusId
                     });
                 }
-
                 return boardsStatusDto;
 
             }
             else if (boardId == 0 && statusId != 0)
             {
                 var res = boardsStatus.Where(b => b.StatusId.Equals(statusId))
-                            .ToList();
+                                      .ToList();
                 var boardsStatusDto = new List<BoardStatusDto>();
                 foreach (var bs in res)
                 {
@@ -83,7 +76,7 @@ namespace Patronage.DataAccess.Services
                 {
                     BoardId = res.BoardId,
                     StatusId = res.StatusId
-                });        
+                });
                 return boardsStatusDto;
             }
         }
@@ -105,8 +98,6 @@ namespace Patronage.DataAccess.Services
                 //TODO: Ask if it should also catch db savechanges exception
                 return false;
             }
-
-
         }
         public bool Delete(int boardId, int statusId)
         {

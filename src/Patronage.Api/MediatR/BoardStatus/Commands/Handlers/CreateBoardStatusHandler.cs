@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Patronage.Api.MediatR.BoardStatus
+namespace Patronage.Api.MediatR.BoardStatus.Commands.Handlers
 {
     public class CreateBoardStatusHandler : IRequestHandler<CreateBoardStatusCommand, bool>
     {

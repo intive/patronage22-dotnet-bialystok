@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Patronage.Api.MediatR.BoardStatus
+namespace Patronage.Api.MediatR.BoardStatus.Queries.Handlers
 {
     public class GetAllBoardStatusHandler : IRequestHandler<GetAllBoardStatusQuery, IEnumerable<BoardStatusDto>>
     {

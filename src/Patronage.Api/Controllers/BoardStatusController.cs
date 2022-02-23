@@ -29,11 +29,7 @@ namespace Patronage.Api.Controllers
 
             if (response.Any() == false)
             { // TODO: Ask for return code || Ok || No content
-                return NoContent();
-                //    return Ok(new BaseResponse<bool>
-                //{
-                //    ResponseCode = StatusCodes.Status204NoContent
-                //});
+                return NoContent();              
             }
 
             return Ok(new BaseResponse<IEnumerable<BoardStatusDto>>

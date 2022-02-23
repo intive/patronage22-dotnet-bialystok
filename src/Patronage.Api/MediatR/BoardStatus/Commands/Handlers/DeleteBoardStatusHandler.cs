@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Patronage.Api.MediatR.BoardStatus.Queries
+namespace Patronage.Api.MediatR.BoardStatus.Commands.Handlers
 {
     public class DeleteBoardStatusHandler :IRequestHandler<DeleteBoardStatusCommand, bool>
     {
