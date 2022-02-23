@@ -1,11 +1,11 @@
-﻿using Patronage.Api.MediatR.Issues.Queries.GetIssues;
+﻿using Patronage.Contracts.ModelDtos.Issues;
 using Patronage.Models;
 
-namespace Patronage.Api.MediatR.Extensions
+namespace Patronage.Contracts.Helpers
 {
     public static class IssueQueryExtensions
     {
-        public static IQueryable<Issue> FilterBy(this IQueryable<Issue> value, GetIssuesListQuery filter)
+        public static IQueryable<Issue> FilterBy(this IQueryable<Issue> value, FilterIssueDto filter)
         {
             if (!string.IsNullOrEmpty(filter.SearchPhrase))
             {

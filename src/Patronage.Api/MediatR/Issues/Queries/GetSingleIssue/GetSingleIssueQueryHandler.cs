@@ -5,7 +5,7 @@ using Patronage.Contracts.ModelDtos.Issues;
 
 namespace Patronage.Api.MediatR.Issues.Queries.GetSingleIssue
 {
-    public class GetSingleIssueQueryHandler : IRequestHandler<GetSingleIssueQuery, IssueDto>
+    public class GetSingleIssueQueryHandler : IRequestHandler<GetSingleIssueQuery, IssueDto?>
     {
         private readonly IIssueService _issueService;
 
@@ -14,30 +14,26 @@ namespace Patronage.Api.MediatR.Issues.Queries.GetSingleIssue
             _issueService = issueService;
         }
 
-        public Task<IssueDto> Handle(GetSingleIssueQuery request, CancellationToken cancellationToken)
+        public async Task<IssueDto?> Handle(GetSingleIssueQuery request, CancellationToken cancellationToken)
         {
-            var issue = _issueService.GetById(request.id);
+            var result = await _issueService.GetByIdAsync(request.id);
 
-            if (issue == null)
+            if (result is null)
             {
-                throw new NotFoundException("Issues not found");
+                return null;
             }
 
             var issueDto = new IssueDto
             {
-                Id = issue.Id,
-                Alias = issue.Alias,
-                Name = issue.Name,
-                Description = issue.Description,
-                ProjectId = issue.ProjectId,
-                BoardId = issue.BoardId,
-                StatusId = issue.StatusId,
-                IsActive = issue.IsActive,
-                CreatedOn = issue.CreatedOn,
-                ModifiedOn = issue.ModifiedOn
+                Alias = result.Alias,
+                Name = result.Name,
+                Description = result.Description,
+                ProjectId = result.ProjectId,
+                BoardId = result.BoardId,
+                StatusId = result.StatusId
             };
 
-            return Task.FromResult(issueDto);
+            return issueDto;
         }
     }
 }

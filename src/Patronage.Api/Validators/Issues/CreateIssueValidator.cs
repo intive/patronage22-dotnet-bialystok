@@ -1,13 +1,13 @@
 ﻿using FluentValidation;
 using Patronage.Api.MediatR.Issues.Commands.CreateIssue;
 
-namespace Patronage.Api.Validators
+namespace Patronage.Api.Validators.Issues
 {
     public class CreateIssueValidator : AbstractValidator<CreateIssueCommand>
     {
-        public CreateIssueValidator()
+        public CreateIssueValidator(IssueDtoValidator issueValidator)
         {
-            RuleFor(r => r.ProjectId).GreaterThanOrEqualTo(1);
+            RuleFor(x => x.Data).SetValidator(issueValidator);
         }
     }
 }

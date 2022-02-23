@@ -6,8 +6,11 @@ namespace Patronage.Api.MediatR.Issues.Queries.GetIssues
 {
     public class GetIssuesListQuery : IRequest<PageResult<IssueDto>>
     {
-        public string? SearchPhrase { get; set; }
-        public int PageNumber { get; set; }
-        public int PageSize { get; set; }
+        public FilterIssueDto filter;
+
+        public GetIssuesListQuery(FilterIssueDto filter)
+        {
+            this.filter = filter;
+        }
     }
 }
