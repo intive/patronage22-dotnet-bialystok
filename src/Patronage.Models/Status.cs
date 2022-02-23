@@ -8,10 +8,6 @@ namespace Patronage.Models
 {
     public class Status
     {
-        //public Status()
-        //{
-        //    this.Boards = new HashSet<Board>();
-        //}
         public int Id { get; set; }
         public string Code { get; set; }
         //Navigation properties 

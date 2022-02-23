@@ -85,7 +85,6 @@ try
     builder.Services.AddScoped<IProjectService, ProjectService>();
     builder.Services.AddScoped<IBoardService, BoardService>();
     builder.Services.AddScoped<IBoardStatusService, BoardStatusService>();
-    builder.Services.AddScoped<IValidator<GetIssuesListQuery>, IssueQueryValidator>();
 
     builder.Services.AddScoped<ErrorHandlingMiddleware>();
 

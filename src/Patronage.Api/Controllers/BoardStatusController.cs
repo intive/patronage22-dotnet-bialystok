@@ -13,12 +13,10 @@ namespace Patronage.Api.Controllers
     [ApiController]
     public class BoardStatusController : ControllerBase
     {
-        private readonly IBoardStatusService _boardStatusService;
         private readonly IMediator _mediator;
 
-        public BoardStatusController(IBoardStatusService boardStatusService, IMediator mediator )
+        public BoardStatusController( IMediator mediator )
         {
-            _boardStatusService = boardStatusService;
             _mediator = mediator;
         }
         [SwaggerOperation(Summary = "Get all BoardStatus", Description ="Returns all BoardStatus records available in the database")]
