@@ -11,7 +11,7 @@ namespace Patronage.Contracts.ModelDtos.Issues
         [Required]
         [MaxLength(1024)]
         public string Name { get; set; } = null!;
-        public string Description { get; set; } = null!;
+        public string? Description { get; set; }
         [Required]
         public int ProjectId { get; set; }
         public int? BoardId { get; set; }
