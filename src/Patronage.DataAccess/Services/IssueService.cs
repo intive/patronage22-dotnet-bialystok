@@ -35,10 +35,10 @@ namespace Patronage.DataAccess.Services
                 .Skip(filter.PageSize * (filter.PageNumber - 1))
                 .Take(filter.PageSize);
 
-            //issues = (IQueryable<Issue>)issues.ToArrayAsync();
+            var items = await issues.ToArrayAsync();
 
             List<IssueDto> issuesDtos = new List<IssueDto>();
-            foreach (var issue in issues)
+            foreach (var issue in items)
             {
                 issuesDtos.Add(new IssueDto()
                 {

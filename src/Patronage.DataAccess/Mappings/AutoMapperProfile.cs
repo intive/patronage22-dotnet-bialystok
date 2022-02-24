@@ -11,14 +11,6 @@ namespace Patronage.DataAccess.Mappings
     {
         public AutoMapperProfile()
         {
-            /*CreateMap<Issue, IssueDto>()
-                .ForMember(m => m.Alias.Data, c => c.MapFrom(s => s.Alias))
-                .ForMember(m => m.Name.Data, c => c.MapFrom(s => s.Name))
-                .ForMember(m => m.Description.Data, c => c.MapFrom(s => s.Description));*/
-            CreateMap<BaseIssueDto, Issue>();
-
-            CreateMap<Issue, IssueDto>();
-
             CreateMap<Board, BoardDto>().ReverseMap();
 
             CreateMap<PartialBoardDto, Board>()
