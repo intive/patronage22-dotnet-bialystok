@@ -31,11 +31,11 @@ namespace Patronage.DataAccess.Services
                 .FilterBy(filter);
             var totalItemCount = baseQuery.Count();
 
-            baseQuery = (IQueryable<Issue>)baseQuery.ToArrayAsync();
-
             var issues = baseQuery
                 .Skip(filter.PageSize * (filter.PageNumber - 1))
                 .Take(filter.PageSize);
+
+            issues = (IQueryable<Issue>)issues.ToArrayAsync();
 
             List<IssueDto> issuesDto = new List<IssueDto>();
             foreach (var issue in issues)
