@@ -23,7 +23,19 @@ namespace Patronage.Api.MediatR.Issues.Queries.GetSingleIssue
                 return null;
             }
 
-            var issueDto = new IssueDto(result);
+            var issueDto = new IssueDto()
+            {
+                Id = result.Id,
+                Alias = result.Alias,
+                Name = result.Name,
+                Description = result.Description,
+                ProjectId = result.ProjectId,
+                BoardId = result.BoardId,
+                CreatedOn = result.CreatedOn,
+                ModifiedOn = result.ModifiedOn,
+                StatusId = result.StatusId,
+                IsActive = result.IsActive
+            };
 
             return issueDto;
         }

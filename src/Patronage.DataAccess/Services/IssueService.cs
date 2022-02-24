@@ -35,14 +35,26 @@ namespace Patronage.DataAccess.Services
                 .Skip(filter.PageSize * (filter.PageNumber - 1))
                 .Take(filter.PageSize);
 
-            issues = (IQueryable<Issue>)issues.ToArrayAsync();
+            //issues = (IQueryable<Issue>)issues.ToArrayAsync();
 
-            List<IssueDto> issuesDto = new List<IssueDto>();
+            List<IssueDto> issuesDtos = new List<IssueDto>();
             foreach (var issue in issues)
             {
-                issuesDto.Add(new IssueDto(issue));
+                issuesDtos.Add(new IssueDto()
+                {
+                    Id = issue.Id,
+                    Alias = issue.Alias,
+                    Name = issue.Name,
+                    Description = issue.Description,
+                    ProjectId = issue.ProjectId,
+                    BoardId = issue.BoardId,
+                    CreatedOn = issue.CreatedOn,
+                    ModifiedOn = issue.ModifiedOn,
+                    StatusId = issue.StatusId,
+                    IsActive = issue.IsActive
+                });
             }
-            return new PageResult<IssueDto>(issuesDto, totalItemCount, filter.PageSize, filter.PageNumber);
+            return new PageResult<IssueDto>(issuesDtos, totalItemCount, filter.PageSize, filter.PageNumber);
         }
 
         public async Task<IssueDto?> CreateAsync(IssueDto dto)
