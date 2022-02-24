@@ -11,8 +11,7 @@ namespace Patronage.Api.Validators.Projects
         {
             When(p => p.dto.Alias != null, () =>
             {
-#pragma warning disable CS8602
-                RuleFor(p => p.dto.Alias.Data)
+                RuleFor(p => p.dto.Alias!.Data)
                 .NotEmpty().WithMessage("Field Alias can not be empty")
                 .NotNull().WithMessage("Field Alias can not be null")
                 .MaximumLength(256).WithMessage("Field name can have maximum 256 charakters")
@@ -28,7 +27,7 @@ namespace Patronage.Api.Validators.Projects
 
             When(p => p.dto.Name != null, () =>
             {
-                RuleFor(p => p.dto.Name.Data)
+                RuleFor(p => p.dto.Name!.Data)
                     .NotEmpty().WithMessage("Field Name can not be empty")
                     .NotNull().WithMessage("Field Name can not be null")
                     .MaximumLength(1024).WithMessage("Field alias can have maximum 1024 charakters")
@@ -44,11 +43,10 @@ namespace Patronage.Api.Validators.Projects
 
             When(p => p.dto.IsActive != null, () =>
             {
-                RuleFor(p => p.dto.IsActive.Data)
+                RuleFor(p => p.dto.IsActive!.Data)
                     .NotNull().WithMessage("Field IsActive can not be null");
 
             });
-#pragma warning restore CS8602
         }
     }
 }
