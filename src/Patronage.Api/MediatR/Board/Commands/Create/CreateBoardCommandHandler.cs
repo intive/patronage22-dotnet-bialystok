@@ -4,7 +4,7 @@ using Patronage.Contracts.ModelDtos;
 
 namespace Patronage.Api.MediatR.Board.Commands.Create
 {
-    public class CreateBoardCommandHandler : IRequestHandler<CreateBoardCommand, BoardDto>
+    public class CreateBoardCommandHandler : IRequestHandler<CreateBoardCommand, BoardDto?>
     {
         public readonly IBoardService boardService;
 
@@ -13,7 +13,7 @@ namespace Patronage.Api.MediatR.Board.Commands.Create
             this.boardService = boardService;
         }
 
-        public async Task<BoardDto> Handle(CreateBoardCommand request, CancellationToken cancellationToken)
+        public async Task<BoardDto?> Handle(CreateBoardCommand request, CancellationToken cancellationToken)
         {
             return await boardService.CreateBoardAsync(request.Data);
         }

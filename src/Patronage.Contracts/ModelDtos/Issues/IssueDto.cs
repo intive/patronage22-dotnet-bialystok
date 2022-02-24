@@ -1,6 +1,7 @@
 ﻿using Patronage.Models;
 using System.ComponentModel.DataAnnotations;
 
+
 namespace Patronage.Contracts.ModelDtos.Issues
 {
     public class IssueDto : BaseIssueDto

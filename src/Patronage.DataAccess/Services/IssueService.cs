@@ -42,9 +42,7 @@ namespace Patronage.DataAccess.Services
             {
                 issuesDto.Add(new IssueDto(issue));
             }
-
-            var result = new PageResult<IssueDto>(issuesDto, totalItemCount, filter.PageSize, filter.PageNumber);
-            return result;
+            return new PageResult<IssueDto>(issuesDto, totalItemCount, filter.PageSize, filter.PageNumber);
         }
 
         public async Task<IssueDto?> CreateAsync(IssueDto dto)
