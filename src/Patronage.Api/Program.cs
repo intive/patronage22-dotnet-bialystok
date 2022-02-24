@@ -11,9 +11,7 @@ using FluentValidation;
 using Patronage.Api;
 using Patronage.Api.Middleware;
 using Npgsql;
-using Patronage.Api.Validators;
-using Patronage.Api.MediatR.Issues.Queries.GetIssues;
-
+using Microsoft.AspNetCore.Identity;
 
 try
 {
@@ -82,6 +80,10 @@ try
     builder.Services.AddScoped<IIssueService, IssueService>();
     builder.Services.AddScoped<IProjectService, ProjectService>();
     builder.Services.AddScoped<IBoardService, BoardService>();
+    builder.Services.AddScoped<IEmailSender, EmailSender>();
+    builder.Services.AddScoped<IUserService, UserService>();
+
+    builder.Services.AddHttpContextAccessor();
 
     builder.Services.AddScoped<ErrorHandlingMiddleware>();
 
@@ -94,6 +96,10 @@ try
     builder.Services.AddValidatorsFromAssembly(typeof(Program).Assembly);
 
     builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+
+    builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+        .AddEntityFrameworkStores<TableContext>()
+        .AddDefaultTokenProviders();
 
     var app = builder.Build();
 
@@ -160,6 +166,8 @@ try
     app.UseMiddleware<ErrorHandlingMiddleware>();
 
     app.UseHttpsRedirection();
+
+    app.UseAuthentication();
 
     app.UseAuthorization();
     // ErrorHandlingMiddleware does not work if UseDeveloperExceptionPage is enabled so I commented it
