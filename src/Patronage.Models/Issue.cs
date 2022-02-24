@@ -11,9 +11,9 @@ namespace Patronage.Models
     public class Issue : ICreatable, IModifable
     {
         public int Id { get; set; }
-        public string Alias { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
+        public string Alias { get; set; } = null!;
+        public string Name { get; set; } = null!;
+        public string Description { get; set; } = null!;
         public int ProjectId { get; set; }
         public int? BoardId { get; set; }
         public int StatusId { get; set; }

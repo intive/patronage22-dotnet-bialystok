@@ -16,7 +16,7 @@ namespace Patronage.DataAccess.Services
             _dbContext = dbContext;
         }
 
-        public async Task<PageResult<IssueDto>> GetAllIssuesAsync(FilterIssueDto filter)
+        public async Task<PageResult<IssueDto>?> GetAllIssuesAsync(FilterIssueDto filter)
         {
             var baseQuery = _dbContext
                 .Issues
@@ -31,6 +31,8 @@ namespace Patronage.DataAccess.Services
                 .FilterBy(filter);
             var totalItemCount = baseQuery.Count();
 
+            baseQuery = (IQueryable<Issue>)baseQuery.ToArrayAsync();
+
             var issues = baseQuery
                 .Skip(filter.PageSize * (filter.PageNumber - 1))
                 .Take(filter.PageSize);
@@ -38,19 +40,7 @@ namespace Patronage.DataAccess.Services
             List<IssueDto> issuesDto = new List<IssueDto>();
             foreach (var issue in issues)
             {
-                issuesDto.Add(new IssueDto
-                {
-                    Id = issue.Id,
-                    CreatedOn = issue.CreatedOn,
-                    ModifiedOn = issue.ModifiedOn,
-                    IsActive = issue.IsActive,
-                    Alias = issue.Alias,
-                    Name = issue.Name,
-                    Description = issue.Description,
-                    ProjectId = issue.ProjectId,
-                    BoardId = issue.BoardId,
-                    StatusId = issue.StatusId
-                });
+                issuesDto.Add(new IssueDto(issue));
             }
 
             var result = new PageResult<IssueDto>(issuesDto, totalItemCount, filter.PageSize, filter.PageNumber);
@@ -172,7 +162,7 @@ namespace Patronage.DataAccess.Services
         }
 
 
-        public async Task<Issue> GetByIdAsync(int issueId)
+        public async Task<Issue?> GetByIdAsync(int issueId)
         {
             var result = await _dbContext
                 .Issues
