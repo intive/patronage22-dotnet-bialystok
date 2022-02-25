@@ -8,8 +8,7 @@ namespace Patronage.Api.Validators.Issues
     {
         public PartialIssueValidator(TableContext dbContext)
         {
-#pragma warning disable CS8602
-            RuleFor(x => x.Alias.Data)
+            RuleFor(x => x.Alias!.Data)
                 .NotNull().WithMessage("Can not be null.")
                 .NotEmpty().WithMessage("Can not be empty.")
                 .MaximumLength(256).WithMessage("Can not exceed 256 characters.")
@@ -23,7 +22,7 @@ namespace Patronage.Api.Validators.Issues
                 })
                 .When(y => y.Alias != null);
 
-            RuleFor(x => x.Name.Data)
+            RuleFor(x => x.Name!.Data)
                 .NotNull().WithMessage("Can not be null.")
                 .NotEmpty().WithMessage("Can not be empty.")
                 .MaximumLength(1024).WithMessage("Can not exceed 1024 characters.")
@@ -37,19 +36,18 @@ namespace Patronage.Api.Validators.Issues
                 })
                 .When(y => y.Name != null);
 
-            RuleFor(x => x.Description.Data)
+            RuleFor(x => x.ProjectId!.Data)
                 .NotNull().WithMessage("Can not be null.")
-                .NotEmpty().WithMessage("Can not be empty.")
-                .When(y => y.Description != null);
-
-            RuleFor(x => x.ProjectId.Data)
-                .NotNull().WithMessage("Can not be null.")
-                .When(y => y.ProjectId != null);
-
-            RuleFor(x => x.BoardId.Data)
-                .NotNull().WithMessage("Can not be null.")
-                .When(y => y.BoardId != null);
+                .When(y => y.ProjectId != null)
+                .GreaterThanOrEqualTo(1)
+                .Custom((value, context) =>
+                {
+                    var isExistProject = dbContext.Issues.Any(p => p.ProjectId == value);
+                    if (!isExistProject)
+                    {
+                        context.AddFailure("ProjectId", "This project id has not been already exist");
+                    }
+                });
         }
-#pragma warning restore CS8602
     }
 }

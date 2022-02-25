@@ -16,5 +16,15 @@ namespace Patronage.Contracts.ModelDtos.Issues
         public int ProjectId { get; set; }
         public int? BoardId { get; set; }
         public int StatusId { get; set; }
+
+        public BaseIssueDto(Issue isse)
+        {
+            Alias = isse.Alias;
+            Name = isse.Name;
+            Description = isse.Description;
+            ProjectId = isse.ProjectId;
+            BoardId = isse.BoardId;
+            StatusId = isse.StatusId;
+        }
     }
 }

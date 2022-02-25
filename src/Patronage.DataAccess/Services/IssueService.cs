@@ -40,19 +40,7 @@ namespace Patronage.DataAccess.Services
             List<IssueDto> issuesDtos = new List<IssueDto>();
             foreach (var issue in items)
             {
-                issuesDtos.Add(new IssueDto()
-                {
-                    Id = issue.Id,
-                    Alias = issue.Alias,
-                    Name = issue.Name,
-                    Description = issue.Description,
-                    ProjectId = issue.ProjectId,
-                    BoardId = issue.BoardId,
-                    CreatedOn = issue.CreatedOn,
-                    ModifiedOn = issue.ModifiedOn,
-                    StatusId = issue.StatusId,
-                    IsActive = issue.IsActive
-                });
+                issuesDtos.Add(new IssueDto(issue));
             }
             return new PageResult<IssueDto>(issuesDtos, totalItemCount, filter.PageSize, filter.PageNumber);
         }
