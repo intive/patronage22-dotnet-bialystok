@@ -19,5 +19,10 @@ namespace Patronage.Contracts.ModelDtos.Issues
             ModifiedOn = issue.ModifiedOn;
             IsActive = issue.IsActive;
         }
+
+        public IssueDto()
+        {
+
+        }
     }
 }

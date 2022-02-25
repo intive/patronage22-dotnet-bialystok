@@ -26,5 +26,10 @@ namespace Patronage.Contracts.ModelDtos.Issues
             BoardId = isse.BoardId;
             StatusId = isse.StatusId;
         }
+
+        public BaseIssueDto()
+        {
+
+        }
     }
 }
