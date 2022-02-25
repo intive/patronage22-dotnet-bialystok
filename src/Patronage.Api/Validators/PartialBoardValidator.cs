@@ -9,8 +9,7 @@ namespace Patronage.Api.Validators
     {
         public PartialBoardValidator(TableContext tableContext)
         {
-#pragma warning disable CS8602
-            RuleFor(x => x.Alias.Data)
+            RuleFor(x => x.Alias!.Data)
                 .NotNull().WithMessage("Can not be null.")
                 .NotEmpty().WithMessage("Can not be empty.")
                 .MaximumLength(256).WithMessage("Can not exceed 256 characters.")
@@ -24,7 +23,7 @@ namespace Patronage.Api.Validators
                 })
                 .When(y => y.Alias != null);
 
-            RuleFor(x => x.Name.Data)
+            RuleFor(x => x.Name!.Data)
                 .NotNull().WithMessage("Can not be null.")
                 .NotEmpty().WithMessage("Can not be empty.")
                 .MaximumLength(1024).WithMessage("Can not exceed 1024 characters.")              
@@ -38,15 +37,14 @@ namespace Patronage.Api.Validators
                 })
                 .When(y => y.Name != null);
 
-            RuleFor(x => x.Description.Data)
+            RuleFor(x => x.Description!.Data)
                 .NotNull().WithMessage("Can not be null.")
                 .NotEmpty().WithMessage("Can not be empty.")
                 .When(y => y.Description != null);
 
-            RuleFor(x => x.ProjectId.Data)
+            RuleFor(x => x.ProjectId!.Data)
                 .NotNull().WithMessage("Can not be null.")
                 .When(y => y.ProjectId != null);
-#pragma warning restore CS8602
         }
     }
 }
