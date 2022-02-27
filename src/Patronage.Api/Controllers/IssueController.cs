@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Patronage.Api.MediatR.Issues.Commands.CreateIssue;
 using Patronage.Api.MediatR.Issues.Commands.DeleteIssue;
@@ -15,6 +16,7 @@ namespace Patronage.Api.Controllers
 {
     [Route("api/issue")]
     [ApiController]
+    [Authorize]
     public class IssueController : ControllerBase
     {
         private readonly IMediator _mediator;

@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Patronage.Api.MediatR.BoardStatus.Commands;
 using Patronage.Api.MediatR.BoardStatus.Queries;
@@ -11,6 +12,7 @@ namespace Patronage.Api.Controllers
 {
     [Route("api/boardStatus")]
     [ApiController]
+    [Authorize]
     public class BoardStatusController : ControllerBase
     {
         private readonly IMediator _mediator;

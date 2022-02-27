@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Patronage.Api.MediatR.Board.Commands.Create;
 using Patronage.Api.MediatR.Board.Commands.Delete;
@@ -14,6 +15,7 @@ namespace Patronage.Api.Controllers
 {
     [Route("api/board")]
     [ApiController]
+    [Authorize]
     public class BoardController : Controller
     {
         private readonly IMediator mediator;

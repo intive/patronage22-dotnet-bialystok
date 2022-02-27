@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Patronage.Api.MediatR.Projects.Commands;
 using Patronage.Api.MediatR.Projects.Queries;
@@ -11,6 +12,7 @@ namespace Patronage.Api.Controllers
 {
     [Route("api/project")]
     [ApiController]
+    [Authorize]
     public class ProjectController : ControllerBase
     {
         private readonly IMediator _mediator;
