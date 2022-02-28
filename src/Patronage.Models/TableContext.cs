@@ -159,33 +159,59 @@ public class TableContext : IdentityDbContext<ApplicationUser>
 
         #region DataSeed
 
+        TestDataSeed(modelBuilder);
+
+        #endregion
+    }
+
+    private void Timestamps(object? sender, EntityEntryEventArgs e)
+    {
+        if(sender is null)
+        {
+            return;
+        }
+        if (e.Entry.Entity is ICreatable createdEntity &&
+            e.Entry.State == EntityState.Added)
+        {
+            createdEntity.CreatedOn = DateTime.UtcNow;
+        }
+
+        else if (e.Entry.Entity is IModifable modifiedEntity &&
+        e.Entry.State == EntityState.Modified)
+        {
+            modifiedEntity.ModifiedOn = DateTime.UtcNow;
+        }
+    }
+
+    private void TestDataSeed(ModelBuilder modelBuilder)
+    {
         modelBuilder.Entity<Project>().HasData(
-                new Project()
-                {
-                    Id = 1,
-                    Name = "First project",
-                    Alias = "1st",
-                    Description = "This is a description of first test project",
-                    IsActive = true
-                },
+        new Project()
+        {
+            Id = 1,
+            Name = "First project",
+            Alias = "1st",
+            Description = "This is a description of first test project",
+            IsActive = true
+        },
 
-                new Project()
-                {
-                    Id = 2,
-                    Name = "Second test project",
-                    Alias = "2nd",
-                    Description = "This is a description of 2nd test project",
-                    IsActive = false
-                },
+        new Project()
+        {
+            Id = 2,
+            Name = "Second test project",
+            Alias = "2nd",
+            Description = "This is a description of 2nd test project",
+            IsActive = false
+        },
 
-                new Project()
-                {
-                    Id = 3,
-                    Name = "Third test project",
-                    Alias = "3rd",
-                    Description = null,
-                    IsActive = false
-                });
+        new Project()
+        {
+            Id = 3,
+            Name = "Third test project",
+            Alias = "3rd",
+            Description = null,
+            IsActive = false
+        });
 
         modelBuilder.Entity<Board>().HasData(
                 new Board()
@@ -283,34 +309,12 @@ public class TableContext : IdentityDbContext<ApplicationUser>
         var ide = Guid.NewGuid().ToString();
 
         modelBuilder.Entity<IdentityRole>().HasData(
-            
-             new IdentityRole() { Id = ide , Name = "Admin", ConcurrencyStamp = "1", NormalizedName = "Admin" }
+
+             new IdentityRole() { Id = ide, Name = "Admin", ConcurrencyStamp = "1", NormalizedName = "Admin" }
              );
-        
+
         modelBuilder.Entity<IdentityUserRole<string>>().HasData(
              new IdentityUserRole<string>() { RoleId = ide, UserId = "1" }
              );
-        #endregion
     }
-
-
-    private void Timestamps(object? sender, EntityEntryEventArgs e)
-    {
-        if(sender is null)
-        {
-            return;
-        }
-        if (e.Entry.Entity is ICreatable createdEntity &&
-            e.Entry.State == EntityState.Added)
-        {
-            createdEntity.CreatedOn = DateTime.UtcNow;
-        }
-
-        else if (e.Entry.Entity is IModifable modifiedEntity &&
-        e.Entry.State == EntityState.Modified)
-        {
-            modifiedEntity.ModifiedOn = DateTime.UtcNow;
-        }
-    }
-
 }
