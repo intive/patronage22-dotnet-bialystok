@@ -22,6 +22,10 @@ namespace Patronage.Api.MediatR.Issues.Queries.GetSingleIssue
             {
                 return null;
             }
+            if (!result.IsActive)
+            {
+                return null;
+            }
 
             var issueDto = new IssueDto(result);
 

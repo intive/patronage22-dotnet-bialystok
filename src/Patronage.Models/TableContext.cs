@@ -143,12 +143,20 @@ public class TableContext : IdentityDbContext<ApplicationUser>
              .HasMaxLength(1024);
 
         modelBuilder.Entity<Issue>()
+             .Property(r => r.Description)
+             .IsRequired(false);
+
+        modelBuilder.Entity<Issue>()
              .Property(r => r.ProjectId)
              .IsRequired();
 
         modelBuilder.Entity<Issue>()
              .Property(r => r.StatusId)
              .IsRequired();
+
+        modelBuilder.Entity<Issue>()
+             .Property(r => r.BoardId)
+             .IsRequired(false);
 
         modelBuilder.Entity<Issue>()
              .Property(r => r.CreatedOn)

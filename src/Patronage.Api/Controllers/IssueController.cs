@@ -25,7 +25,7 @@ namespace Patronage.Api.Controllers
         }
 
         [SwaggerOperation(Summary = "Returns all Issues")]
-        [HttpGet("list")]
+        [HttpGet]
         public async Task<ActionResult<PageResult<IssueDto>>> GetAllIssues([FromQuery] FilterIssueDto filter)
         {
             var result = await _mediator.Send(new GetIssuesListQuery(filter));
@@ -67,7 +67,7 @@ namespace Patronage.Api.Controllers
         }
 
         [SwaggerOperation(Summary = "Creates Issue")]
-        [HttpPost("create")]
+        [HttpPost]
         public async Task<ActionResult> Create([FromBody] CreateIssueCommand command)
         {
             var result = await _mediator.Send(command);
@@ -88,7 +88,7 @@ namespace Patronage.Api.Controllers
         }
 
         [SwaggerOperation(Summary = "Updates Issue")]
-        [HttpPut("update/{issueId}")]
+        [HttpPut("{issueId}")]
         public async Task<ActionResult> Update([FromBody] BaseIssueDto dto, [FromRoute] int issueId)
         {
             var result = await _mediator.Send(new UpdateIssueCommand(issueId, dto));
@@ -110,7 +110,7 @@ namespace Patronage.Api.Controllers
         }
 
         [SwaggerOperation(Summary = "Light Update Issue")]
-        [HttpPatch("updateLight/{issueId}")]
+        [HttpPatch("{issueId}")]
         public async Task<ActionResult> UpdateLight([FromBody] PartialIssueDto dto, [FromRoute] int issueId)
         {
             var result = await _mediator.Send(new UpdateLightIssueCommand(issueId, dto));
@@ -132,7 +132,7 @@ namespace Patronage.Api.Controllers
         }
 
         [SwaggerOperation(Summary = "Soft delete Issue by Id")]
-        [HttpDelete("delete/{issueId}")]
+        [HttpDelete("{issueId}")]
         public async Task<ActionResult> Delete([FromRoute] int issueId)
         {
             var result = await _mediator.Send(new DeleteIssueCommand(issueId));
