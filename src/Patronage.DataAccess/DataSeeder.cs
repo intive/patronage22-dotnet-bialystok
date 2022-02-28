@@ -20,71 +20,35 @@ namespace Patronage.DataAccess
             _logger.LogInformation(_dbContext.Database.GetConnectionString());
             if (_dbContext.Database.CanConnect())
             {
-                _logger.LogInformation("Connected to Database");
-                var pendingMigrations = _dbContext.Database.GetPendingMigrations();
-                if (pendingMigrations != null && pendingMigrations.Any())
-                {
-                    _logger.LogInformation("Applying Migration");
-                    _dbContext.Database.Migrate();
-                }
-
-                /*----------------------------------------------------*/
-                /*--------------- Seeding test projects --------------*/
-                /*----------------------------------------------------*/
                 if (!_dbContext.Projects.Any())
                 {
                     _dbContext.Projects.AddRange(produceTestProjects());
                     _dbContext.SaveChanges();
                 }
 
-
-                /*----------------------------------------------------*/
-                /*--------------- Seeding test boards ----------------*/
-                /*----------------------------------------------------*/
                 if (!_dbContext.Boards.Any())
                 {
                     _dbContext.Boards.AddRange(produceTestBoards());
                     _dbContext.SaveChanges();
                 }
 
-
-                /*----------------------------------------------------*/
-                /*--------------- Seeding test issues ----------------*/
-                /*----------------------------------------------------*/
                 if (!_dbContext.Issues.Any())
                 {
                     _dbContext.Issues.AddRange(produceTestIssues());
                     _dbContext.SaveChanges();
                 }
 
-                /*----------------------------------------------------*/
-                /*-------------- Seeding test statuses ---------------*/
-                /*----------------------------------------------------*/
-                //if (!_dbContext.Statuses.Any())
-                //{
-                //    _dbContext.Boards.AddRange(produceTestStatuses());
-                //    _dbContext.SaveChanges();
-                //}
+                if (!_dbContext.Statuses.Any())
+                {
+                    _dbContext.Statuses.AddRange(produceTestStatuses());
+                    _dbContext.SaveChanges();
+                }
 
-
-                /*----------------------------------------------------*/
-                /*----------- Seeding test BoardStatuses -------------*/
-                /*----------------------------------------------------*/
-                //if (!_dbContext.BoardStatuses.Any())
-                //{
-                //    _dbContext.Issues.AddRange(produceTestBoardStatuses());
-                //    _dbContext.SaveChanges();
-                //}
-
-
-                /*----------------------------------------------------*/
-                /*------------- Seeding test Admin User --------------*/
-                /*----------------------------------------------------*/
-                //if (!_dbContext.Users.Any())
-                //{
-                //    _dbContext.Users.AddRange(produceTestUsers());
-                //    _dbContext.SaveChanges();
-                //}
+                if (!_dbContext.BoardsStatus.Any())
+                {
+                    _dbContext.BoardsStatus.AddRange(produceTestBoardStatuses());
+                    _dbContext.SaveChanges();
+                }
             }
             else
             {
@@ -92,8 +56,6 @@ namespace Patronage.DataAccess
                 throw new Exception("Unable to connect to database");
             }
         }
-
-
 
         private IEnumerable<Project> produceTestProjects()
         {
@@ -127,7 +89,6 @@ namespace Patronage.DataAccess
             return projects;
         }
 
-
         private IEnumerable<Board> produceTestBoards()
         {
             var boards = new List<Board>()
@@ -153,8 +114,6 @@ namespace Patronage.DataAccess
 
             return boards;
         }
-
-
 
         private IEnumerable<Issue> produceTestIssues()
         {
@@ -186,26 +145,28 @@ namespace Patronage.DataAccess
             return issues;
         }
 
-/*
         private IEnumerable<Status> produceTestStatuses()
         {
             var statuses = new List<Status>()
             {
                 new Status
                 {
-
+                    Code = "TO DO"
                 },
 
                 new Status
                 {
+                    Code = "IN PROGRESS"
+                },
 
+                new Status
+                {
+                    Code = "DONE"
                 }
             };
 
             return statuses;
         }
-
-
 
         private IEnumerable<BoardStatus> produceTestBoardStatuses()
         {
@@ -213,37 +174,24 @@ namespace Patronage.DataAccess
             {
                 new BoardStatus
                 {
-
+                    BoardId = 1,
+                    StatusId = 1
                 },
 
                 new BoardStatus
                 {
+                    BoardId = 1,
+                    StatusId = 2
+                },
 
+                new BoardStatus
+                {
+                    BoardId = 2,
+                    StatusId = 3
                 }
             };
 
             return boardStatuses;
         }
-
-
-        private IEnumerable<User> produceTestUsers()
-        {
-            var users = new List<User>()
-            {
-                new User
-                {
-
-                },
-
-                new User
-                {
-
-                }
-            };
-
-            return users;
-        }
-*/
-
     }
 }
