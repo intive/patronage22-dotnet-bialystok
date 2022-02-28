@@ -454,3 +454,4 @@ $RECYCLE.BIN/
 !.vscode/extensions.json
 Docker-run/mssql/data/Entropy.bin
 mssql/data/Entropy.bin
+PostgreSQL/postgres-data/
