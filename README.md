@@ -6,10 +6,10 @@ Project currently uses Entity Framework Core 6.0 nuget packages.
 
 # Database connection
 
-In the file `appsettings.json` in project `Patronage.Api` there is a list of all current connection strings. By default the `Default` connection string is used, although that can be changed in the Program.cs file (`builder.Configuration.GetConnectionString("Default")` passes the name of connection string to be used).
-
-By default, connection string should point to your local MSSQL installation with folder set to `patronageDB`.
-To generate your own connection string open SQL Server Objective Explorer, select the connection you want to use and right click on Properties. Use the connection string shown to you in General.
+The file `appsettings.json` contains all our current connection strings. By default the `Default` connection string is used, although that can be changed in the Program.cs file (`builder.Configuration.GetConnectionString("Default")` passes the name of connection string to be used).
+Alternatively if evniromental variable `DATABASE_URL` is set this will be used and postgresql connection string will be built instead.\
+To generate your own connection local string open SQL Server Objective Explorer, select the connection you want to use and right click on Properties. Use the connection string shown to you in General.
+If you want to use local postgre database launch application with `-provider postgre` argument.
 
 # Migrations
 To apply migrations use 
@@ -51,3 +51,4 @@ Get-Migration
 ```
 
 All the commands work in Visual Studio's Packet Manager.
+Every command listed above can be run on local postgre database when provided with `-provider postgre` argument.
