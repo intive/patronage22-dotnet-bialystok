@@ -27,6 +27,17 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
+    "DockerPostgres": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "launchUrl": "swagger",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "provider": "postgre"
+      },
+      "applicationUrl": "https://localhost:7009;http://localhost:5060",
+      "dotnetRunMessages": true
+    },
     "Docker": {
       "commandName": "Docker",
       "launchBrowser": true,
