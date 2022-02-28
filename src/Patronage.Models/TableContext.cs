@@ -1,9 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Patronage.Api;
 
 namespace Patronage.Models;
-public class TableContext : DbContext
+public class TableContext : IdentityDbContext<ApplicationUser>
 {
     public virtual DbSet<Issue> Issues { get; set; }
     public virtual DbSet<Project> Projects { get; set; }
@@ -20,6 +21,8 @@ public class TableContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        // I had to add it to fix problems with identity
+        base.OnModelCreating(modelBuilder);
         //Very important!!!
         //Set every string field to .IsUnicode(false);
         //Do not use .HasColumnType("datetime"); it breaks postgre

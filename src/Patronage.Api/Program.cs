@@ -13,7 +13,7 @@ using Patronage.Api.Middleware;
 using Npgsql;
 using Patronage.Api.Validators;
 using Patronage.Api.MediatR.Issues.Queries.GetIssues;
-
+using Microsoft.AspNetCore.Identity;
 
 try
 {
@@ -98,6 +98,10 @@ try
 
     builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
+    builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+        .AddEntityFrameworkStores<TableContext>()
+        .AddDefaultTokenProviders();
+
     var app = builder.Build();
 
     ApplyMigrations();
@@ -163,6 +167,8 @@ try
     app.UseMiddleware<ErrorHandlingMiddleware>();
 
     app.UseHttpsRedirection();
+
+    app.UseAuthentication();
 
     app.UseAuthorization();
     // ErrorHandlingMiddleware does not work if UseDeveloperExceptionPage is enabled so I commented it
