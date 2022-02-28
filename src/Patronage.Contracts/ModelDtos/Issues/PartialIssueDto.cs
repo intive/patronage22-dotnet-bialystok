@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Patronage.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,5 +16,6 @@ namespace Patronage.Contracts.ModelDtos.Issues
         public PropInfo<int>? BoardId { get; set; }
         public PropInfo<int>? StatusId { get; set; }
         public PropInfo<bool>? IsActive { get; set; }
+        public PropInfo<ApplicationUser>? AssignUser { get; set; }
     }
 }

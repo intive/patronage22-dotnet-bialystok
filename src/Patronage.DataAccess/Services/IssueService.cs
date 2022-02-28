@@ -87,6 +87,7 @@ namespace Patronage.DataAccess.Services
             issue.ProjectId = dto.ProjectId;
             issue.BoardId = dto.BoardId;
             issue.StatusId = dto.StatusId;
+            issue.AssignUser = dto.AssignUser;
 
             if ((await _dbContext.SaveChangesAsync()) > 0)
             {
@@ -131,6 +132,10 @@ namespace Patronage.DataAccess.Services
             if (dto.IsActive is not null)
             {
                 issue.IsActive = dto.IsActive?.Data ?? issue.IsActive;
+            }
+            if (dto.AssignUser is not null)
+            {
+                issue.AssignUser = dto.AssignUser?.Data ?? issue.AssignUser;
             }
 
             if ((await _dbContext.SaveChangesAsync()) > 0)
