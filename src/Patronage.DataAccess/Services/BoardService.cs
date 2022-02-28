@@ -75,7 +75,7 @@ namespace Patronage.DataAccess.Services
                 .Where(x =>
                     x.Alias.Equals(filter.Alias ?? x.Alias) &&
                     x.Name.Equals(filter.Name ?? x.Name) &&
-                    x.Description.Equals(filter.Description ?? x.Description))
+                    x.Description != null && x.Description.Equals(filter.Description ?? x.Description))
                 .ToArrayAsync();
 
             return mapper.Map<IEnumerable<BoardDto>>(boards);

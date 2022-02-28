@@ -29,12 +29,7 @@ namespace Patronage.Api.Middleware
                     ResponseCode = StatusCodes.Status422UnprocessableEntity,
                     Message = "One or more validation errors has occured.",
                     BaseResponseError = validationException.Errors
-                        .Select(x => new BaseResponseError
-                        {
-                            PropertyName = x.PropertyName,
-                            Code = x.ErrorCode,
-                            Message = x.ErrorMessage
-                        }).ToList()            
+                        .Select(x => new BaseResponseError(x.PropertyName, x.ErrorCode, x.ErrorMessage)).ToList()    
                 };
                 context.Response.ContentType = "application/json";
                 context.Response.StatusCode = StatusCodes.Status422UnprocessableEntity;
@@ -48,10 +43,7 @@ namespace Patronage.Api.Middleware
                     Message = notFoundException.Message,
                     BaseResponseError = notFoundException.Data.Values
                     .Cast<string>()
-                    .Select(x => new BaseResponseError
-                    {
-                        Message = x
-                    }).ToList()
+                    .Select(x => new BaseResponseError(x)).ToList()
                 };
                 context.Response.ContentType = "application/json";
                 context.Response.StatusCode = StatusCodes.Status404NotFound;
@@ -65,10 +57,7 @@ namespace Patronage.Api.Middleware
                     Message = e.Message,
                     BaseResponseError = e.Data.Values
                     .Cast<string>()
-                    .Select(x => new BaseResponseError
-                    {
-                        Message = x
-                    }).ToList()
+                    .Select(x => new BaseResponseError(x)).ToList()
                 };
                 context.Response.ContentType = "application/json";
                 context.Response.StatusCode = StatusCodes.Status500InternalServerError;

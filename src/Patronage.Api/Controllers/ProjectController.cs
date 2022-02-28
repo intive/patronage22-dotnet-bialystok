@@ -144,6 +144,7 @@ namespace Patronage.Api.Controllers
         /// Updates project - only selected properties
         /// </summary>
         /// <param name="id" example="10">The project's id</param>
+        /// <param name="projectDto"> The project's partial DTO object</param>
         /// <remarks>
         /// Sample request:
         ///

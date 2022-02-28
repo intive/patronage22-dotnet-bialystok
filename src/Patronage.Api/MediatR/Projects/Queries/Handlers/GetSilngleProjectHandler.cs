@@ -4,7 +4,7 @@ using Patronage.Contracts.ModelDtos.Projects;
 
 namespace Patronage.Api.MediatR.Projects.Queries.Handlers
 {
-    public class GetSilngleProjectHandler : IRequestHandler<GetSingleProjectQuery, ProjectDto>
+    public class GetSilngleProjectHandler : IRequestHandler<GetSingleProjectQuery, ProjectDto?>
     {
         private readonly IProjectService _projectService;
 
@@ -13,7 +13,7 @@ namespace Patronage.Api.MediatR.Projects.Queries.Handlers
             _projectService = projectService;
         }
 
-        public async Task<ProjectDto> Handle(GetSingleProjectQuery request, CancellationToken cancellationToken)
+        public async Task<ProjectDto?> Handle(GetSingleProjectQuery request, CancellationToken cancellationToken)
         {
             return await _projectService.GetById(request.id);
         }

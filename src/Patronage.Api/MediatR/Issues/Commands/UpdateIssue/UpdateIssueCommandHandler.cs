@@ -5,7 +5,7 @@ using Patronage.Contracts.Interfaces;
 
 namespace Patronage.Api.MediatR.Issues.Commands.UpdateIssue
 {
-    public class UpdateIssueCommandHandler : IRequestHandler<UpdateIssueCommand, Unit>
+    public class UpdateIssueCommandHandler : IRequestHandler<UpdateIssueCommand, bool>
     {
         private readonly IIssueService _issueService;
 
@@ -14,25 +14,9 @@ namespace Patronage.Api.MediatR.Issues.Commands.UpdateIssue
             _issueService = issueService;
         }
 
-        public Task<Unit> Handle(UpdateIssueCommand request, CancellationToken cancellationToken)
+        public async Task<bool> Handle(UpdateIssueCommand request, CancellationToken cancellationToken)
         {
-            var issue = _issueService.GetById(request.Id);
-
-            if (issue == null)
-            {
-                throw new NotFoundException("Issue not found");
-            }
-
-            issue.Alias = request.Dto.Alias;
-            issue.Name = request.Dto.Name;
-            issue.Description = request.Dto.Description;
-            issue.ProjectId = request.Dto.ProjectId;
-            issue.BoardId = request.Dto.BoardId;
-            issue.StatusId = request.Dto.StatusId;
-
-            _issueService.Save();
-
-            return Task.FromResult(Unit.Value);
+            return await _issueService.UpdateAsync(request.Id, request.Dto);
         }
     }
 }

@@ -6,8 +6,9 @@ using Patronage.Api.MediatR.Issues.Commands.LightUpdateIssue;
 using Patronage.Api.MediatR.Issues.Commands.UpdateIssue;
 using Patronage.Api.MediatR.Issues.Queries.GetIssues;
 using Patronage.Api.MediatR.Issues.Queries.GetSingleIssue;
-using Patronage.Contracts.Interfaces;
+using Patronage.Contracts.Helpers;
 using Patronage.Contracts.ModelDtos.Issues;
+using Patronage.DataAccess;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace Patronage.Api.Controllers
@@ -25,11 +26,23 @@ namespace Patronage.Api.Controllers
 
         [SwaggerOperation(Summary = "Returns all Issues")]
         [HttpGet("list")]
-        public async Task<ActionResult<IEnumerable<IssueDto>>> GetAllIssues([FromQuery] GetIssuesListQuery query)
+        public async Task<ActionResult<PageResult<IssueDto>>> GetAllIssues([FromQuery] FilterIssueDto filter)
         {
-            var result = await _mediator.Send(query);
+            var result = await _mediator.Send(new GetIssuesListQuery(filter));
+            if (result is null)
+            {
+                return NotFound(new BaseResponse<PageResult<IssueDto>>
+                {
+                    ResponseCode = StatusCodes.Status404NotFound,
+                    Message = $"There's no issues"
+                });
+            }
 
-            return Ok(result);
+            return Ok(new BaseResponse<PageResult<IssueDto>>
+            {
+                ResponseCode = StatusCodes.Status200OK,
+                Data = result
+            });
         }
 
         [SwaggerOperation(Summary = "Returns Issue by id")]
@@ -37,52 +50,107 @@ namespace Patronage.Api.Controllers
         public async Task<ActionResult<IssueDto>> GetIssueById([FromRoute] int issueId)
         {
             var result = await _mediator.Send(new GetSingleIssueQuery(issueId));
+            if (result is null)
+            {
+                return NotFound(new BaseResponse<IssueDto>
+                {
+                    ResponseCode = StatusCodes.Status404NotFound,
+                    Message = $"There's no issue with Id: {issueId}"
+                });
+            }
 
-            return Ok(result);
+            return Ok(new BaseResponse<IssueDto>
+            {
+                ResponseCode = StatusCodes.Status200OK,
+                Data = result
+            });
         }
 
         [SwaggerOperation(Summary = "Creates Issue")]
         [HttpPost("create")]
         public async Task<ActionResult> Create([FromBody] CreateIssueCommand command)
         {
-            var id = await _mediator.Send(command);
+            var result = await _mediator.Send(command);
+            if (result is null)
+            {
+                return BadRequest(new BaseResponse<IssueDto>
+                {
+                    ResponseCode = StatusCodes.Status400BadRequest,
+                });
+            }
 
-            return Created($"/api/issue/{id}", null);
+            return Ok(new BaseResponse<IssueDto>
+            {
+                Message = "Issue was created successfully",
+                ResponseCode = StatusCodes.Status200OK,
+                Data = result
+            });
         }
 
         [SwaggerOperation(Summary = "Updates Issue")]
         [HttpPut("update/{issueId}")]
         public async Task<ActionResult> Update([FromBody] BaseIssueDto dto, [FromRoute] int issueId)
         {
-            var command = new UpdateIssueCommand()
+            var result = await _mediator.Send(new UpdateIssueCommand(issueId, dto));
+            if (!result)
             {
-                Id = issueId,
-                Dto = dto
-            };
-            await _mediator.Send(command);
+                return NotFound(new BaseResponse<bool>
+                {
+                    ResponseCode = StatusCodes.Status404NotFound,
+                    Message = $"There's no issue with Id: {issueId}"
+                });
+            }
 
-            return Ok();
+            return Ok(new BaseResponse<bool>
+            {
+                Message = "Issue was updated successfully",
+                ResponseCode = StatusCodes.Status200OK,
+                Data = result
+            });
         }
 
-        [SwaggerOperation(Summary = "Light Updates Issue")]
+        [SwaggerOperation(Summary = "Light Update Issue")]
         [HttpPatch("updateLight/{issueId}")]
         public async Task<ActionResult> UpdateLight([FromBody] PartialIssueDto dto, [FromRoute] int issueId)
         {
-            var command = new UpdateLightIssueCommand()
+            var result = await _mediator.Send(new UpdateLightIssueCommand(issueId, dto));
+            if (!result)
             {
-                Id = issueId,
-                Dto = dto
-            };
-            await _mediator.Send(command);
+                return NotFound(new BaseResponse<bool>
+                {
+                    ResponseCode = StatusCodes.Status404NotFound,
+                    Message = $"There's no issue with Id: {issueId}"
+                });
+            }
 
-            return Ok();
+            return Ok(new BaseResponse<bool>
+            {
+                Message = "Issue was updated successfully",
+                ResponseCode = StatusCodes.Status200OK,
+                Data = result
+            });
         }
 
-        [SwaggerOperation(Summary = "Deletes Issue")]
+        [SwaggerOperation(Summary = "Soft delete Issue by Id")]
         [HttpDelete("delete/{issueId}")]
-        public async Task<IActionResult> Delete([FromRoute] int issueId)
+        public async Task<ActionResult> Delete([FromRoute] int issueId)
         {
-            return Ok(await _mediator.Send(new DeleteIssueCommand { Id = issueId }));
+            var result = await _mediator.Send(new DeleteIssueCommand(issueId));
+            if (!result)
+            {
+                return NotFound(new BaseResponse<bool>
+                {
+                    ResponseCode = StatusCodes.Status404NotFound,
+                    Message = $"There's no issue with Id: {issueId}"
+                });
+            }
+
+            return Ok(new BaseResponse<bool>
+            {
+                Message = "Issue was deleted successfully",
+                ResponseCode = StatusCodes.Status200OK,
+                Data = result
+            });
         }
     }
 }
