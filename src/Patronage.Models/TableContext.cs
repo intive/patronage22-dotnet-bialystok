@@ -6,12 +6,12 @@ using Patronage.Api;
 namespace Patronage.Models;
 public class TableContext : IdentityDbContext<ApplicationUser>
 {
-    public virtual DbSet<Issue> Issues { get; set; }
-    public virtual DbSet<Project> Projects { get; set; }
-    public virtual DbSet<Log> Logs { get; set; }
-    public virtual DbSet<Board> Boards { get; set; }
-    public virtual DbSet<Status> Statuses { get; set; }
-    public virtual DbSet<BoardStatus> BoardsStatus { get; set; }
+    public virtual DbSet<Issue> Issues => Set<Issue>();
+    public virtual DbSet<Project> Projects => Set<Project>();
+    public virtual DbSet<Log> Logs => Set<Log>();
+    public virtual DbSet<Board> Boards => Set<Board>();
+    public virtual DbSet<Status> Statuses => Set<Status>();
+    public virtual DbSet<BoardStatus> BoardsStatus => Set<BoardStatus>();
 
     public TableContext(DbContextOptions options) : base(options)
     {
@@ -158,8 +158,12 @@ public class TableContext : IdentityDbContext<ApplicationUser>
     }
 
 
-    private void Timestamps(object sender, EntityEntryEventArgs e)
+    private void Timestamps(object? sender, EntityEntryEventArgs e)
     {
+        if(sender is null)
+        {
+            return;
+        }
         if (e.Entry.Entity is ICreatable createdEntity &&
             e.Entry.State == EntityState.Added)
         {

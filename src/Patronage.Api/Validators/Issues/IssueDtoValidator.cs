@@ -34,31 +34,16 @@ namespace Patronage.Api.Validators.Issues
                     }
                 });
 
-            RuleFor(x => x.Description)
-                .NotNull().WithMessage("Can not be null.")
-                .NotEmpty().WithMessage("Can not be empty.");
-
             RuleFor(x => x.ProjectId)
                 .NotNull().WithMessage("Can not be null.")
                 .NotEmpty().WithMessage("Can not be empty.")
+                .GreaterThanOrEqualTo(1)
                 .Custom((value, context) =>
                 {
                     var isExistProject = dbContext.Issues.Any(p => p.ProjectId == value);
                     if (!isExistProject)
                     {
                         context.AddFailure("ProjectId", "This project id has not been already exist");
-                    }
-                });
-
-            RuleFor(x => x.BoardId)
-                .NotNull().WithMessage("Can not be null.")
-                .NotEmpty().WithMessage("Can not be empty.")
-                .Custom((value, context) =>
-                {
-                    var isExistBoard = dbContext.Issues.Any(p => p.BoardId == value);
-                    if (!isExistBoard)
-                    {
-                        context.AddFailure("BaordId", "This board id has not been already exist");
                     }
                 });
         }

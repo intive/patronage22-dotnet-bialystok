@@ -8,7 +8,6 @@ namespace Patronage.Api.MediatR.Issues.Commands.UpdateIssue
         public int Id { get; set; }
         public BaseIssueDto Dto { get; set; }
 
-
         public UpdateIssueCommand(int id, BaseIssueDto dto)
         {
             Id = id;

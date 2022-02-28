@@ -16,7 +16,7 @@ namespace Patronage.DataAccess.Services
             _dbContext = dbContext;
         }
 
-        public async Task<PageResult<IssueDto>> GetAllIssuesAsync(FilterIssueDto filter)
+        public async Task<PageResult<IssueDto>?> GetAllIssuesAsync(FilterIssueDto filter)
         {
             var baseQuery = _dbContext
                 .Issues
@@ -35,26 +35,14 @@ namespace Patronage.DataAccess.Services
                 .Skip(filter.PageSize * (filter.PageNumber - 1))
                 .Take(filter.PageSize);
 
-            List<IssueDto> issuesDto = new List<IssueDto>();
-            foreach (var issue in issues)
-            {
-                issuesDto.Add(new IssueDto
-                {
-                    Id = issue.Id,
-                    CreatedOn = issue.CreatedOn,
-                    ModifiedOn = issue.ModifiedOn,
-                    IsActive = issue.IsActive,
-                    Alias = issue.Alias,
-                    Name = issue.Name,
-                    Description = issue.Description,
-                    ProjectId = issue.ProjectId,
-                    BoardId = issue.BoardId,
-                    StatusId = issue.StatusId
-                });
-            }
+            var items = await issues.ToArrayAsync();
 
-            var result = new PageResult<IssueDto>(issuesDto, totalItemCount, filter.PageSize, filter.PageNumber);
-            return result;
+            List<IssueDto> issuesDtos = new List<IssueDto>();
+            foreach (var issue in items)
+            {
+                issuesDtos.Add(new IssueDto(issue));
+            }
+            return new PageResult<IssueDto>(issuesDtos, totalItemCount, filter.PageSize, filter.PageNumber);
         }
 
         public async Task<IssueDto?> CreateAsync(IssueDto dto)
@@ -172,7 +160,7 @@ namespace Patronage.DataAccess.Services
         }
 
 
-        public async Task<Issue> GetByIdAsync(int issueId)
+        public async Task<Issue?> GetByIdAsync(int issueId)
         {
             var result = await _dbContext
                 .Issues
