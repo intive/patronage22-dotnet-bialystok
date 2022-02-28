@@ -38,7 +38,10 @@ To create a migration run
 ```
 Add-Migration [name] -Project Patronage.Migrations
 ```
-
+Additionally to add PostgreSQL migration run
+```
+Add-Migration Heroku -Project Patronage.MigrationsPostgre -Args "--provider postgre"
+```
 To remove a migration run
 ```
 Remove-Migration
