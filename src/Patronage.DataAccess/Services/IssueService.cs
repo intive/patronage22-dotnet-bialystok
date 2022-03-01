@@ -20,6 +20,7 @@ namespace Patronage.DataAccess.Services
         {
             var baseQuery = _dbContext
                 .Issues
+                .Where(x => x.IsActive == true)
                 .AsQueryable();
 
             if (!baseQuery.Any())

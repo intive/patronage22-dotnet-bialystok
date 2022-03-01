@@ -37,15 +37,15 @@ namespace Patronage.Api.Validators.Issues
             RuleFor(x => x.ProjectId)
                 .NotNull().WithMessage("Can not be null.")
                 .NotEmpty().WithMessage("Can not be empty.")
-                .GreaterThanOrEqualTo(1)
-                .Custom((value, context) =>
+                .GreaterThanOrEqualTo(1);
+                /*.Custom((value, context) =>
                 {
                     var isExistProject = dbContext.Issues.Any(p => p.ProjectId == value);
                     if (!isExistProject)
                     {
                         context.AddFailure("ProjectId", "This project id has not been already exist");
                     }
-                });
+                });*/
         }
     }
 }
