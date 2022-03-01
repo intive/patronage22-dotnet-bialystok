@@ -46,7 +46,7 @@ namespace Patronage.DataAccess.Services
             return new PageResult<IssueDto>(issuesDtos, totalItemCount, filter.PageSize, filter.PageNumber);
         }
 
-        public async Task<IssueDto?> CreateAsync(IssueDto dto)
+        public async Task<IssueDto?> CreateAsync(BaseIssueDto dto)
         {
             if (dto is null)
             {
@@ -61,6 +61,7 @@ namespace Patronage.DataAccess.Services
                 ProjectId = dto.ProjectId,
                 BoardId = dto.BoardId,
                 StatusId = dto.StatusId,
+                AssignUserId = dto.AssignUserId,
                 IsActive = true
             };
 
@@ -68,8 +69,8 @@ namespace Patronage.DataAccess.Services
 
             if (await _dbContext.SaveChangesAsync() > 0)
             {
-                dto.Id = issue.Id;
-                return dto;
+                var issueDto = new IssueDto(issue);
+                return issueDto;
             }
             return null;
         }
@@ -88,7 +89,7 @@ namespace Patronage.DataAccess.Services
             issue.ProjectId = dto.ProjectId;
             issue.BoardId = dto.BoardId;
             issue.StatusId = dto.StatusId;
-            issue.AssignUser = dto.AssignUser;
+            issue.AssignUserId = dto.AssignUserId;
 
             if ((await _dbContext.SaveChangesAsync()) > 0)
             {
@@ -134,9 +135,9 @@ namespace Patronage.DataAccess.Services
             {
                 issue.IsActive = dto.IsActive?.Data ?? issue.IsActive;
             }
-            if (dto.AssignUser is not null)
+            if (dto.AssignUserId is not null)
             {
-                issue.AssignUser = dto.AssignUser?.Data ?? issue.AssignUser;
+                issue.AssignUserId = dto.AssignUserId?.Data ?? issue.AssignUserId;
             }
 
             if ((await _dbContext.SaveChangesAsync()) > 0)
@@ -154,6 +155,10 @@ namespace Patronage.DataAccess.Services
             {
                 return false;
             }
+            if (!issue.IsActive)
+            {
+                return false;
+            }
 
             issue.IsActive = false;
 
@@ -164,7 +169,6 @@ namespace Patronage.DataAccess.Services
 
             return false;
         }
-
 
         public async Task<Issue?> GetByIdAsync(int issueId)
         {

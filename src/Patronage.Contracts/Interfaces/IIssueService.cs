@@ -7,7 +7,7 @@ namespace Patronage.Contracts.Interfaces
     public interface IIssueService : IEntityService<Issue>
     {
         Task<PageResult<IssueDto>?> GetAllIssuesAsync(FilterIssueDto filter);
-        Task<IssueDto?> CreateAsync(IssueDto issue);
+        Task<IssueDto?> CreateAsync(BaseIssueDto issue);
         Task<bool> UpdateAsync(int issueId, BaseIssueDto dto);
         Task<bool> UpdateLightAsync(int issueId, PartialIssueDto dto);
         Task<bool> DeleteAsync(int issueId);

@@ -17,7 +17,7 @@ namespace Patronage.Api.MediatR.Projects.Commands.CreateProject
 
         public async Task<IssueDto?> Handle(CreateIssueCommand request, CancellationToken cancellationToken)
         {
-            return await _issueService.CreateAsync(request.Data);
+            return await _issueService.CreateAsync(new BaseIssueDto(request.Data));
         }
     }
 }
