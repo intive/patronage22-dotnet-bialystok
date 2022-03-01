@@ -10,17 +10,13 @@ namespace Patronage.Models
 {
     public class Board : ICreatable, IModifable
     {
-        //public Board()
-        //{
-        //    this.Statuses = new HashSet<Status>();
-        //}
         public int Id { get; set; }
 
-        public string Alias { get; set; }
+        public string Alias { get; set; } = null!;
 
-        public string Name { get; set; }
+        public string Name { get; set; } = null!;
 
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
         public int ProjectId { get; set; }
 
@@ -30,8 +26,8 @@ namespace Patronage.Models
 
         public DateTime? ModifiedOn { get; set; }
 
-        public ICollection<Issue> Issues { get; set; }
-        public virtual ICollection<BoardStatus> BoardStatuses { get; set; }
+        public ICollection<Issue>? Issues { get; set; }
+        public virtual ICollection<BoardStatus>? BoardStatuses { get; set; }
 
     }
 }

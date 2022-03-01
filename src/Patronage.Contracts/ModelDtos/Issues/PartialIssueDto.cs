@@ -8,7 +8,6 @@ namespace Patronage.Contracts.ModelDtos.Issues
 {
     public class PartialIssueDto
     {
-        public int Id { get; set; }
         public PropInfo<string>? Alias { get; set; }
         public PropInfo<string>? Name { get; set; }
         public PropInfo<string>? Description { get; set; }

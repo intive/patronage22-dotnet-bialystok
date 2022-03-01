@@ -8,6 +8,6 @@ namespace Patronage.Contracts.Interfaces
 {
     public interface IEntityService<T>
     {
-        T GetById(int id);
+        Task<T?> GetByIdAsync(int id);
     }
 }

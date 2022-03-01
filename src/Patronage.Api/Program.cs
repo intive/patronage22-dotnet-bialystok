@@ -13,7 +13,7 @@ using Patronage.Api.Middleware;
 using Npgsql;
 using Patronage.Api.Validators;
 using Patronage.Api.MediatR.Issues.Queries.GetIssues;
-
+using Microsoft.AspNetCore.Identity;
 
 try
 {
@@ -32,17 +32,18 @@ try
         c.IncludeXmlComments(filePath);
     });
 
-    ///TODO: move this to data seeder ~MZ
-    ///This determines which connection string are we going to use
-    ///If environmental variable "DATABASE_URL" is set we will build connection string to connect to remove database
-    ///Won't work on local! Else uses our "Default connection string.
-    ///Why do we have to build connection string dynamically? Heroku periodically changes credentials, so we have to keep up with that.
-    if(Environment.GetEnvironmentVariable("DATABASE_URL") != null || builder.Configuration.GetValue("provider", "mysql").Equals("postgre", StringComparison.InvariantCultureIgnoreCase))
+    //TODO: move this to data seeder ~MZ
+    //This determines which connection string are we going to use
+    //If environmental variable "DATABASE_URL" is set we will build connection string to connect to remove database
+    //Won't work on local! Else uses our "Default connection string.
+    //Why do we have to build connection string dynamically? Heroku periodically changes credentials, so we have to keep up with that.
+    logger.Info(builder.Configuration.GetConnectionString("Default"));
+    if (Environment.GetEnvironmentVariable("DATABASE_URL") != null || builder.Configuration.GetValue("provider", "mysql").Equals("postgre", StringComparison.InvariantCultureIgnoreCase))
     {
         string connection_string = "";
-        if(Environment.GetEnvironmentVariable("DATABASE_URL") != null){
+        var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
+        if (databaseUrl != null){
             logger.Info("Using remote database");
-            var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
             var databaseUri = new Uri(databaseUrl);
             var userInfo = databaseUri.UserInfo.Split(':');
 
@@ -106,6 +107,10 @@ try
 
     builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
+    builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+        .AddEntityFrameworkStores<TableContext>()
+        .AddDefaultTokenProviders();
+
     var app = builder.Build();
 
     ApplyMigrations();
@@ -113,34 +118,32 @@ try
     void ApplyMigrations()
     {
         logger.Info("Trying to apply migrations");
-        using (var scope = app.Services.CreateScope())
+        using var scope = app.Services.CreateScope();
+        var services = scope.ServiceProvider;
+        try
         {
-            var services = scope.ServiceProvider;
-            try
+            var db = services.GetRequiredService<TableContext>();
+            if (!db.Database.CanConnect())
             {
-                var db = services.GetRequiredService<TableContext>();
-                if (!db.Database.CanConnect())
-                {
-                    logger.Error("No database connection! Migrations not applied");
-                    return;
-                }
-                var pendingMigrations = db.Database.GetPendingMigrations();
-                if(pendingMigrations.Any())
-                {
-                    db.Database.Migrate();
-                    logger.Info($"{pendingMigrations.Count()} pending migrations applied");
-                }
-                else
-                {
-                    logger.Info("No migrations need to be applied");
-                }
-                var lastAppliedMigration = ( db.Database.GetAppliedMigrations()).Last();
-                logger.Info($"You are on schema version: {lastAppliedMigration}");
+                logger.Error("No database connection! Migrations not applied");
+                return;
             }
-            catch (Exception ex)
+            var pendingMigrations = db.Database.GetPendingMigrations();
+            if (pendingMigrations.Any())
             {
-                logger.Error(ex);
+                db.Database.Migrate();
+                logger.Info($"{pendingMigrations.Count()} pending migrations applied");
             }
+            else
+            {
+                logger.Info("No migrations need to be applied");
+            }
+            var lastAppliedMigration = (db.Database.GetAppliedMigrations()).Last();
+            logger.Info($"You are on schema version: {lastAppliedMigration}");
+        }
+        catch (Exception ex)
+        {
+            logger.Error(ex);
         }
     }
 
@@ -150,9 +153,15 @@ try
     {
         var scopedFactory = app.Services.GetService<IServiceScopeFactory>();
 
-        using (var scope = scopedFactory.CreateScope())
+        if(scopedFactory == null)
         {
-            var service = scope.ServiceProvider.GetService<DataSeeder>();
+            return;
+        }
+
+        using var scope = scopedFactory.CreateScope();
+        var service = scope.ServiceProvider.GetService<DataSeeder>();
+        if(service != null)
+        {
             service.Seed();
         }
     }
@@ -171,6 +180,8 @@ try
     app.UseMiddleware<ErrorHandlingMiddleware>();
 
     app.UseHttpsRedirection();
+
+    app.UseAuthentication();
 
     app.UseAuthorization();
     // ErrorHandlingMiddleware does not work if UseDeveloperExceptionPage is enabled so I commented it
