@@ -60,7 +60,15 @@ try
         else
         {
             logger.Info("Using local PostgreSQL database");
-            connection_string = builder.Configuration.GetConnectionString("DefaultPostgre");
+            var string_builder = new NpgsqlConnectionStringBuilder
+            {
+                Host = builder.Configuration["PG_LOCAL_HOST"],
+                Port = int.Parse(builder.Configuration["PG_LOCAL_PORT"]),
+                Username = builder.Configuration["PG_LOCAL_USERNAME"],
+                Password = builder.Configuration["PG_LOCAL_PASSWORD"],
+                Database = builder.Configuration["PG_LOCAL_DATABASE"]
+            };
+            connection_string = string_builder.ToString();
         }
 
         builder.Services.AddDbContext<TableContext>((DbContextOptionsBuilder options) =>
