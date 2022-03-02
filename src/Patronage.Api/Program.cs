@@ -14,6 +14,8 @@ using Npgsql;
 using Patronage.Api.Validators;
 using Patronage.Api.MediatR.Issues.Queries.GetIssues;
 using Microsoft.AspNetCore.Identity;
+using NETCore.MailKit.Extensions;
+using NETCore.MailKit.Infrastructure.Internal;
 
 var logger = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
 logger.Info("Starting");
@@ -46,7 +48,8 @@ try
     {
         string connection_string = "";
         var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
-        if (databaseUrl != null){
+        if (databaseUrl != null)
+        {
             logger.Info("Using remote database");
             var databaseUri = new Uri(databaseUrl);
             var userInfo = databaseUri.UserInfo.Split(':');
@@ -98,6 +101,7 @@ try
     builder.Services.AddScoped<IProjectService, ProjectService>();
     builder.Services.AddScoped<IBoardService, BoardService>();
     builder.Services.AddScoped<IBoardStatusService, BoardStatusService>();
+    builder.Services.AddScoped<IUserService, UserService>();
 
     builder.Services.AddScoped<ErrorHandlingMiddleware>();
 
@@ -114,6 +118,28 @@ try
     builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
         .AddEntityFrameworkStores<TableContext>()
         .AddDefaultTokenProviders();
+
+    if(Environment.GetEnvironmentVariable("IS_HEROKU") == "true")
+    {
+        var mailkitOptions = new MailKitOptions()
+        {
+            Server = Environment.GetEnvironmentVariable("EMAIL_SERVER"),
+            Port = Int32.Parse(Environment.GetEnvironmentVariable("EMAIL_PORT") ?? throw new Exception("Could not parse EMAIL_PORT to integer. EMAIL_PORT is null.")),
+            SenderName = Environment.GetEnvironmentVariable("EMAIL_SENDERNAME"),
+            SenderEmail = Environment.GetEnvironmentVariable("EMAIL_SENDEREMAIL"),
+            Account = Environment.GetEnvironmentVariable("EMAIL_ACCOUNT"),
+            Password = Environment.GetEnvironmentVariable("EMAIL_PASSWORD"),
+            Security = Environment.GetEnvironmentVariable("EMAIL_SECURITY") == "true"
+        };
+
+        builder.Services.AddMailKit(config => config.UseMailKit(mailkitOptions));
+    }
+    else
+    {
+        var mailkitOptions = builder.Configuration.GetSection("Email").Get<MailKitOptions>();
+
+        builder.Services.AddMailKit(config => config.UseMailKit(mailkitOptions));
+    }
 
     var app = builder.Build();
 
@@ -157,14 +183,14 @@ try
     {
         var scopedFactory = app.Services.GetService<IServiceScopeFactory>();
 
-        if(scopedFactory == null)
+        if (scopedFactory == null)
         {
             return;
         }
 
         using var scope = scopedFactory.CreateScope();
         var service = scope.ServiceProvider.GetService<DataSeeder>();
-        if(service != null)
+        if (service != null)
         {
             service.Seed();
         }

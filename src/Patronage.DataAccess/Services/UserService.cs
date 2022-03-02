@@ -1,9 +1,12 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.Logging;
+using NETCore.MailKit.Core;
 using Patronage.Contracts.Interfaces;
 using Patronage.Contracts.ModelDtos.User;
 using Patronage.Models;
+using System.Web;
 
 namespace Patronage.DataAccess.Services
 {
@@ -11,20 +14,42 @@ namespace Patronage.DataAccess.Services
     {
         private readonly UserManager<ApplicationUser> userManager;
         private readonly SignInManager<ApplicationUser> signInManager;
-        private readonly LinkGenerator linkGenerator;
-        private readonly IEmailSender emailSender;
         private readonly TableContext tableContext;
-        private readonly HttpContext httpContext;
+        private readonly IEmailService emailService;
+        private readonly ILoggerFactory logger;
 
-        public UserService(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, 
-            LinkGenerator linkGenerator, IEmailSender emailSender, IHttpContextAccessor httpContextAccessor, TableContext tableContext)
+        public UserService(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager,
+            TableContext tableContext, IEmailService emailService, ILoggerFactory logger)
         {
             this.userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
             this.signInManager = signInManager ?? throw new ArgumentNullException(nameof(signInManager));
-            this.linkGenerator = linkGenerator ?? throw new ArgumentNullException(nameof(linkGenerator));
-            this.emailSender = emailSender ?? throw new ArgumentNullException(nameof(emailSender));
             this.tableContext = tableContext ?? throw new ArgumentNullException(nameof(tableContext));
-            httpContext = httpContextAccessor.HttpContext ?? throw new ArgumentNullException(nameof(httpContextAccessor));
+            this.emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        }
+
+        public async Task<bool> ResendEmailConfirmationAsync(string id, string link)
+        {
+            var user = await userManager.FindByIdAsync(id);
+
+            if(user == null)
+            {
+                return false;
+            }
+
+            var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
+
+            var uriBuilder = new UriBuilder(link);
+            var query = HttpUtility.ParseQueryString(uriBuilder.Query);
+            query["id"] = user.Id;
+            query["token"] = token;
+            uriBuilder.Query = query.ToString();
+
+            link = uriBuilder.ToString();
+
+            await emailService.SendAsync(user.Email, "Confirm your email", link);
+
+            return true;
         }
 
         public async Task<bool> ConfirmEmail(string id, string token)
@@ -43,15 +68,13 @@ namespace Patronage.DataAccess.Services
                     throw new AggregateException("Multiple errors occured during confirming email.",
                         result.Errors.Select(x => new Exception(x.Description)).ToList());
                 }
-                throw new Exception("Error occured while creating user: " + result.Errors.First().Description);
+                throw new Exception("Error occured during Email confirmation: " + result.Errors.First().Description);
             }
 
             return true;
         }
 
-        // TODO After implementation of fluent validation.
-        // Change throwing exception to 'return null'
-        public async Task<UserDto> CreateUserAsync(CreateUserDto createUser)
+        public async Task<UserDto> CreateUserAsync(CreateUserDto createUser, string link)
         {
             var user = new ApplicationUser
             {
@@ -63,10 +86,8 @@ namespace Patronage.DataAccess.Services
             {
                 var result = await userManager.CreateAsync(user, createUser.Password);
 
-                // Mostly return validations error. So it's probably redundant after implementations of validation
                 if (!result.Succeeded)
                 {
-                    // log problems
                     if (result.Errors.Count() > 1)
                     {
                         throw new AggregateException("Multiple errors occured while creating user.",
@@ -77,20 +98,15 @@ namespace Patronage.DataAccess.Services
 
                 var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
 
-                // I dont know why but the only route that work is /api/user/. For example I cant generate /api/user/confirm/
-                var link = linkGenerator.GetUriByPage(
-                    httpContext,
-                    page: "/api/user/",
-                    handler : null,
-                    values : new { id = user.Id, token = token });
+                var uriBuilder = new UriBuilder(link);
+                var query = HttpUtility.ParseQueryString(uriBuilder.Query);
+                query["id"] = user.Id;
+                query["token"] = token;
+                uriBuilder.Query = query.ToString();
 
-                if(link == null)
-                {
-                    // log problem
-                    throw new Exception("Couldn not generate confirmation link.");
-                }
+                link = uriBuilder.ToString();
 
-                emailSender.SendEmail(user.Email, "Confirm your email", link);
+                await emailService.SendAsync(user.Email, "Confirm your email", link);
 
                 await transaction.CommitAsync();
 
@@ -102,14 +118,52 @@ namespace Patronage.DataAccess.Services
             }
         }
 
-        public Task<bool> GenerateRecoveryPassword(string id)
+        public async Task<bool> SendRecoveryPasswordEmailAsync(string id, string link)
         {
-            throw new NotImplementedException();
+            var user = await userManager.FindByIdAsync(id);
+
+            if(user == null)
+            {
+                return false;
+            }
+
+            var token = await userManager.GeneratePasswordResetTokenAsync(user);
+
+            var uriBuilder = new UriBuilder(link);
+            var query = HttpUtility.ParseQueryString(uriBuilder.Query);
+            query["id"] = user.Id;
+            query["token"] = token;
+            uriBuilder.Query = query.ToString();
+
+            link = uriBuilder.ToString();
+
+            await emailService.SendAsync(user.Email, "Recover your password", link);
+
+            return true;
         }
 
-        public Task<bool> RecoverPassword(string id, string token)
+        public async Task<bool> RecoverPasswordAsync(NewUserPasswordDto userPasswordDto)
         {
-            throw new NotImplementedException();
+            var user = await userManager.FindByIdAsync(userPasswordDto.Id);
+
+            if(user == null)
+            {
+                return false;
+            }
+
+            var result = await userManager.ResetPasswordAsync(user, userPasswordDto.Token, userPasswordDto.Password);
+
+            if (!result.Succeeded)
+            {
+                if (result.Errors.Count() > 1)
+                {
+                    throw new AggregateException("Multiple errors occured while reseting password.",
+                        result.Errors.Select(x => new Exception(x.Description)).ToList());
+                }
+                throw new Exception("Error occured while reseting password." + result.Errors.First().Description);
+            }
+
+            return true;
         }
     }
 }
