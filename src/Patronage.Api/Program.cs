@@ -15,10 +15,12 @@ using Patronage.Api.Validators;
 using Patronage.Api.MediatR.Issues.Queries.GetIssues;
 using Microsoft.AspNetCore.Identity;
 
+var logger = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
+logger.Info("Starting");
+
 try
 {
-    var logger = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
-    logger.Info("Starting");
+
 
     var builder = WebApplication.CreateBuilder(args);
     builder.Services.AddControllers();
@@ -31,6 +33,8 @@ try
         var filePath = Path.Combine(System.AppContext.BaseDirectory, "Patronage.Api.xml");
         c.IncludeXmlComments(filePath);
     });
+    builder.Logging.ClearProviders();
+    builder.Host.UseNLog();
 
     //TODO: move this to data seeder ~MZ
     //This determines which connection string are we going to use
@@ -203,8 +207,8 @@ catch (Exception exception)
     {
         throw;
     }
-    // NLog: catch setup errors
-        throw;
+    logger.Error(exception, "Stopped program because of exception");
+    throw;
 }
 finally
 {
