@@ -66,12 +66,21 @@ namespace Patronage.Api.Controllers
         [SwaggerResponse(StatusCodes.Status400BadRequest, "Error creating new Status")]
         public async Task<ActionResult<int>> Create([FromQuery] string code)
         {
-            var id = await _mediator.Send(new CreateStatusCommand(code));
-            return Created($"/api/status/{id}", new BaseResponse<int>
+            int? id = await _mediator.Send(new CreateStatusCommand(code));
+            if (id is not null)
             {
-                ResponseCode = StatusCodes.Status201Created,
-                Data = id,
-                Message = "Status created successfully"
+                return Created($"/api/status/{id}", new BaseResponse<int>
+                {
+                    ResponseCode = StatusCodes.Status201Created,
+                    Data = (int)id,
+                    Message = "Status created successfully"
+                });
+            }            
+            return BadRequest(new BaseResponse<string>
+            {
+                ResponseCode = StatusCodes.Status400BadRequest,
+                Data = null,
+                Message = "Status code already exists"
             });
         }
         [HttpPut]

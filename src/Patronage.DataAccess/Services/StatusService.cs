@@ -47,9 +47,13 @@ namespace Patronage.DataAccess.Services
                 return null;
             }
         }
-        public async Task<int> Create(string statusCode)
+        public async Task<int?> Create(string statusCode)
         {
-
+            var statusTaken = _dbContext.Statuses.Any(p => p.Code == statusCode);
+            if (statusTaken)
+            {
+                return null;
+            }
             var status = new Status
             {
                 Code = statusCode
