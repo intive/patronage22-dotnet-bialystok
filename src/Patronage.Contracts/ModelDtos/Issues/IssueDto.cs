@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Patronage.Models;
+using System.ComponentModel.DataAnnotations;
+
 
 namespace Patronage.Contracts.ModelDtos.Issues
 {
@@ -9,5 +11,18 @@ namespace Patronage.Contracts.ModelDtos.Issues
         public DateTime CreatedOn { get; set; }
         public DateTime? ModifiedOn { get; set; }
         public bool IsActive { get; set; }
+
+        public IssueDto(Issue issue) : base(issue)
+        {
+            Id = issue.Id;
+            CreatedOn = issue.CreatedOn;
+            ModifiedOn = issue.ModifiedOn;
+            IsActive = issue.IsActive;
+        }
+
+        public IssueDto()
+        {
+
+        }
     }
 }

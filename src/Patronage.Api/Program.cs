@@ -11,12 +11,16 @@ using FluentValidation;
 using Patronage.Api;
 using Patronage.Api.Middleware;
 using Npgsql;
+using Patronage.Api.Validators;
+using Patronage.Api.MediatR.Issues.Queries.GetIssues;
 using Microsoft.AspNetCore.Identity;
+
+var logger = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
+logger.Info("Starting");
 
 try
 {
-    var logger = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
-    logger.Info("Starting");
+
 
     var builder = WebApplication.CreateBuilder(args);
     builder.Services.AddControllers();
@@ -26,19 +30,24 @@ try
     {
         c.EnableAnnotations();
         c.SwaggerDoc("v1", new OpenApiInfo { Title = "Patronage 2022 API", Version = "v1" });
+        var filePath = Path.Combine(System.AppContext.BaseDirectory, "Patronage.Api.xml");
+        c.IncludeXmlComments(filePath);
     });
+    builder.Logging.ClearProviders();
+    builder.Host.UseNLog();
 
-    ///TODO: move this to data seeder ~MZ
-    ///This determines which connection string are we going to use
-    ///If environmental variable "DATABASE_URL" is set we will build connection string to connect to remove database
-    ///Won't work on local! Else uses our "Default connection string.
-    ///Why do we have to build connection string dynamically? Heroku periodically changes credentials, so we have to keep up with that.
-    if(Environment.GetEnvironmentVariable("DATABASE_URL") != null || builder.Configuration.GetValue("provider", "mysql").Equals("postgre", StringComparison.InvariantCultureIgnoreCase))
+    //TODO: move this to data seeder ~MZ
+    //This determines which connection string are we going to use
+    //If environmental variable "DATABASE_URL" is set we will build connection string to connect to remove database
+    //Won't work on local! Else uses our "Default connection string.
+    //Why do we have to build connection string dynamically? Heroku periodically changes credentials, so we have to keep up with that.
+    logger.Info(builder.Configuration.GetConnectionString("Default"));
+    if (Environment.GetEnvironmentVariable("DATABASE_URL") != null || builder.Configuration.GetValue("provider", "mysql").Equals("postgre", StringComparison.InvariantCultureIgnoreCase))
     {
         string connection_string = "";
-        if(Environment.GetEnvironmentVariable("DATABASE_URL") != null){
+        var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
+        if (databaseUrl != null){
             logger.Info("Using remote database");
-            var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
             var databaseUri = new Uri(databaseUrl);
             var userInfo = databaseUri.UserInfo.Split(':');
 
@@ -56,7 +65,15 @@ try
         else
         {
             logger.Info("Using local PostgreSQL database");
-            connection_string = builder.Configuration.GetConnectionString("DefaultPostgre");
+            var string_builder = new NpgsqlConnectionStringBuilder
+            {
+                Host = builder.Configuration["PG_LOCAL_HOST"],
+                Port = int.Parse(builder.Configuration["PG_LOCAL_PORT"]),
+                Username = builder.Configuration["PG_LOCAL_USERNAME"],
+                Password = builder.Configuration["PG_LOCAL_PASSWORD"],
+                Database = builder.Configuration["PG_LOCAL_DATABASE"]
+            };
+            connection_string = string_builder.ToString();
         }
 
         builder.Services.AddDbContext<TableContext>((DbContextOptionsBuilder options) =>
@@ -80,10 +97,7 @@ try
     builder.Services.AddScoped<IIssueService, IssueService>();
     builder.Services.AddScoped<IProjectService, ProjectService>();
     builder.Services.AddScoped<IBoardService, BoardService>();
-    builder.Services.AddScoped<IEmailSender, EmailSender>();
-    builder.Services.AddScoped<IUserService, UserService>();
-
-    builder.Services.AddHttpContextAccessor();
+    builder.Services.AddScoped<IBoardStatusService, BoardStatusService>();
 
     builder.Services.AddScoped<ErrorHandlingMiddleware>();
 
@@ -108,34 +122,32 @@ try
     void ApplyMigrations()
     {
         logger.Info("Trying to apply migrations");
-        using (var scope = app.Services.CreateScope())
+        using var scope = app.Services.CreateScope();
+        var services = scope.ServiceProvider;
+        try
         {
-            var services = scope.ServiceProvider;
-            try
+            var db = services.GetRequiredService<TableContext>();
+            if (!db.Database.CanConnect())
             {
-                var db = services.GetRequiredService<TableContext>();
-                if (!db.Database.CanConnect())
-                {
-                    logger.Error("No database connection! Migrations not applied");
-                    return;
-                }
-                var pendingMigrations = db.Database.GetPendingMigrations();
-                if(pendingMigrations.Any())
-                {
-                    db.Database.Migrate();
-                    logger.Info($"{pendingMigrations.Count()} pending migrations applied");
-                }
-                else
-                {
-                    logger.Info("No migrations need to be applied");
-                }
-                var lastAppliedMigration = ( db.Database.GetAppliedMigrations()).Last();
-                logger.Info($"You are on schema version: {lastAppliedMigration}");
+                logger.Error("No database connection! Migrations not applied");
+                return;
             }
-            catch (Exception ex)
+            var pendingMigrations = db.Database.GetPendingMigrations();
+            if (pendingMigrations.Any())
             {
-                logger.Error(ex);
+                db.Database.Migrate();
+                logger.Info($"{pendingMigrations.Count()} pending migrations applied");
             }
+            else
+            {
+                logger.Info("No migrations need to be applied");
+            }
+            var lastAppliedMigration = (db.Database.GetAppliedMigrations()).Last();
+            logger.Info($"You are on schema version: {lastAppliedMigration}");
+        }
+        catch (Exception ex)
+        {
+            logger.Error(ex);
         }
     }
 
@@ -145,9 +157,15 @@ try
     {
         var scopedFactory = app.Services.GetService<IServiceScopeFactory>();
 
-        using (var scope = scopedFactory.CreateScope())
+        if(scopedFactory == null)
         {
-            var service = scope.ServiceProvider.GetService<DataSeeder>();
+            return;
+        }
+
+        using var scope = scopedFactory.CreateScope();
+        var service = scope.ServiceProvider.GetService<DataSeeder>();
+        if(service != null)
+        {
             service.Seed();
         }
     }
@@ -189,7 +207,7 @@ catch (Exception exception)
     {
         throw;
     }
-    // NLog: catch setup errors
+    logger.Error(exception, "Stopped program because of exception");
     throw;
 }
 finally

@@ -29,12 +29,7 @@ namespace Patronage.Api.Middleware
                     ResponseCode = StatusCodes.Status422UnprocessableEntity,
                     Message = "One or more validation errors has occured.",
                     BaseResponseError = validationException.Errors
-                        .Select(x => new BaseResponseError
-                        {
-                            PropertyName = x.PropertyName,
-                            Code = x.ErrorCode,
-                            Message = x.ErrorMessage
-                        }).ToList()            
+                        .Select(x => new BaseResponseError(x.PropertyName, x.ErrorCode, x.ErrorMessage)).ToList()    
                 };
                 context.Response.ContentType = "application/json";
                 context.Response.StatusCode = StatusCodes.Status422UnprocessableEntity;

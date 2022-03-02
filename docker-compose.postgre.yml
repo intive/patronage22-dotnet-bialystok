@@ -1,0 +1,54 @@
+version: '3.4'
+services:
+  patronage.api:
+    build:
+      context: .
+      dockerfile: ./src/Patronage.Api/Postgres.Dockerfile
+    image: papuzkas/patronageapi
+    ports:
+      - "5000:80"
+    environment:
+      - PG_LOCAL_HOST=patronagepostgres
+      - COMPOSE_TLS_VERSION= "TLSv1_2"
+      - provider=postgre
+    volumes:
+      - ./logs:/src/logs
+    depends_on:
+      - postgres
+
+  postgres:
+    container_name: patronagepostgres
+    image: postgres
+    restart: always
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=patronageDB
+      - PGSQL_USER=user1
+      - PGSQL_PASSWORD=user1
+    logging:
+      options:
+        max-size: 10m
+        max-file: "3"
+    ports:
+      - '5432:5432'
+    volumes:
+      - ./PostgreSQL/postgres-data:/var/lib/postgresql/data
+      - ./PostgreSQL/setup:/docker-entrypoint-initdb.d
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=pgadmin4@pgadmin.org
+      - PGADMIN_DEFAULT_PASSWORD=admin1234
+    ports:
+      - "5050:80"
+    restart: always
+    logging:
+      driver: none
+    volumes:
+      - ./PostgreSQL/pgadmin:/root/.pgadmin
+volumes:
+  logs:
+  PostgreSQL:
+
+

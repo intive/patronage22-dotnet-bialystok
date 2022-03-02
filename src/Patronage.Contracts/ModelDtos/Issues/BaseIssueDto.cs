@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Patronage.Models;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Patronage.Contracts.ModelDtos.Issues
 {  
@@ -11,14 +7,29 @@ namespace Patronage.Contracts.ModelDtos.Issues
     {
         [Required]
         [MaxLength(256)]
-        public string Alias { get; set; }
+        public string Alias { get; set; } = null!;
         [Required]
         [MaxLength(1024)]
-        public string Name { get; set; }
-        public string Description { get; set; }
+        public string Name { get; set; } = null!;
+        public string? Description { get; set; }
         [Required]
         public int ProjectId { get; set; }
         public int? BoardId { get; set; }
         public int StatusId { get; set; }
+
+        public BaseIssueDto(Issue isse)
+        {
+            Alias = isse.Alias;
+            Name = isse.Name;
+            Description = isse.Description;
+            ProjectId = isse.ProjectId;
+            BoardId = isse.BoardId;
+            StatusId = isse.StatusId;
+        }
+
+        public BaseIssueDto()
+        {
+
+        }
     }
 }
