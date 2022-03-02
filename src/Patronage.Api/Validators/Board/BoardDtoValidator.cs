@@ -1,15 +1,14 @@
 ﻿using FluentValidation;
-using FluentValidation.Results;
 using Patronage.Contracts.ModelDtos;
 using Patronage.Models;
 
-namespace Patronage.Api.Validators
+namespace Patronage.Api.Validators.Board
 {
-    public class PartialBoardValidator : AbstractValidator<PartialBoardDto>
+    public class BoardDtoValidator : AbstractValidator<BoardDto>
     {
-        public PartialBoardValidator(TableContext tableContext)
+        public BoardDtoValidator(TableContext tableContext)
         {
-            RuleFor(x => x.Alias!.Data)
+            RuleFor(x => x.Alias)
                 .NotNull().WithMessage("Can not be null.")
                 .NotEmpty().WithMessage("Can not be empty.")
                 .MaximumLength(256).WithMessage("Can not exceed 256 characters.")
@@ -20,13 +19,12 @@ namespace Patronage.Api.Validators
                     {
                         context.AddFailure("Alias", "This board's alias has been already taken");
                     }
-                })
-                .When(y => y.Alias != null);
+                }); ;
 
-            RuleFor(x => x.Name!.Data)
+            RuleFor(x => x.Name)
                 .NotNull().WithMessage("Can not be null.")
                 .NotEmpty().WithMessage("Can not be empty.")
-                .MaximumLength(1024).WithMessage("Can not exceed 1024 characters.")              
+                .MaximumLength(1024).WithMessage("Can not exceed 1024 characters.")
                 .Custom((value, context) =>
                 {
                     var isNameAlreadyTaken = tableContext.Boards.Any(p => p.Name == value);
@@ -34,17 +32,17 @@ namespace Patronage.Api.Validators
                     {
                         context.AddFailure("Name", "This board's name has been already taken");
                     }
-                })
-                .When(y => y.Name != null);
+                }); ;
 
-            RuleFor(x => x.Description!.Data)
+            RuleFor(x => x.Description)
                 .NotNull().WithMessage("Can not be null.")
-                .NotEmpty().WithMessage("Can not be empty.")
-                .When(y => y.Description != null);
+                .NotEmpty().WithMessage("Can not be empty.");
 
-            RuleFor(x => x.ProjectId!.Data)
-                .NotNull().WithMessage("Can not be null.")
-                .When(y => y.ProjectId != null);
+            RuleFor(x => x.ProjectId)
+                .NotNull().WithMessage("Can not be null.");
+
+            RuleFor(x => x.IsActive)
+                .NotNull().WithMessage("Can not be null.");
         }
     }
 }
