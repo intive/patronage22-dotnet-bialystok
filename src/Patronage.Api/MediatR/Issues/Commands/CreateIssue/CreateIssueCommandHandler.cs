@@ -1,11 +1,12 @@
 ﻿using MediatR;
 using Patronage.Api.MediatR.Issues.Commands.CreateIssue;
 using Patronage.Contracts.Interfaces;
+using Patronage.Contracts.ModelDtos.Issues;
 using Patronage.Models;
 
 namespace Patronage.Api.MediatR.Projects.Commands.CreateProject
 {
-    public class CreateIssueCommandHandler : IRequestHandler<CreateIssueCommand, int>
+    public class CreateIssueCommandHandler : IRequestHandler<CreateIssueCommand, IssueDto?>
     {
         private readonly IIssueService _issueService;
 
@@ -14,22 +15,9 @@ namespace Patronage.Api.MediatR.Projects.Commands.CreateProject
             _issueService = issueService;
         }
 
-        public Task<int> Handle(CreateIssueCommand request, CancellationToken cancellationToken)
+        public async Task<IssueDto?> Handle(CreateIssueCommand request, CancellationToken cancellationToken)
         {
-            var issue = new Issue
-            {
-                Alias = request.Alias,
-                Name = request.Name,
-                Description = request.Description,
-                ProjectId = request.ProjectId,
-                BoardId = request.BoardId,
-                StatusId = request.StatusId,
-                IsActive = true
-            };
-
-            var id = _issueService.Create(issue);
-
-            return Task.FromResult(id);
+            return await _issueService.CreateAsync(request.Data);
         }
     }
 }

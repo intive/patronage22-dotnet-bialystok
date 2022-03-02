@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using Patronage.Api.MediatR.Issues.Queries.GetIssues;
 
-namespace Patronage.Api.Validators
+namespace Patronage.Api.Validators.Issues
 {
     public class IssueQueryValidator : AbstractValidator<GetIssuesListQuery>
     {
@@ -9,12 +9,12 @@ namespace Patronage.Api.Validators
 
         public IssueQueryValidator()
         {
-            RuleFor(r => r.PageNumber).GreaterThanOrEqualTo(1);
-            RuleFor(r => r.PageSize).Custom((value, context) =>
+            RuleFor(r => r.filter.PageNumber).GreaterThanOrEqualTo(1);
+            RuleFor(r => r.filter.PageSize).Custom((value, context) =>
             {
                 if (!allowedPageSizes.Contains(value))
                 {
-                    context.AddFailure("PageSize", $"PageSize must in [{string.Join(",", allowedPageSizes)}]");
+                    context.AddFailure("PageSize", $"PageSize must in [{string.Join(", ", allowedPageSizes)}]");
                 }
             });
         }

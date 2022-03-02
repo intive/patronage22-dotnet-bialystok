@@ -13,7 +13,7 @@ namespace Patronage.Api.Validators.BoardStatus
         public CreateBoardStatusValidator(TableContext dbContext)
         {
             _context = dbContext;
-            this.CascadeMode = CascadeMode.StopOnFirstFailure;
+            this.CascadeMode = CascadeMode.Stop;
             RuleFor(s => s.Dto.BoardId).Must(NotLessThan).WithMessage("BoardId must be greater than 0").Must(ExistsBoardId).WithMessage("BoardId does not exist"); ;
             RuleFor(s => s.Dto.StatusId).Must(NotLessThan).WithMessage("StatusId must be greater than 0").Must(ExistsStatusId).WithMessage("StatusId does not exist");
 

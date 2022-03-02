@@ -1,12 +1,15 @@
-﻿using Patronage.Contracts.ModelDtos.Issues;
+﻿using Patronage.Contracts.Helpers;
+using Patronage.Contracts.ModelDtos.Issues;
 using Patronage.Models;
 
 namespace Patronage.Contracts.Interfaces
 {
     public interface IIssueService : IEntityService<Issue>
     {
-        IQueryable<Issue> GetAllIssues();
-        int Create(Issue issue);
-        void Save();
+        Task<PageResult<IssueDto>?> GetAllIssuesAsync(FilterIssueDto filter);
+        Task<IssueDto?> CreateAsync(IssueDto issue);
+        Task<bool> UpdateAsync(int issueId, BaseIssueDto dto);
+        Task<bool> UpdateLightAsync(int issueId, PartialIssueDto dto);
+        Task<bool> DeleteAsync(int issueId);
     }
 }
