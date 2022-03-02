@@ -1,11 +1,7 @@
-﻿using Patronage.Contracts.Interfaces;
+﻿using Microsoft.EntityFrameworkCore;
+using Patronage.Contracts.Interfaces;
 using Patronage.Contracts.ModelDtos;
 using Patronage.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Patronage.DataAccess.Services
 {
@@ -17,67 +13,75 @@ namespace Patronage.DataAccess.Services
         {
             _dbContext = dbContext;
         }
-        public IQueryable<StatusDto> GetAll()
+        public async Task<IEnumerable<StatusDto>> GetAll()
         {
-            //var statuses = from s in _dbContext.Statuses
-            //               select new StatusDto()
-            //               {
-            //                   Id = s.Id,
-            //                   Code = s.Code
-            //               };
+            var statusesQueryable = _dbContext
+                          .Statuses
+                          .AsQueryable();
 
-
-
+            var statuses = await statusesQueryable
+                          .Select(status => new StatusDto
+                          {
+                              Id = status.Id,
+                              Code = status.Code
+                          })
+                          .ToListAsync();
+            return statuses;
         }
-        public StatusDto GetById(int id)
+        public async Task<StatusDto?> GetById(int id)
         {
-            var status = _dbContext
+            var status = await _dbContext
                     .Statuses
-                    .Select(b => new StatusDto()
-                    {
-                        Id = b.Id,
-                        Code = b.Code,
-                    }).SingleOrDefault(b =>b.Id == id);
-            return status;
-        }
-        public bool Create(string statusCode)
-        {
-            try
+                    .FirstOrDefaultAsync(b => b.Id == id);
+            if (status is not null)
             {
-                var status = new Status();
-                status.Code = statusCode;
-            
-                _dbContext.Statuses.Add(status);
-                _dbContext.SaveChanges();
-                return true;
-            }
-            catch (Exception ex) when (ex is Microsoft.EntityFrameworkCore.DbUpdateException)
-            {
-                return false;
-            }
-        }
-        public bool Delete(int statusId)
-        {
-            var status = _dbContext.Statuses
-                        .FirstOrDefault(b => b.Id == statusId);
-            _dbContext.Statuses.Remove(status);
-            _dbContext.SaveChanges();
-            return true;
-        }
-        public bool Update(int statusId, string statusCode)
-        {
-            var status = _dbContext
-                        .Statuses
-                        .FirstOrDefault(s => s.Id == statusId);
-            if (status is null)
-            {
-                return false;
+                var statusDto = new StatusDto
+                {
+                    Id = status.Id,
+                    Code = status.Code
+                };
+                return statusDto;
             }
             else
             {
+                return null;
+            }
+        }
+        public async Task<int> Create(string statusCode)
+        {
+
+            var status = new Status
+            {
+                Code = statusCode
+            };
+            await _dbContext.Statuses.AddAsync(status);
+            await _dbContext.SaveChangesAsync();
+            return status.Id;
+
+
+        }
+        public async Task<bool> Delete(int statusId)
+        {
+            var status = await _dbContext.Statuses
+                        .FirstOrDefaultAsync(b => b.Id == statusId);
+            _dbContext.Statuses.Remove(status);
+            await _dbContext.SaveChangesAsync();
+            return true;
+        }
+        public async Task<bool> Update(int statusId, string statusCode)
+        {
+            var status = await _dbContext
+                        .Statuses
+                        .FirstOrDefaultAsync(s => s.Id == statusId);
+            if (status is not null)
+            {
                 status.Code = statusCode;
                 _dbContext.SaveChanges();
                 return true;
+            }
+            else
+            {
+                return false;
             }
         }
     }

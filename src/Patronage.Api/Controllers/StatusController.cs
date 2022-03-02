@@ -1,13 +1,10 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Patronage.Api.MediatR.BoardStatus.Commands;
-using Patronage.Api.MediatR.BoardStatus.Queries;
+using Patronage.Api.MediatR.Status.Commands;
 using Patronage.Api.MediatR.Status.Queries;
-using Patronage.Contracts.Interfaces;
 using Patronage.Contracts.ModelDtos;
 using Patronage.DataAccess;
 using Swashbuckle.AspNetCore.Annotations;
-using System.Linq;
 namespace Patronage.Api.Controllers
 {
     [Route("api/status")]
@@ -23,22 +20,85 @@ namespace Patronage.Api.Controllers
         [SwaggerOperation(Summary = "Get all Statuses", Description = "Returns all Statuses records available in the database")]
         [HttpGet]
         [SwaggerResponse(StatusCodes.Status200OK, "Returning all Statuses")]
-        [SwaggerResponse(StatusCodes.Status204NoContent, "No Statuses were found in the database")]
+        [SwaggerResponse(StatusCodes.Status404NotFound, "No Statuses were found in the database")]
         public async Task<ActionResult<IEnumerable<StatusDto>>> GetAll()
         {
             var response = await _mediator.Send(new GetAllStatusQuery());
-
-            if (response.Any())
-            { // TODO: Ask for return code || Ok || No content
-                return NoContent();
-            }
-
-            return Ok(new BaseResponse<IEnumerable<StatusDto>>
+            if (response is not null)
             {
+                return Ok(new BaseResponse<IEnumerable<StatusDto>>
+                {
+                    ResponseCode = StatusCodes.Status200OK,
+                    Data = response,
+                    Message = "Returning all Statuses"
+                });
+            }
+            return NotFound(new BaseResponse<IEnumerable<StatusDto>>());
+        }
+        [SwaggerOperation(Summary = "Get status with id")]
+        [HttpGet("id")]
+        [SwaggerResponse(StatusCodes.Status200OK, "Returning all records matching provided criteria")]
+        [SwaggerResponse(StatusCodes.Status404NotFound, "No records with provided statusId were found")]
+        public async Task<ActionResult<StatusDto>> GetById(int id)
+        {
+            var response = await _mediator.Send(new GetByIdStatusQuerry(id));
+            if (response is not null)
+            {
+                return Ok(new BaseResponse<StatusDto>
+                {
+                    ResponseCode = StatusCodes.Status200OK,
+                    Data = response,
+                    Message = $"Returning status with id {response.Id}"
+                });
+            }
+            return NotFound(new BaseResponse<StatusDto>
+            {
+                ResponseCode = StatusCodes.Status404NotFound,
+                Message = "Status not found"
 
-                ResponseCode = StatusCodes.Status200OK,
-                Data = response,
-                Message = "Returning all records from BoardStatus table"
+            });
+
+        }
+
+        [SwaggerOperation(Summary = "Create new Status", Description = "Create Status with string code")]
+        [HttpPost]
+        [SwaggerResponse(StatusCodes.Status201Created, "Status created successfully")]
+        [SwaggerResponse(StatusCodes.Status400BadRequest, "Error creating new Status")]
+        public async Task<ActionResult<int>> Create([FromQuery] string code)
+        {
+            var id = await _mediator.Send(new CreateStatusCommand(code));
+            return Created($"/api/status/{id}", new BaseResponse<int>
+            {
+                ResponseCode = StatusCodes.Status201Created,
+                Data = id,
+                Message = "Status created successfully"
+            });
+        }
+        [HttpPut]
+        public async Task<ActionResult<bool>> Update([FromQuery] int id, [FromQuery] string code)
+        {
+            var status = await _mediator.Send(new UpdateStatusCommand(id, code));
+            return status;
+        }
+        [SwaggerOperation(Summary = "Delete Status by id", Description = "Delete Status specifying statusId")]
+        [HttpDelete]
+        [SwaggerResponse(StatusCodes.Status200OK, "Resource deleted successfully")]
+        [SwaggerResponse(StatusCodes.Status400BadRequest, "An error occured trying to delete resource")]
+        public async Task<ActionResult<bool>> Delete([FromQuery] int id)
+        {
+            var deleted = await _mediator.Send(new DeleteStatusCommand(id));
+            if (deleted)
+            {
+                return Ok(new BaseResponse<bool>
+                {
+                    ResponseCode = StatusCodes.Status200OK,
+                    Message = "Resource deleted successfully"
+                });
+            }
+            return BadRequest(new BaseResponse<bool>
+            {
+                ResponseCode = StatusCodes.Status400BadRequest,
+                Message = "An error occured trying to delete resource"
             });
         }
     }

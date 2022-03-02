@@ -9,10 +9,10 @@ namespace Patronage.Contracts.Interfaces
 {
     public interface IStatusService
     {
-        IQueryable<StatusDto> GetAll();
-        StatusDto GetById(int id);
-        bool Create(string statusCode);
-        bool Delete(int statusId);
-        bool Update(int statusId, string statusCode);
+        Task<IEnumerable<StatusDto>> GetAll();
+        Task <StatusDto> GetById(int id);
+        Task<int> Create(string statusCode);
+        Task<bool> Delete(int statusId);
+        Task<bool> Update(int statusId, string statusCode);
     }
 }
