@@ -21,6 +21,7 @@ namespace Patronage.Api.Controllers
         [HttpGet]
         [SwaggerResponse(StatusCodes.Status200OK, "Returning all Statuses")]
         [SwaggerResponse(StatusCodes.Status404NotFound, "No Statuses were found in the database")]
+        [SwaggerResponse(StatusCodes.Status500InternalServerError, "Sorry, try it later")]
         public async Task<ActionResult<IEnumerable<StatusDto>>> GetAll()
         {
             var response = await _mediator.Send(new GetAllStatusQuery());
@@ -39,6 +40,7 @@ namespace Patronage.Api.Controllers
         [HttpGet("id")]
         [SwaggerResponse(StatusCodes.Status200OK, "Returning all records matching provided criteria")]
         [SwaggerResponse(StatusCodes.Status404NotFound, "No records with provided statusId were found")]
+        [SwaggerResponse(StatusCodes.Status500InternalServerError, "Sorry, try it later")]
         public async Task<ActionResult<StatusDto>> GetById(int id)
         {
             var response = await _mediator.Send(new GetByIdStatusQuerry(id));
@@ -63,40 +65,57 @@ namespace Patronage.Api.Controllers
         [SwaggerOperation(Summary = "Create new Status", Description = "Create Status with string code")]
         [HttpPost]
         [SwaggerResponse(StatusCodes.Status201Created, "Status created successfully")]
-        [SwaggerResponse(StatusCodes.Status400BadRequest, "Error creating new Status")]
+        [SwaggerResponse(StatusCodes.Status422UnprocessableEntity, "Validation error")]
+        [SwaggerResponse(StatusCodes.Status500InternalServerError, "Sorry, try it later")]
         public async Task<ActionResult<int>> Create([FromQuery] string code)
         {
-            int? id = await _mediator.Send(new CreateStatusCommand(code));
-            if (id is not null)
-            {
+            var id = await _mediator.Send(new CreateStatusCommand(code));
+
                 return Created($"/api/status/{id}", new BaseResponse<int>
                 {
                     ResponseCode = StatusCodes.Status201Created,
-                    Data = (int)id,
+                    Data = id,
                     Message = "Status created successfully"
                 });
-            }            
-            return BadRequest(new BaseResponse<string>
-            {
-                ResponseCode = StatusCodes.Status400BadRequest,
-                Data = null,
-                Message = "Status code already exists"
-            });
+      
         }
+
+        [SwaggerOperation(Summary = "Update Status", Description = "Update status code providing statusId and updated status code")]
         [HttpPut]
+        [SwaggerResponse(StatusCodes.Status200OK, "Resource updated successfully")]
+        [SwaggerResponse(StatusCodes.Status400BadRequest, "An error occured trying to update resource")]
+        [SwaggerResponse(StatusCodes.Status422UnprocessableEntity, "Validation error")]
+        [SwaggerResponse(StatusCodes.Status500InternalServerError, "Sorry, try it later")]
         public async Task<ActionResult<bool>> Update([FromQuery] int id, [FromQuery] string code)
         {
-            var status = await _mediator.Send(new UpdateStatusCommand(id, code));
-            return status;
+            var isSucceded = await _mediator.Send(new UpdateStatusCommand(id, code));
+            if (isSucceded)
+            {
+            return Ok(new BaseResponse<bool>
+            {
+                ResponseCode = StatusCodes.Status201Created,
+                Data = isSucceded,
+                Message = "Status updated successfully"
+            });
+            }
+            return BadRequest(new BaseResponse<bool>
+            {
+                ResponseCode = StatusCodes.Status400BadRequest,
+                Data = isSucceded,
+                Message = "An error occured trying to update resource"
+            });
+
         }
+
         [SwaggerOperation(Summary = "Delete Status by id", Description = "Delete Status specifying statusId")]
         [HttpDelete]
         [SwaggerResponse(StatusCodes.Status200OK, "Resource deleted successfully")]
         [SwaggerResponse(StatusCodes.Status400BadRequest, "An error occured trying to delete resource")]
+        [SwaggerResponse(StatusCodes.Status500InternalServerError, "Sorry, try it later")]
         public async Task<ActionResult<bool>> Delete([FromQuery] int id)
         {
-            var deleted = await _mediator.Send(new DeleteStatusCommand(id));
-            if (deleted)
+            var isDeleted = await _mediator.Send(new DeleteStatusCommand(id));
+            if (isDeleted)
             {
                 return Ok(new BaseResponse<bool>
                 {

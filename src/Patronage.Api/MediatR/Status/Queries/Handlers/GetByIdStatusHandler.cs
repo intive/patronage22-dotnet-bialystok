@@ -4,7 +4,7 @@ using Patronage.Contracts.ModelDtos;
 
 namespace Patronage.Api.MediatR.Status.Queries.Handlers
 {
-    public class GetByIdStatusHandler : IRequestHandler<GetByIdStatusQuerry, StatusDto>
+    public class GetByIdStatusHandler : IRequestHandler<GetByIdStatusQuerry, StatusDto?>
     {
         private readonly IStatusService _statusService;
 
@@ -13,7 +13,7 @@ namespace Patronage.Api.MediatR.Status.Queries.Handlers
             _statusService = statusService;
         }
 
-        public async Task<StatusDto> Handle(GetByIdStatusQuerry request, CancellationToken cancellationToken)
+        public async Task<StatusDto?> Handle(GetByIdStatusQuerry request, CancellationToken cancellationToken)
         {
             return await _statusService.GetById(request.StatusId);
         }

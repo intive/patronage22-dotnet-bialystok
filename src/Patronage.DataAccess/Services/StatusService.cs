@@ -15,11 +15,7 @@ namespace Patronage.DataAccess.Services
         }
         public async Task<IEnumerable<StatusDto>> GetAll()
         {
-            var statusesQueryable = _dbContext
-                          .Statuses
-                          .AsQueryable();
-
-            var statuses = await statusesQueryable
+            var statuses = await _dbContext.Statuses
                           .Select(status => new StatusDto
                           {
                               Id = status.Id,
@@ -47,13 +43,8 @@ namespace Patronage.DataAccess.Services
                 return null;
             }
         }
-        public async Task<int?> Create(string statusCode)
+        public async Task<int> Create(string statusCode)
         {
-            var statusTaken = _dbContext.Statuses.Any(p => p.Code == statusCode);
-            if (statusTaken)
-            {
-                return null;
-            }
             var status = new Status
             {
                 Code = statusCode
@@ -66,11 +57,17 @@ namespace Patronage.DataAccess.Services
         }
         public async Task<bool> Delete(int statusId)
         {
+
             var status = await _dbContext.Statuses
                         .FirstOrDefaultAsync(b => b.Id == statusId);
+            if (status is not null)
+            {
             _dbContext.Statuses.Remove(status);
             await _dbContext.SaveChangesAsync();
             return true;
+            }
+            return false;
+
         }
         public async Task<bool> Update(int statusId, string statusCode)
         {

@@ -1,14 +1,15 @@
 ﻿using FluentValidation;
+using Patronage.Api.MediatR.Status.Commands;
 using Patronage.Contracts.ModelDtos;
 using Patronage.Models;
 
 namespace Patronage.Api.Validators.Statuses
 {
-    public class StatusValidator : AbstractValidator<StatusDto>
+    public class CreateStatusValidator : AbstractValidator<CreateStatusCommand>
     {
         private readonly TableContext _dbContext;
 
-        public StatusValidator(TableContext dbContext)
+        public CreateStatusValidator(TableContext dbContext)
         {
             _dbContext = dbContext;
             RuleFor(s => s.Code).NotEmpty().WithMessage("Code field cannot be empty.")
