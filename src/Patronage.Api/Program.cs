@@ -11,19 +11,13 @@ using FluentValidation;
 using Patronage.Api;
 using Patronage.Api.Middleware;
 using Npgsql;
-using Patronage.Api.Validators;
-using Patronage.Api.MediatR.Issues.Queries.GetIssues;
 using Microsoft.AspNetCore.Identity;
-using NETCore.MailKit.Extensions;
-using NETCore.MailKit.Infrastructure.Internal;
 
 var logger = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
 logger.Info("Starting");
 
 try
 {
-
-
     var builder = WebApplication.CreateBuilder(args);
     builder.Services.AddControllers();
     // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -115,31 +109,17 @@ try
 
     builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
-    builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
-        .AddEntityFrameworkStores<TableContext>()
-        .AddDefaultTokenProviders();
-
-    if(Environment.GetEnvironmentVariable("IS_HEROKU") == "true")
+    builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
     {
-        var mailkitOptions = new MailKitOptions()
-        {
-            Server = Environment.GetEnvironmentVariable("EMAIL_SERVER"),
-            Port = Int32.Parse(Environment.GetEnvironmentVariable("EMAIL_PORT") ?? throw new Exception("Could not parse EMAIL_PORT to integer. EMAIL_PORT is null.")),
-            SenderName = Environment.GetEnvironmentVariable("EMAIL_SENDERNAME"),
-            SenderEmail = Environment.GetEnvironmentVariable("EMAIL_SENDEREMAIL"),
-            Account = Environment.GetEnvironmentVariable("EMAIL_ACCOUNT"),
-            Password = Environment.GetEnvironmentVariable("EMAIL_PASSWORD"),
-            Security = Environment.GetEnvironmentVariable("EMAIL_SECURITY") == "true"
-        };
+        options.Password.RequireUppercase = false;
+        options.Password.RequireLowercase = false;
+        options.Password.RequireNonAlphanumeric = false;
+        options.Password.RequiredLength = 1;
+    })
+    .AddEntityFrameworkStores<TableContext>()
+    .AddDefaultTokenProviders();
 
-        builder.Services.AddMailKit(config => config.UseMailKit(mailkitOptions));
-    }
-    else
-    {
-        var mailkitOptions = builder.Configuration.GetSection("Email").Get<MailKitOptions>();
-
-        builder.Services.AddMailKit(config => config.UseMailKit(mailkitOptions));
-    }
+    builder.Services.AddEmailService(builder.Configuration);
 
     var app = builder.Build();
 

@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Routing;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using NETCore.MailKit.Core;
 using Patronage.Contracts.Interfaces;
@@ -36,7 +34,7 @@ namespace Patronage.DataAccess.Services
             {
                 return false;
             }
-
+            
             var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
 
             var uriBuilder = new UriBuilder(link);
