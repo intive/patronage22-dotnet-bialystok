@@ -114,8 +114,8 @@ namespace Patronage.Api.Controllers
         [SwaggerResponse(StatusCodes.Status500InternalServerError, "Sorry, try it later")]
         public async Task<ActionResult<bool>> Delete([FromQuery] int id)
         {
-            var isDeleted = await _mediator.Send(new DeleteStatusCommand(id));
-            if (isDeleted)
+            var isSucceded = await _mediator.Send(new DeleteStatusCommand(id));
+            if (isSucceded)
             {
                 return Ok(new BaseResponse<bool>
                 {
