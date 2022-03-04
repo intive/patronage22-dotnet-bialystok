@@ -50,7 +50,7 @@ namespace Patronage.MigrationsPostgre.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "dc6776bf-44df-4031-88f6-b9077a35f9bf",
+                            Id = "2f022446-1ba9-4920-837f-3b2b4cdd768a",
                             ConcurrencyStamp = "1",
                             Name = "Admin",
                             NormalizedName = "Admin"
@@ -147,7 +147,7 @@ namespace Patronage.MigrationsPostgre.Migrations
                         new
                         {
                             UserId = "1",
-                            RoleId = "dc6776bf-44df-4031-88f6-b9077a35f9bf"
+                            RoleId = "2f022446-1ba9-4920-837f-3b2b4cdd768a"
                         });
                 });
 
@@ -244,13 +244,13 @@ namespace Patronage.MigrationsPostgre.Migrations
                         {
                             Id = "1",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "a4f7346e-b938-4fc0-ac63-b3b9d0598d3d",
+                            ConcurrencyStamp = "da88d64d-a626-4d71-bb30-4d8460c7463c",
                             EmailConfirmed = false,
                             FirstName = "FirstTestFirstname",
                             LockoutEnabled = false,
                             PhoneNumberConfirmed = false,
                             SecondName = "FirstTestSurname",
-                            SecurityStamp = "5d8e5c3c-8205-4938-b3de-40176863ffbd",
+                            SecurityStamp = "e9bd2550-4579-4be6-8810-68ff6972cdf2",
                             TwoFactorEnabled = false
                         });
                 });
@@ -345,21 +345,6 @@ namespace Patronage.MigrationsPostgre.Migrations
                             BoardId = 2,
                             StatusId = 3
                         });
-                });
-
-            modelBuilder.Entity("Patronage.Models.BoardStatus", b =>
-                {
-                    b.Property<int>("BoardId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("StatusId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("BoardId", "StatusId");
-
-                    b.HasIndex("StatusId");
-
-                    b.ToTable("BoardsStatus");
                 });
 
             modelBuilder.Entity("Patronage.Models.Issue", b =>
@@ -573,93 +558,6 @@ namespace Patronage.MigrationsPostgre.Migrations
                             Id = 3,
                             Code = "DONE"
                         });
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
-                {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
-                        .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
-                {
-                    b.HasOne("Patronage.Models.ApplicationUser", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
-                {
-                    b.HasOne("Patronage.Models.ApplicationUser", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
-                {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
-                        .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Patronage.Models.ApplicationUser", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
-                {
-                    b.HasOne("Patronage.Models.ApplicationUser", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Patronage.Models.BoardStatus", b =>
-                {
-                    b.HasOne("Patronage.Models.Board", "Board")
-                        .WithMany("BoardStatuses")
-                        .HasForeignKey("BoardId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Patronage.Models.Status", "Status")
-                        .WithMany("BoardStatuses")
-                        .HasForeignKey("StatusId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Board");
-
-                    b.Navigation("Status");
-                });
-
-            modelBuilder.Entity("Patronage.Models.Status", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Code")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Statuses");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

@@ -12,7 +12,7 @@ using Patronage.Models;
 namespace Patronage.MigrationsPostgre.Migrations
 {
     [DbContext(typeof(TableContext))]
-    [Migration("20220228133828_AddTestDataSeed")]
+    [Migration("20220301180541_AddTestDataSeed")]
     partial class AddTestDataSeed
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -52,7 +52,7 @@ namespace Patronage.MigrationsPostgre.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "dc6776bf-44df-4031-88f6-b9077a35f9bf",
+                            Id = "2f022446-1ba9-4920-837f-3b2b4cdd768a",
                             ConcurrencyStamp = "1",
                             Name = "Admin",
                             NormalizedName = "Admin"
@@ -149,7 +149,7 @@ namespace Patronage.MigrationsPostgre.Migrations
                         new
                         {
                             UserId = "1",
-                            RoleId = "dc6776bf-44df-4031-88f6-b9077a35f9bf"
+                            RoleId = "2f022446-1ba9-4920-837f-3b2b4cdd768a"
                         });
                 });
 
@@ -246,13 +246,13 @@ namespace Patronage.MigrationsPostgre.Migrations
                         {
                             Id = "1",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "a4f7346e-b938-4fc0-ac63-b3b9d0598d3d",
+                            ConcurrencyStamp = "da88d64d-a626-4d71-bb30-4d8460c7463c",
                             EmailConfirmed = false,
                             FirstName = "FirstTestFirstname",
                             LockoutEnabled = false,
                             PhoneNumberConfirmed = false,
                             SecondName = "FirstTestSurname",
-                            SecurityStamp = "5d8e5c3c-8205-4938-b3de-40176863ffbd",
+                            SecurityStamp = "e9bd2550-4579-4be6-8810-68ff6972cdf2",
                             TwoFactorEnabled = false
                         });
                 });
