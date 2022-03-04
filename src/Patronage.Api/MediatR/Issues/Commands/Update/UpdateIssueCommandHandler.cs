@@ -3,7 +3,7 @@ using MediatR;
 using Patronage.Api.Exceptions;
 using Patronage.Contracts.Interfaces;
 
-namespace Patronage.Api.MediatR.Issues.Commands.UpdateIssue
+namespace Patronage.Api.MediatR.Issues.Commands.Update
 {
     public class UpdateIssueCommandHandler : IRequestHandler<UpdateIssueCommand, bool>
     {

@@ -1,15 +1,15 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Patronage.Api.MediatR.Issues.Commands.CreateIssue;
-using Patronage.Api.MediatR.Issues.Commands.DeleteIssue;
-using Patronage.Api.MediatR.Issues.Commands.LightUpdateIssue;
-using Patronage.Api.MediatR.Issues.Commands.UpdateIssue;
-using Patronage.Api.MediatR.Issues.Queries.GetIssues;
-using Patronage.Api.MediatR.Issues.Queries.GetSingleIssue;
+using Patronage.Api.MediatR.Issues.Commands.Create;
+using Patronage.Api.MediatR.Issues.Commands.Delete;
+using Patronage.Api.MediatR.Issues.Commands.UpdateLight;
+using Patronage.Api.MediatR.Issues.Commands.Update;
+using Patronage.Api.MediatR.Issues.Queries.GetAll;
+using Patronage.Api.MediatR.Issues.Queries.GetSingle;
 using Patronage.Contracts.Helpers;
 using Patronage.Contracts.ModelDtos.Issues;
 using Patronage.DataAccess;
-using Swashbuckle.AspNetCore.Annotations;
+using Patronage.Api.MediatR.Issues.Commands.Assign;
 
 namespace Patronage.Api.Controllers
 {
@@ -183,6 +183,33 @@ namespace Patronage.Api.Controllers
             return Ok(new BaseResponse<bool>
             {
                 Message = "Issue was deleted successfully",
+                ResponseCode = StatusCodes.Status200OK,
+                Data = result
+            });
+        }
+
+        /// <summary>
+        /// Issue assign to user.
+        /// </summary>
+        /// <response code="200">User has assigned correctly.</response>
+        /// <response code="404">Issue or user not found.</response>
+        /// <response code="500">Sorry. Try it later.</response>
+        [HttpPut("{issueId}/assign/{userId}")]
+        public async Task<ActionResult> Assign([FromRoute] int issueId, [FromRoute] int userId)
+        {
+            var result = await _mediator.Send(new AssignIssueCommand(issueId, userId));
+            if (!result)
+            {
+                return NotFound(new BaseResponse<bool>
+                {
+                    ResponseCode = StatusCodes.Status404NotFound,
+                    Message = $"There's no issue with Id: {issueId} or no user with Id: {userId}"
+                });
+            }
+
+            return Ok(new BaseResponse<bool>
+            {
+                Message = "The user has been assigned to the issue successfully",
                 ResponseCode = StatusCodes.Status200OK,
                 Data = result
             });

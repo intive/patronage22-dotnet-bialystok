@@ -170,6 +170,24 @@ namespace Patronage.DataAccess.Services
             return false;
         }
 
+        public async Task<bool> AssignUserAsync(int issueId, int userId)
+        {
+            var issue = await GetByIdAsync(issueId);
+            if (issue == null)
+            {
+                return false;
+            }
+
+            issue.AssignUserId = userId;
+
+            if ((await _dbContext.SaveChangesAsync()) > 0)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
         public async Task<Issue?> GetByIdAsync(int issueId)
         {
             var result = await _dbContext

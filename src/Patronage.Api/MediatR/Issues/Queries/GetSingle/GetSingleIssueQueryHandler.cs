@@ -1,9 +1,8 @@
 ﻿using MediatR;
-using Patronage.Api.Exceptions;
 using Patronage.Contracts.Interfaces;
 using Patronage.Contracts.ModelDtos.Issues;
 
-namespace Patronage.Api.MediatR.Issues.Queries.GetSingleIssue
+namespace Patronage.Api.MediatR.Issues.Queries.GetSingle
 {
     public class GetSingleIssueQueryHandler : IRequestHandler<GetSingleIssueQuery, IssueDto?>
     {

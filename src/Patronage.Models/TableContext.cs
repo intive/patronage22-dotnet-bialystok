@@ -160,6 +160,10 @@ public class TableContext : IdentityDbContext<ApplicationUser>
              .IsRequired(false);
 
         modelBuilder.Entity<Issue>()
+             .Property(r => r.AssignUserId)
+             .IsRequired(false);
+
+        modelBuilder.Entity<Issue>()
              .Property(r => r.CreatedOn)
              .IsRequired();
 
@@ -252,6 +256,7 @@ public class TableContext : IdentityDbContext<ApplicationUser>
                     ProjectId = 1,
                     StatusId = 1,
                     BoardId = 1,
+                    AssignUserId = 1,
                     IsActive = true
                 },
 
@@ -264,6 +269,7 @@ public class TableContext : IdentityDbContext<ApplicationUser>
                     ProjectId = 1,
                     StatusId = 1,
                     BoardId = null,
+                    AssignUserId = null,
                     IsActive = true
                 });
 

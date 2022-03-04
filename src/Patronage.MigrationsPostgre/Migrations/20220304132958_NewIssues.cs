@@ -48,14 +48,14 @@ namespace Patronage.MigrationsPostgre.Migrations
                 values: new object[] { "17388f4b-4c67-4e99-a515-5c987844896c", "1" });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Issues_ApplicationUserId",
+                name: "IX_Issues_AssignUserId",
                 table: "Issues",
-                column: "ApplicationUserId");
+                column: "AssignUserId");
 
             migrationBuilder.AddForeignKey(
-                name: "FK_Issues_AspNetUsers_ApplicationUserId",
+                name: "FK_Issues_AspNetUsers_AssignUserId",
                 table: "Issues",
-                column: "ApplicationUserId",
+                column: "AssignUserId",
                 principalTable: "AspNetUsers",
                 principalColumn: "Id");
         }

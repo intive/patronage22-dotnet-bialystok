@@ -1,10 +1,8 @@
 ﻿using MediatR;
-using Patronage.Api.MediatR.Issues.Commands.CreateIssue;
 using Patronage.Contracts.Interfaces;
 using Patronage.Contracts.ModelDtos.Issues;
-using Patronage.Models;
 
-namespace Patronage.Api.MediatR.Projects.Commands.CreateProject
+namespace Patronage.Api.MediatR.Issues.Commands.Create
 {
     public class CreateIssueCommandHandler : IRequestHandler<CreateIssueCommand, IssueDto?>
     {

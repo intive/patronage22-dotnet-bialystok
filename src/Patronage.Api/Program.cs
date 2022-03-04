@@ -11,8 +11,6 @@ using FluentValidation;
 using Patronage.Api;
 using Patronage.Api.Middleware;
 using Npgsql;
-using Patronage.Api.Validators;
-using Patronage.Api.MediatR.Issues.Queries.GetIssues;
 using Microsoft.AspNetCore.Identity;
 
 var logger = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
