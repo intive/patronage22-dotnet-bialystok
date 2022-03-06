@@ -9,5 +9,7 @@ namespace Patronage.Contracts.Interfaces
         Task<bool> ConfirmEmail(string id, string token);
         Task<bool> SendRecoveryPasswordEmailAsync(string id, string link);
         Task<bool> RecoverPasswordAsync(NewUserPasswordDto userPasswordDto);
+        Task<string?> LoginUserAsync(SignInDto signInDto);
+        Task LogOutUserAsync();
     }
 }

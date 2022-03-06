@@ -165,5 +165,53 @@ namespace Patronage.DataAccess.Services
 
             return true;
         }
+
+        public async Task<string?> LoginUserAsync(SignInDto signInDto)
+        {
+            var user = await userManager.FindByNameAsync(signInDto.Username);
+
+            if (user is null)
+            {
+                return null;
+            }
+
+            var result = await userManager.CheckPasswordAsync(user, signInDto.Password);
+
+            if (!result)
+            {
+                return null;
+            }
+
+            //// alternative to above solution
+            //var signInResult = await signInManager.PasswordSignInAsync(user, signInDto.Password, false, false);
+            //if (!signInResult.Succeeded)
+            //{
+            //    return null;
+            //}
+
+            //var claims = new[]
+            //{
+            //    new Claim(ClaimTypes.Name, signInDto.Username),
+            //    new Claim(ClaimTypes.NameIdentifier, user.Id),
+            //};
+
+            //var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["AuthSettings:Key"]));
+
+            //var token = new JwtSecurityToken(
+            //    issuer: _configuration["AuthSettings:Issuer"],
+            //    audience: _configuration["AuthSettings:Audience"],
+            //    claims: claims,
+            //    expires: DateTime.Now.AddDays(30),
+            //    signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256));
+
+            //string tokenAsString = new JwtSecurityTokenHandler().WriteToken(token);
+
+            return "tokenAsString";
+        }
+
+        public async Task LogOutUserAsync()
+        {
+            await signInManager.SignOutAsync();
+        }
     }
 }

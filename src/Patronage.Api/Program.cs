@@ -16,6 +16,9 @@ using Patronage.Api.MediatR.Issues.Queries.GetIssues;
 using Microsoft.AspNetCore.Identity;
 using NETCore.MailKit.Extensions;
 using NETCore.MailKit.Infrastructure.Internal;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using System.Text;
 
 var logger = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
 logger.Info("Starting");
@@ -96,6 +99,26 @@ try
                 x => x.MigrationsAssembly("Patronage.Migrations"));
         });
     }
+
+    builder.Services.AddAuthentication(config =>
+    {
+        config.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        config.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+        config.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    }).AddJwtBearer(config =>
+    {
+        config.SaveToken = true;
+        config.RequireHttpsMetadata = false;
+        config.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authenticationSettings.JwtKey)),
+            ValidateIssuer = false,
+            ValidateAudience = false,
+            RequireExpirationTime = false,
+            ValidateLifetime = true
+        };
+    });
 
     builder.Services.AddScoped<IIssueService, IssueService>();
     builder.Services.AddScoped<IProjectService, ProjectService>();
