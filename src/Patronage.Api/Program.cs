@@ -98,6 +98,7 @@ try
     builder.Services.AddScoped<IProjectService, ProjectService>();
     builder.Services.AddScoped<IBoardService, BoardService>();
     builder.Services.AddScoped<IBoardStatusService, BoardStatusService>();
+    builder.Services.AddScoped<IStatusService, StatusService>();
 
     builder.Services.AddScoped<ErrorHandlingMiddleware>();
 
