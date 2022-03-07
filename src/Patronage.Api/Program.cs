@@ -36,6 +36,8 @@ try
     builder.Services.AddScoped<IProjectService, ProjectService>();
     builder.Services.AddScoped<IBoardService, BoardService>();
     builder.Services.AddScoped<IBoardStatusService, BoardStatusService>();
+    builder.Services.AddScoped<IUserService, UserService>();
+    builder.Services.AddScoped<IStatusService, StatusService>();
 
     builder.Services.AddScoped<ErrorHandlingMiddleware>();
 
@@ -47,9 +49,17 @@ try
 
     builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
-    builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
-        .AddEntityFrameworkStores<TableContext>()
-        .AddDefaultTokenProviders();
+    builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+    {
+        options.Password.RequireUppercase = false;
+        options.Password.RequireLowercase = false;
+        options.Password.RequireNonAlphanumeric = false;
+        options.Password.RequiredLength = 1;
+    })
+    .AddEntityFrameworkStores<TableContext>()
+    .AddDefaultTokenProviders();
+
+    builder.Services.AddEmailService(builder.Configuration);
 
     var app = builder.Build();
 
