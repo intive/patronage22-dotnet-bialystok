@@ -40,10 +40,7 @@ namespace Patronage.Api.Middleware
                 var response = new BaseResponse<IEnumerable<string>>
                 {
                     ResponseCode = StatusCodes.Status404NotFound,
-                    Message = notFoundException.Message,
-                    BaseResponseError = notFoundException.Data.Values
-                    .Cast<string>()
-                    .Select(x => new BaseResponseError(x)).ToList()
+                    Message = notFoundException.Message
                 };
                 context.Response.ContentType = "application/json";
                 context.Response.StatusCode = StatusCodes.Status404NotFound;
@@ -54,10 +51,7 @@ namespace Patronage.Api.Middleware
                 var response = new BaseResponse<IEnumerable<string>>
                 {
                     ResponseCode = StatusCodes.Status500InternalServerError,
-                    Message = e.Message,
-                    BaseResponseError = e.Data.Values
-                    .Cast<string>()
-                    .Select(x => new BaseResponseError(x)).ToList()
+                    Message = e.Message
                 };
                 context.Response.ContentType = "application/json";
                 context.Response.StatusCode = StatusCodes.Status500InternalServerError;

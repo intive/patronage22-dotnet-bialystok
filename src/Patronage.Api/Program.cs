@@ -11,8 +11,6 @@ using FluentValidation;
 using Patronage.Api;
 using Patronage.Api.Middleware;
 using Npgsql;
-using Patronage.Api.Validators;
-using Patronage.Api.MediatR.Issues.Queries.GetIssues;
 using Microsoft.AspNetCore.Identity;
 
 var logger = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
@@ -20,8 +18,6 @@ logger.Info("Starting");
 
 try
 {
-
-
     var builder = WebApplication.CreateBuilder(args);
     builder.Services.AddControllers();
     // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -46,7 +42,8 @@ try
     {
         string connection_string = "";
         var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
-        if (databaseUrl != null){
+        if (databaseUrl != null)
+        {
             logger.Info("Using remote database");
             var databaseUri = new Uri(databaseUrl);
             var userInfo = databaseUri.UserInfo.Split(':');
@@ -98,6 +95,7 @@ try
     builder.Services.AddScoped<IProjectService, ProjectService>();
     builder.Services.AddScoped<IBoardService, BoardService>();
     builder.Services.AddScoped<IBoardStatusService, BoardStatusService>();
+    builder.Services.AddScoped<IUserService, UserService>();
     builder.Services.AddScoped<IStatusService, StatusService>();
 
     builder.Services.AddScoped<ErrorHandlingMiddleware>();
@@ -112,9 +110,17 @@ try
 
     builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
-    builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
-        .AddEntityFrameworkStores<TableContext>()
-        .AddDefaultTokenProviders();
+    builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+    {
+        options.Password.RequireUppercase = false;
+        options.Password.RequireLowercase = false;
+        options.Password.RequireNonAlphanumeric = false;
+        options.Password.RequiredLength = 1;
+    })
+    .AddEntityFrameworkStores<TableContext>()
+    .AddDefaultTokenProviders();
+
+    builder.Services.AddEmailService(builder.Configuration);
 
     var app = builder.Build();
 
@@ -158,14 +164,14 @@ try
     {
         var scopedFactory = app.Services.GetService<IServiceScopeFactory>();
 
-        if(scopedFactory == null)
+        if (scopedFactory == null)
         {
             return;
         }
 
         using var scope = scopedFactory.CreateScope();
         var service = scope.ServiceProvider.GetService<DataSeeder>();
-        if(service != null)
+        if (service != null)
         {
             service.Seed();
         }
