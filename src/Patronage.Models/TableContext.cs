@@ -187,6 +187,7 @@ public class TableContext : IdentityDbContext<ApplicationUser>
         modelBuilder.Entity<Project>().HasData(
                 new Project()
                 {
+                    Id = 1,
                     Name = "First project",
                     Alias = "1st",
                     Description = "This is a description of first test project",
@@ -195,6 +196,7 @@ public class TableContext : IdentityDbContext<ApplicationUser>
 
                 new Project()
                 {
+                    Id = 2,
                     Name = "Second test project",
                     Alias = "2nd",
                     Description = "This is a description of 2nd test project",
@@ -203,6 +205,7 @@ public class TableContext : IdentityDbContext<ApplicationUser>
 
                 new Project()
                 {
+                    Id = 3,
                     Name = "Third test project",
                     Alias = "3rd",
                     Description = null,

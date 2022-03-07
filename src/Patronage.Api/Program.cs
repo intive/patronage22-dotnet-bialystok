@@ -30,7 +30,7 @@ try
     builder.Logging.ClearProviders();
     builder.Host.UseNLog();
 
-    DatabaseController databaseController = new DatabaseController((ILogger<DatabaseController>)logger, builder, builder.Configuration.GetValue("provider", "mysql"));
+    DatabaseManager databaseManager = new(logger, builder, builder.Configuration.GetValue("provider", "MsSQL"));
 
     builder.Services.AddScoped<IIssueService, IssueService>();
     builder.Services.AddScoped<IProjectService, ProjectService>();
@@ -53,7 +53,7 @@ try
 
     var app = builder.Build();
 
-    databaseController.ApplyMigrations(app);
+    databaseManager.ApplyMigrations(app);
 
     // Configure the HTTP request pipeline.
     if (app.Environment.IsDevelopment() || Environment.GetEnvironmentVariable("USE_SWAGGER") == "true")

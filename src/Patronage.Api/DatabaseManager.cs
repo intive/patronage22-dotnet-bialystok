@@ -1,18 +1,16 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.EntityFrameworkCore;
 using Npgsql;
-using Patronage.DataAccess;
 using Patronage.Models;
+using NLog;
 
 namespace Patronage.Api.Controllers
 {
-    public class DatabaseController
+    public class DatabaseManager
     {
-        private readonly ILogger<DatabaseController> _logger;
+        private readonly Logger _logger;
         private readonly WebApplicationBuilder _builder;
 
-        public DatabaseController(ILogger<DatabaseController> logger, WebApplicationBuilder builder, string provider = "mysql")
+        public DatabaseManager(Logger logger, WebApplicationBuilder builder, string provider = "mssql")
         {
             _logger = logger;
             _builder = builder;
@@ -24,28 +22,27 @@ namespace Patronage.Api.Controllers
         {
             if (provider.Equals("postgre", StringComparison.InvariantCultureIgnoreCase))
             {
-                _logger.LogInformation("Using PostgreSQL provider");
+                _logger.Info("Using PostgreSQL provider");
                 ConnectToPostgre();
             }
             else
             {
-                _logger.LogInformation("Using MySQL provider");
-                 ConnectToMysql();
+                _logger.Info("Using MsSQL provider");
+                 ConnectToMsSQL();
             }
         }
 
         private void ConnectToPostgre()
         {
             string connection_string;
-            _logger.LogInformation("Using PostgreSQL database");
             if (Environment.GetEnvironmentVariable("DATABASE_URL") != null)
             {
-                _logger.LogInformation("Using remote database, generating connection string");
+                _logger.Info("Using remote database, generating connection string");
                 connection_string = BuildPostrgreConnectionString(Environment.GetEnvironmentVariable("DATABASE_URL")!);
             }
             else
             {
-                _logger.LogInformation("No connection specified, defaulting to config's connection string");
+                _logger.Info("No connection specified, defaulting to config's connection string");
                 connection_string = BuildPostrgreConnectionString(_builder.Configuration.GetConnectionString("DefaultPostgre"));
             }
 
@@ -74,12 +71,11 @@ namespace Patronage.Api.Controllers
             return string_builder.ToString();
         }
 
-        private void ConnectToMysql()
+        private void ConnectToMsSQL()
         {
             string connectionString = "";
-            _logger.LogInformation("Using MsSQL database");
             connectionString = _builder.Configuration.GetConnectionString("Default");
-            _logger.LogInformation("Using default connection string");
+            _logger.Info("Using default connection string");
             _builder.Services.AddDbContext<TableContext>((DbContextOptionsBuilder options) =>
             {
                 options.UseSqlServer(
@@ -95,11 +91,11 @@ namespace Patronage.Api.Controllers
             var _dbContext = services.GetRequiredService<TableContext>();
             if (!_dbContext.Database.CanConnect())
             {
-                _logger.LogError("Trying to apply migrations without database connected");
+                _logger.Error("Trying to apply migrations without database connected");
                 return;
             }
 
-            _logger.LogInformation("Applying migrations");
+            _logger.Info("Applying migrations");
             var db = _dbContext.Database;
             try
             {
@@ -107,18 +103,18 @@ namespace Patronage.Api.Controllers
                 if (pendingMigrations.Any())
                 {
                     db.Migrate();
-                    _logger.LogInformation($"{pendingMigrations.Count()} pending migrations applied");
+                    _logger.Info($"{pendingMigrations.Count()} pending migrations applied");
                 }
                 else
                 {
-                    _logger.LogInformation("No migrations need to be applied");
+                    _logger.Info("No migrations need to be applied");
                 }
                 var lastAppliedMigration = (db.GetAppliedMigrations()).Last();
-                _logger.LogInformation($"You are on schema version: {lastAppliedMigration}");
+                _logger.Info($"You are on schema version: {lastAppliedMigration}");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.ToString());
+                _logger.Error(ex.ToString());
             }
         }
     }
