@@ -51,7 +51,7 @@ namespace Patronage.Migrations.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "6ec3b0c8-3a99-4f8c-9143-85c2e10f5d1f",
+                            Id = "ab59b070-bb62-41a5-928e-0f91132472e3",
                             ConcurrencyStamp = "1",
                             Name = "Admin",
                             NormalizedName = "Admin"
@@ -148,7 +148,7 @@ namespace Patronage.Migrations.Migrations
                         new
                         {
                             UserId = "1",
-                            RoleId = "6ec3b0c8-3a99-4f8c-9143-85c2e10f5d1f"
+                            RoleId = "ab59b070-bb62-41a5-928e-0f91132472e3"
                         });
                 });
 
@@ -246,13 +246,13 @@ namespace Patronage.Migrations.Migrations
                         {
                             Id = "1",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "615c64f9-38aa-455a-afb6-42834df35316",
+                            ConcurrencyStamp = "9427f7c4-c118-4e4f-9332-bd852d4c9d64",
                             EmailConfirmed = false,
                             FirstName = "FirstTestFirstname",
                             LockoutEnabled = false,
                             PhoneNumberConfirmed = false,
                             SecondName = "FirstTestSurname",
-                            SecurityStamp = "c5967733-1582-47c0-a3df-62803ab7943c",
+                            SecurityStamp = "05bc821a-598e-4d02-aca5-61dd3539d277",
                             TwoFactorEnabled = false
                         });
                 });
@@ -362,11 +362,8 @@ namespace Patronage.Migrations.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
-                    b.Property<string>("ApplicationUserId")
+                    b.Property<string>("AssignUserId")
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<int?>("AssignUserId")
-                        .HasColumnType("int");
 
                     b.Property<int?>("BoardId")
                         .HasColumnType("int");
@@ -396,7 +393,7 @@ namespace Patronage.Migrations.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ApplicationUserId");
+                    b.HasIndex("AssignUserId");
 
                     b.HasIndex("BoardId");
 
@@ -409,6 +406,7 @@ namespace Patronage.Migrations.Migrations
                         {
                             Id = 1,
                             Alias = "1st issue",
+                            AssignUserId = "1",
                             BoardId = 1,
                             CreatedOn = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Description = "This is a description of first test issue. This Issue is connected to a Board",
@@ -642,9 +640,9 @@ namespace Patronage.Migrations.Migrations
 
             modelBuilder.Entity("Patronage.Models.Issue", b =>
                 {
-                    b.HasOne("Patronage.Models.ApplicationUser", null)
+                    b.HasOne("Patronage.Models.ApplicationUser", "User")
                         .WithMany("Issues")
-                        .HasForeignKey("ApplicationUserId");
+                        .HasForeignKey("AssignUserId");
 
                     b.HasOne("Patronage.Models.Board", null)
                         .WithMany("Issues")
@@ -655,6 +653,8 @@ namespace Patronage.Migrations.Migrations
                         .HasForeignKey("ProjectId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Patronage.Models.ApplicationUser", b =>

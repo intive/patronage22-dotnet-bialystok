@@ -38,6 +38,11 @@ namespace Patronage.Api.Validators.Issues
                 .NotNull().WithMessage("Can not be null.")
                 .NotEmpty().WithMessage("Can not be empty.")
                 .GreaterThanOrEqualTo(1);
+
+            RuleFor(x => x.StatusId)
+                .NotNull().WithMessage("Can not be null.")
+                .NotEmpty().WithMessage("Can not be empty.")
+                .GreaterThanOrEqualTo(1);
         }
     }
 }

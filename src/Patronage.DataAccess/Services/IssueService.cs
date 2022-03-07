@@ -57,11 +57,11 @@ namespace Patronage.DataAccess.Services
             {
                 Alias = dto.Alias,
                 Name = dto.Name,
-                Description = dto.Description,
-                ProjectId = dto.ProjectId,
-                BoardId = dto.BoardId,
-                StatusId = dto.StatusId,
-                AssignUserId = dto.AssignUserId,
+                Description = dto?.Description ?? null,
+                ProjectId = dto!.ProjectId,
+                BoardId = dto?.BoardId ?? null,
+                StatusId = dto!.StatusId,
+                AssignUserId = dto?.AssignUserId ?? null,
                 IsActive = true
             };
 
@@ -79,6 +79,10 @@ namespace Patronage.DataAccess.Services
         {
             var issue = await GetByIdAsync(issueId);
             if (issue == null)
+            {
+                return false;
+            }
+            if (!issue.IsActive)
             {
                 return false;
             }
@@ -103,6 +107,10 @@ namespace Patronage.DataAccess.Services
         {
             var issue = await GetByIdAsync(issueId);
             if (issue == null)
+            {
+                return false;
+            }
+            if (!issue.IsActive)
             {
                 return false;
             }
@@ -151,6 +159,7 @@ namespace Patronage.DataAccess.Services
         public async Task<bool> DeleteAsync(int issueId)
         {
             var issue = await GetByIdAsync(issueId);
+
             if (issue == null)
             {
                 return false;
@@ -170,10 +179,14 @@ namespace Patronage.DataAccess.Services
             return false;
         }
 
-        public async Task<bool> AssignUserAsync(int issueId, int userId)
+        public async Task<bool> AssignUserAsync(int issueId, string userId)
         {
             var issue = await GetByIdAsync(issueId);
             if (issue == null)
+            {
+                return false;
+            }
+            if (!issue.IsActive)
             {
                 return false;
             }

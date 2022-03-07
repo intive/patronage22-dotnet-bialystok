@@ -10,9 +10,8 @@ namespace Patronage.Contracts.ModelDtos.Issues
         public int ProjectId { get; set; }
         public int? BoardId { get; set; }
         public int StatusId { get; set; }
-        public int? AssignUserId { get; set; }
+        public string? AssignUserId { get; set; }
         public DateTime CreatedOn { get; set; }
-        public DateTime? ModifiedOn { get; set; }
 
         public BaseIssueDto(Issue issue)
         {
@@ -24,7 +23,6 @@ namespace Patronage.Contracts.ModelDtos.Issues
             StatusId = issue.StatusId;
             AssignUserId = issue.AssignUserId;
             CreatedOn = issue.CreatedOn;
-            ModifiedOn = issue.ModifiedOn;
         }
 
         public BaseIssueDto(BaseIssueDto baseIssue)
@@ -37,7 +35,6 @@ namespace Patronage.Contracts.ModelDtos.Issues
             StatusId = baseIssue.StatusId;
             AssignUserId = baseIssue.AssignUserId;
             CreatedOn = baseIssue.CreatedOn;
-            ModifiedOn = baseIssue.ModifiedOn;
         }
 
         public BaseIssueDto()

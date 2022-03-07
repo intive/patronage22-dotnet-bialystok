@@ -167,6 +167,11 @@ public class TableContext : IdentityDbContext<ApplicationUser>
              .Property(r => r.CreatedOn)
              .IsRequired();
 
+        modelBuilder.Entity<Issue>()
+            .HasOne(p => p.User)
+            .WithMany(b => b.Issues)
+            .HasForeignKey(p => p.AssignUserId);
+
         #endregion
 
         #region DataSeed
@@ -256,7 +261,7 @@ public class TableContext : IdentityDbContext<ApplicationUser>
                     ProjectId = 1,
                     StatusId = 1,
                     BoardId = 1,
-                    AssignUserId = 1,
+                    AssignUserId = "1",
                     IsActive = true
                 },
 

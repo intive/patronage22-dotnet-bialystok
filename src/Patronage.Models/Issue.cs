@@ -17,9 +17,11 @@ namespace Patronage.Models
         public int ProjectId { get; set; }
         public int? BoardId { get; set; }
         public int StatusId { get; set; }
-        public int? AssignUserId { get; set; }
+        public string? AssignUserId { get; set; }
         public bool IsActive { get; set; }
         public DateTime CreatedOn { get; set; }
         public DateTime? ModifiedOn { get; set; }
+
+        public ApplicationUser? User { get; set; }
     }
 }

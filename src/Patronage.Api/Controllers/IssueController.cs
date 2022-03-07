@@ -195,7 +195,7 @@ namespace Patronage.Api.Controllers
         /// <response code="404">Issue or user not found.</response>
         /// <response code="500">Sorry. Try it later.</response>
         [HttpPut("{issueId}/assign/{userId}")]
-        public async Task<ActionResult> Assign([FromRoute] int issueId, [FromRoute] int userId)
+        public async Task<ActionResult> Assign([FromRoute] int issueId, [FromRoute] string userId)
         {
             var result = await _mediator.Send(new AssignIssueCommand(issueId, userId));
             if (!result)

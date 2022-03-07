@@ -1,4 +1,5 @@
-﻿using Patronage.Models;
+﻿using Microsoft.AspNetCore.Identity;
+using Patronage.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +17,6 @@ namespace Patronage.Contracts.ModelDtos.Issues
         public PropInfo<int>? BoardId { get; set; }
         public PropInfo<int>? StatusId { get; set; }
         public PropInfo<bool>? IsActive { get; set; }
-        public PropInfo<int>? AssignUserId { get; set; }
+        public PropInfo<string>? AssignUserId { get; set; }
     }
 }

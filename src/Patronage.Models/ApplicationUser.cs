@@ -7,6 +7,6 @@ namespace Patronage.Models
         public string? FirstName { get; set; }
         public string? SecondName { get; set; }
 
-        public virtual ICollection<Issue>? Issues { get; set; }
+        public List<Issue>? Issues { get; set; }
     }
 }
