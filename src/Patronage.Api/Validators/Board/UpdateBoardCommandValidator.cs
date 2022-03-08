@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using Patronage.Api.MediatR.Board.Commands.Update;
 
-namespace Patronage.Api.Validators
+namespace Patronage.Api.Validators.Board
 {
     public class UpdateBoardCommandValidator : AbstractValidator<UpdateBoardCommand>
     {
