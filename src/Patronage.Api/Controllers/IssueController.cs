@@ -189,7 +189,7 @@ namespace Patronage.Api.Controllers
         }
 
         /// <summary>
-        /// Issue assign to user.
+        /// Assigns issue to user.
         /// </summary>
         /// <response code="200">User has assigned correctly.</response>
         /// <response code="404">Issue or user not found.</response>
@@ -203,7 +203,7 @@ namespace Patronage.Api.Controllers
                 return NotFound(new BaseResponse<bool>
                 {
                     ResponseCode = StatusCodes.Status404NotFound,
-                    Message = $"There's no issue with Id: {issueId} or no user with Id: {userId}"
+                    Message = "Issue or user with given Id not found"
                 });
             }
 

@@ -78,11 +78,7 @@ namespace Patronage.DataAccess.Services
         public async Task<bool> UpdateAsync(int issueId, BaseIssueDto dto)
         {
             var issue = await GetByIdAsync(issueId);
-            if (issue == null)
-            {
-                return false;
-            }
-            if (!issue.IsActive)
+            if (issue == null || !issue.IsActive)
             {
                 return false;
             }
@@ -106,11 +102,7 @@ namespace Patronage.DataAccess.Services
         public async Task<bool> UpdateLightAsync(int issueId, PartialIssueDto dto)
         {
             var issue = await GetByIdAsync(issueId);
-            if (issue == null)
-            {
-                return false;
-            }
-            if (!issue.IsActive)
+            if (issue == null || !issue.IsActive)
             {
                 return false;
             }
@@ -159,12 +151,7 @@ namespace Patronage.DataAccess.Services
         public async Task<bool> DeleteAsync(int issueId)
         {
             var issue = await GetByIdAsync(issueId);
-
-            if (issue == null)
-            {
-                return false;
-            }
-            if (!issue.IsActive)
+            if (issue == null || !issue.IsActive)
             {
                 return false;
             }
@@ -182,11 +169,7 @@ namespace Patronage.DataAccess.Services
         public async Task<bool> AssignUserAsync(int issueId, string userId)
         {
             var issue = await GetByIdAsync(issueId);
-            if (issue == null)
-            {
-                return false;
-            }
-            if (!issue.IsActive)
+            if (issue == null || !issue.IsActive)
             {
                 return false;
             }

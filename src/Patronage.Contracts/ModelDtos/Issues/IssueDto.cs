@@ -15,10 +15,6 @@ namespace Patronage.Contracts.ModelDtos.Issues
             ModifiedOn = issue.ModifiedOn;
         }
 
-        public IssueDto(BaseIssueDto baseIssue) : base(baseIssue)
-        {
-
-        }
         public IssueDto()
         {
 

@@ -51,7 +51,6 @@ namespace Patronage.MigrationsPostgre.Migrations
                         new
                         {
                             Id = "afceb0fa-dd8b-4aa7-9242-f8c3156d11fd",
-                            Id = "23aedcb1-afc3-4da6-805b-5c6174576a6a",
                             ConcurrencyStamp = "1",
                             Name = "Admin",
                             NormalizedName = "Admin"
@@ -149,7 +148,6 @@ namespace Patronage.MigrationsPostgre.Migrations
                         {
                             UserId = "1",
                             RoleId = "afceb0fa-dd8b-4aa7-9242-f8c3156d11fd"
-                            RoleId = "23aedcb1-afc3-4da6-805b-5c6174576a6a"
                         });
                 });
 
@@ -253,7 +251,6 @@ namespace Patronage.MigrationsPostgre.Migrations
                             PhoneNumberConfirmed = false,
                             SecondName = "FirstTestSurname",
                             SecurityStamp = "4a8cf4ba-aaed-4832-8a3f-1c9d9384a220",
-                            SecurityStamp = "d4b1e76d-89cf-456a-a2a7-5c3686fc72ea",
                             TwoFactorEnabled = false
                         });
                 });

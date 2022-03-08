@@ -16,12 +16,7 @@ namespace Patronage.Api.MediatR.Issues.Queries.GetSingle
         public async Task<IssueDto?> Handle(GetSingleIssueQuery request, CancellationToken cancellationToken)
         {
             var result = await _issueService.GetByIdAsync(request.id);
-
-            if (result is null)
-            {
-                return null;
-            }
-            if (!result.IsActive)
+            if (result == null || !result.IsActive)
             {
                 return null;
             }
