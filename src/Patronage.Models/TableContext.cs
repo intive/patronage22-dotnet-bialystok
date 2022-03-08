@@ -25,7 +25,6 @@ public class TableContext : IdentityDbContext<ApplicationUser>
         // I had to add it to fix problems with identity
         base.OnModelCreating(modelBuilder);
         //Very important!!!
-        //Set every string field to .IsUnicode(false);
         //Do not use .HasColumnType("datetime"); it breaks postgre
 
         #region Project
@@ -186,32 +185,32 @@ public class TableContext : IdentityDbContext<ApplicationUser>
     private void TestDataSeed(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Project>().HasData(
-        new Project()
-        {
-            Id = 1,
-            Name = "First project",
-            Alias = "1st",
-            Description = "This is a description of first test project",
-            IsActive = true
-        },
+                new Project()
+                {
+                    Id = 1,
+                    Name = "First project",
+                    Alias = "1st",
+                    Description = "This is a description of first test project",
+                    IsActive = true
+                },
 
-        new Project()
-        {
-            Id = 2,
-            Name = "Second test project",
-            Alias = "2nd",
-            Description = "This is a description of 2nd test project",
-            IsActive = false
-        },
+                new Project()
+                {
+                    Id = 2,
+                    Name = "Second test project",
+                    Alias = "2nd",
+                    Description = "This is a description of 2nd test project",
+                    IsActive = false
+                },
 
-        new Project()
-        {
-            Id = 3,
-            Name = "Third test project",
-            Alias = "3rd",
-            Description = null,
-            IsActive = false
-        });
+                new Project()
+                {
+                    Id = 3,
+                    Name = "Third test project",
+                    Alias = "3rd",
+                    Description = null,
+                    IsActive = false
+                });
 
         modelBuilder.Entity<Board>().HasData(
                 new Board()

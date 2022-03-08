@@ -51,7 +51,7 @@ namespace Patronage.Migrations.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "524901bb-f19a-46fe-b8cd-4bb5cf3be65a",
+                            Id = "6f0d9462-98c8-4779-aaef-9e5e2846bddd",
                             ConcurrencyStamp = "1",
                             Name = "Admin",
                             NormalizedName = "Admin"
@@ -148,7 +148,7 @@ namespace Patronage.Migrations.Migrations
                         new
                         {
                             UserId = "1",
-                            RoleId = "524901bb-f19a-46fe-b8cd-4bb5cf3be65a"
+                            RoleId = "6f0d9462-98c8-4779-aaef-9e5e2846bddd"
                         });
                 });
 
@@ -246,13 +246,13 @@ namespace Patronage.Migrations.Migrations
                         {
                             Id = "1",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "777a836a-34a7-4b03-a55c-9f14c6037c8c",
+                            ConcurrencyStamp = "581e634d-5666-40c6-9452-15dad02283a1",
                             EmailConfirmed = false,
                             FirstName = "FirstTestFirstname",
                             LockoutEnabled = false,
                             PhoneNumberConfirmed = false,
                             SecondName = "FirstTestSurname",
-                            SecurityStamp = "974dc344-1a7e-4c77-9066-312c6ebc8f32",
+                            SecurityStamp = "1427e670-e8e7-4d57-96d4-8e027a0a850c",
                             TwoFactorEnabled = false
                         });
                 });
