@@ -1,11 +1,15 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Routing;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using NETCore.MailKit.Core;
+using Patronage.Contracts.Settings;
 using Patronage.Contracts.Interfaces;
 using Patronage.Contracts.ModelDtos.User;
 using Patronage.Models;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 using System.Web;
 
 namespace Patronage.DataAccess.Services
@@ -36,7 +40,7 @@ namespace Patronage.DataAccess.Services
             {
                 return false;
             }
-
+            
             var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
 
             var uriBuilder = new UriBuilder(link);
@@ -166,6 +170,24 @@ namespace Patronage.DataAccess.Services
             return true;
         }
 
+        public async Task<bool> RegisterUserTest(CreateUserDto createUser)
+        {
+            var user = new ApplicationUser
+            {
+                UserName = createUser.UserName,
+                Email = createUser.Email,
+            };
+
+            var result = await userManager.CreateAsync(user, createUser.Password);
+
+            if (result.Succeeded)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
         public async Task<string?> LoginUserAsync(SignInDto signInDto)
         {
             var user = await userManager.FindByNameAsync(signInDto.Username);
@@ -175,38 +197,41 @@ namespace Patronage.DataAccess.Services
                 return null;
             }
 
-            var result = await userManager.CheckPasswordAsync(user, signInDto.Password);
+            //var result = await userManager.CheckPasswordAsync(user, signInDto.Password);
 
-            if (!result)
-            {
-                return null;
-            }
-
-            //// alternative to above solution
-            //var signInResult = await signInManager.PasswordSignInAsync(user, signInDto.Password, false, false);
-            //if (!signInResult.Succeeded)
+            //if (!result)
             //{
             //    return null;
             //}
 
-            //var claims = new[]
-            //{
-            //    new Claim(ClaimTypes.Name, signInDto.Username),
-            //    new Claim(ClaimTypes.NameIdentifier, user.Id),
-            //};
+            var signInResult = await signInManager.PasswordSignInAsync(user, signInDto.Password, false, false);
+            if (!signInResult.Succeeded)
+            {
+                return null;
+            }
 
-            //var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["AuthSettings:Key"]));
+            var claims = new[]
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, user.Id),
+                new Claim(ClaimTypes.Name, signInDto.Username),
+            };
 
-            //var token = new JwtSecurityToken(
-            //    issuer: _configuration["AuthSettings:Issuer"],
-            //    audience: _configuration["AuthSettings:Audience"],
-            //    claims: claims,
-            //    expires: DateTime.Now.AddDays(30),
-            //    signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(AuthenticationSettings.SecretKey));
+            var algorithm = SecurityAlgorithms.HmacSha256;
 
-            //string tokenAsString = new JwtSecurityTokenHandler().WriteToken(token);
+            var signingCredentials = new SigningCredentials(key, algorithm);
 
-            return "tokenAsString";
+            var token = new JwtSecurityToken(
+                AuthenticationSettings.Issuer,
+                AuthenticationSettings.Audience,
+                claims,
+                notBefore: DateTime.Now,
+                expires: DateTime.Now.AddHours(1),
+                signingCredentials);
+
+            var tokenJson = new JwtSecurityTokenHandler().WriteToken(token);
+
+            return tokenJson;
         }
 
         public async Task LogOutUserAsync()

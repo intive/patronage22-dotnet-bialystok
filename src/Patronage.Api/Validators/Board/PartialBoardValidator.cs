@@ -2,13 +2,13 @@
 using Patronage.Contracts.ModelDtos;
 using Patronage.Models;
 
-namespace Patronage.Api.Validators
+namespace Patronage.Api.Validators.Board
 {
-    public class BoardDtoValidator : AbstractValidator<BoardDto>
+    public class PartialBoardValidator : AbstractValidator<PartialBoardDto>
     {
-        public BoardDtoValidator(TableContext tableContext)
+        public PartialBoardValidator(TableContext tableContext)
         {
-            RuleFor(x => x.Alias)
+            RuleFor(x => x.Alias!.Data)
                 .NotNull().WithMessage("Can not be null.")
                 .NotEmpty().WithMessage("Can not be empty.")
                 .MaximumLength(256).WithMessage("Can not exceed 256 characters.")
@@ -19,9 +19,10 @@ namespace Patronage.Api.Validators
                     {
                         context.AddFailure("Alias", "This board's alias has been already taken");
                     }
-                }); ;
+                })
+                .When(y => y.Alias != null);
 
-            RuleFor(x => x.Name)
+            RuleFor(x => x.Name!.Data)
                 .NotNull().WithMessage("Can not be null.")
                 .NotEmpty().WithMessage("Can not be empty.")
                 .MaximumLength(1024).WithMessage("Can not exceed 1024 characters.")
@@ -32,17 +33,17 @@ namespace Patronage.Api.Validators
                     {
                         context.AddFailure("Name", "This board's name has been already taken");
                     }
-                }); ;
+                })
+                .When(y => y.Name != null);
 
-            RuleFor(x => x.Description)
+            RuleFor(x => x.Description!.Data)
                 .NotNull().WithMessage("Can not be null.")
-                .NotEmpty().WithMessage("Can not be empty.");
+                .NotEmpty().WithMessage("Can not be empty.")
+                .When(y => y.Description != null);
 
-            RuleFor(x => x.ProjectId)
-                .NotNull().WithMessage("Can not be null.");
-
-            RuleFor(x => x.IsActive)
-                .NotNull().WithMessage("Can not be null.");
+            RuleFor(x => x.ProjectId!.Data)
+                .NotNull().WithMessage("Can not be null.")
+                .When(y => y.ProjectId != null);
         }
     }
 }

@@ -11,22 +11,13 @@ using FluentValidation;
 using Patronage.Api;
 using Patronage.Api.Middleware;
 using Npgsql;
-using Patronage.Api.Validators;
-using Patronage.Api.MediatR.Issues.Queries.GetIssues;
 using Microsoft.AspNetCore.Identity;
-using NETCore.MailKit.Extensions;
-using NETCore.MailKit.Infrastructure.Internal;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using System.Text;
 
 var logger = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
 logger.Info("Starting");
 
 try
 {
-
-
     var builder = WebApplication.CreateBuilder(args);
     builder.Services.AddControllers();
     // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -100,26 +91,6 @@ try
         });
     }
 
-    builder.Services.AddAuthentication(config =>
-    {
-        config.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-        config.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-        config.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-    }).AddJwtBearer(config =>
-    {
-        config.SaveToken = true;
-        config.RequireHttpsMetadata = false;
-        config.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authenticationSettings.JwtKey)),
-            ValidateIssuer = false,
-            ValidateAudience = false,
-            RequireExpirationTime = false,
-            ValidateLifetime = true
-        };
-    });
-
     builder.Services.AddScoped<IIssueService, IssueService>();
     builder.Services.AddScoped<IProjectService, ProjectService>();
     builder.Services.AddScoped<IBoardService, BoardService>();
@@ -138,31 +109,19 @@ try
 
     builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
-    builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
-        .AddEntityFrameworkStores<TableContext>()
-        .AddDefaultTokenProviders();
-
-    if(Environment.GetEnvironmentVariable("IS_HEROKU") == "true")
+    builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
     {
-        var mailkitOptions = new MailKitOptions()
-        {
-            Server = Environment.GetEnvironmentVariable("EMAIL_SERVER"),
-            Port = Int32.Parse(Environment.GetEnvironmentVariable("EMAIL_PORT") ?? throw new Exception("Could not parse EMAIL_PORT to integer. EMAIL_PORT is null.")),
-            SenderName = Environment.GetEnvironmentVariable("EMAIL_SENDERNAME"),
-            SenderEmail = Environment.GetEnvironmentVariable("EMAIL_SENDEREMAIL"),
-            Account = Environment.GetEnvironmentVariable("EMAIL_ACCOUNT"),
-            Password = Environment.GetEnvironmentVariable("EMAIL_PASSWORD"),
-            Security = Environment.GetEnvironmentVariable("EMAIL_SECURITY") == "true"
-        };
+        options.Password.RequireUppercase = false;
+        options.Password.RequireLowercase = false;
+        options.Password.RequireNonAlphanumeric = false;
+        options.Password.RequiredLength = 1;
+    })
+    .AddEntityFrameworkStores<TableContext>()
+    .AddDefaultTokenProviders();
 
-        builder.Services.AddMailKit(config => config.UseMailKit(mailkitOptions));
-    }
-    else
-    {
-        var mailkitOptions = builder.Configuration.GetSection("Email").Get<MailKitOptions>();
+    builder.Services.AddEmailService(builder.Configuration);
 
-        builder.Services.AddMailKit(config => config.UseMailKit(mailkitOptions));
-    }
+    builder.Services.AddAuthenticationConfiguration();
 
     var app = builder.Build();
 

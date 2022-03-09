@@ -11,5 +11,6 @@ namespace Patronage.Contracts.Interfaces
         Task<bool> RecoverPasswordAsync(NewUserPasswordDto userPasswordDto);
         Task<string?> LoginUserAsync(SignInDto signInDto);
         Task LogOutUserAsync();
+        Task<bool> RegisterUserTest(CreateUserDto createUser);
     }
 }
