@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace Patronage.Api.MediatR.Issues.Commands.Delete
+namespace Patronage.Api.MediatR.Issues.Commands
 {
     public class DeleteIssueCommand : IRequest<bool>
     {

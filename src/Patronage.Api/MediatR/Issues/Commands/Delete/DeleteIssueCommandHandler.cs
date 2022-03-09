@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Patronage.Contracts.Interfaces;
 
-namespace Patronage.Api.MediatR.Issues.Commands.Delete
+namespace Patronage.Api.MediatR.Issues.Commands
 {
     public class DeleteIssueCommandHandler : IRequestHandler<DeleteIssueCommand, bool>
     {

@@ -2,7 +2,7 @@
 using Patronage.Contracts.Interfaces;
 using Patronage.Contracts.ModelDtos.Issues;
 
-namespace Patronage.Api.MediatR.Issues.Queries.GetSingle
+namespace Patronage.Api.MediatR.Issues.Queries
 {
     public class GetSingleIssueQueryHandler : IRequestHandler<GetSingleIssueQuery, IssueDto?>
     {

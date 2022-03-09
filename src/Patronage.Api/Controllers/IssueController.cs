@@ -1,15 +1,10 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Patronage.Api.MediatR.Issues.Commands.Create;
-using Patronage.Api.MediatR.Issues.Commands.Delete;
-using Patronage.Api.MediatR.Issues.Commands.UpdateLight;
-using Patronage.Api.MediatR.Issues.Commands.Update;
-using Patronage.Api.MediatR.Issues.Queries.GetAll;
-using Patronage.Api.MediatR.Issues.Queries.GetSingle;
+using Patronage.Api.MediatR.Issues.Commands;
+using Patronage.Api.MediatR.Issues.Queries;
 using Patronage.Contracts.Helpers;
 using Patronage.Contracts.ModelDtos.Issues;
 using Patronage.DataAccess;
-using Patronage.Api.MediatR.Issues.Commands.Assign;
 
 namespace Patronage.Api.Controllers
 {

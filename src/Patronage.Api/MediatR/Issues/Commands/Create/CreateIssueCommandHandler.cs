@@ -2,7 +2,7 @@
 using Patronage.Contracts.Interfaces;
 using Patronage.Contracts.ModelDtos.Issues;
 
-namespace Patronage.Api.MediatR.Issues.Commands.Create
+namespace Patronage.Api.MediatR.Issues.Commands
 {
     public class CreateIssueCommandHandler : IRequestHandler<CreateIssueCommand, IssueDto?>
     {

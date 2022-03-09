@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using Patronage.Api.MediatR.Issues.Commands.Update;
+using Patronage.Api.MediatR.Issues.Commands;
 using Patronage.Api.Validators.Issues;
 
 namespace Patronage.Api.Validators

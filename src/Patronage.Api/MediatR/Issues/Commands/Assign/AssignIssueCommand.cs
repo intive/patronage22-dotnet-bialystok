@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace Patronage.Api.MediatR.Issues.Commands.Assign
+namespace Patronage.Api.MediatR.Issues.Commands
 {
     public class AssignIssueCommand : IRequest<bool>
     {

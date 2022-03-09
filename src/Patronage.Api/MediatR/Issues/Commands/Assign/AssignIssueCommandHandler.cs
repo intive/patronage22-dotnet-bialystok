@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Patronage.Contracts.Interfaces;
 
-namespace Patronage.Api.MediatR.Issues.Commands.Assign
+namespace Patronage.Api.MediatR.Issues.Commands
 {
     public class AssignIssueCommandHandler : IRequestHandler<AssignIssueCommand, bool>
     {

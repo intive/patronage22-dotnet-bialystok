@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Patronage.Contracts.ModelDtos.Issues;
 
-namespace Patronage.Api.MediatR.Issues.Commands.UpdateLight
+namespace Patronage.Api.MediatR.Issues.Commands
 {
     public class UpdateLightIssueCommand : IRequest<bool>
     {
