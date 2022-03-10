@@ -22,6 +22,7 @@ namespace Patronage.Models
         public DateTime CreatedOn { get; set; }
         public DateTime? ModifiedOn { get; set; }
 
-        public ApplicationUser? User { get; set; }
+        public ApplicationUser User { get; set; } = null!;
+        public List<Comment>? Comment { get; set; }
     }
 }

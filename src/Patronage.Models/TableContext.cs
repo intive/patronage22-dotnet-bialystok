@@ -13,6 +13,7 @@ public class TableContext : IdentityDbContext<ApplicationUser>
     public virtual DbSet<Board> Boards => Set<Board>();
     public virtual DbSet<Status> Statuses => Set<Status>();
     public virtual DbSet<BoardStatus> BoardsStatus => Set<BoardStatus>();
+    public virtual DbSet<Comment> Comment => Set<Comment>();
 
     public TableContext(DbContextOptions options) : base(options)
     {
@@ -170,6 +171,32 @@ public class TableContext : IdentityDbContext<ApplicationUser>
             .HasOne(p => p.User)
             .WithMany(b => b.Issues)
             .HasForeignKey(p => p.AssignUserId);
+
+        #endregion
+
+        modelBuilder.Entity<Comment>()
+             .Property(r => r.IssueId)
+             .IsRequired();
+
+        modelBuilder.Entity<Comment>()
+             .Property(r => r.Content)
+             .HasMaxLength(500);
+
+        modelBuilder.Entity<Comment>()
+             .Property(r => r.CreatedOn)
+             .IsRequired();
+
+        modelBuilder.Entity<Comment>()
+            .HasOne(p => p.Issue)
+            .WithMany(b => b.Comment)
+            .HasForeignKey(p => p.IssueId);
+
+        modelBuilder.Entity<Comment>()
+            .HasOne(p => p.User)
+            .WithMany(b => b.Comment)
+            .HasForeignKey(p => p.UserId);
+
+        #region Comment
 
         #endregion
 

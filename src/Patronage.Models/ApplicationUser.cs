@@ -8,5 +8,6 @@ namespace Patronage.Models
         public string? SecondName { get; set; }
 
         public List<Issue>? Issues { get; set; }
+        public List<Comment>? Comment { get; set; }
     }
 }
