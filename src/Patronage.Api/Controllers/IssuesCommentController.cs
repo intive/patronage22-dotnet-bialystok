@@ -7,38 +7,31 @@ namespace Patronage.Api.Controllers
 {
     [Route("api/issue/comments")]
     [ApiController]
-    public class IssuesCommentsController : ControllerBase
+    public class IssuesCommentController : ControllerBase
     {
         private readonly IMediator _mediator;
 
-        public IssuesCommentsController(IMediator mediator)
+        public IssuesCommentController(IMediator mediator)
         {
             _mediator = mediator;
         }
 
         [HttpGet("{issueId}")]
-        public ActionResult<PageResult<BaseIssueCommentDto>> GetAllCommentFromIssue([FromRoute] int issueId)
+        public ActionResult<PageResult<BaseCommentDto>> GetAllCommentFromIssue([FromRoute] int issueId)
         {
             
             return Ok();
         }
 
         [HttpPost("{issueId}")]
-        public ActionResult Create([FromRoute] int issueId)
+        public ActionResult Create([FromBody] BaseCommentDto dto)
         {
 
             return Ok();
         }
 
         [HttpPatch("{issueId}/{commentId}")]
-        public ActionResult UpdateLight([FromBody] PartialIssueCommentDto dto, [FromRoute] int issueId, [FromRoute] int commentId)
-        {
-
-            return Ok();
-        }
-
-        [HttpDelete("{issueId}/{commentId}")]
-        public ActionResult Delete([FromRoute] int issueId, [FromRoute] int commentId)
+        public ActionResult UpdateLight([FromBody] PartialCommentDto dto, [FromRoute] int issueId, [FromRoute] int commentId)
         {
 
             return Ok();
