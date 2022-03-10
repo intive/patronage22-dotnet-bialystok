@@ -17,6 +17,6 @@ namespace Patronage.Models
         public DateTime CreatedOn { get; set; }
         public DateTime? ModifiedOn { get; set; }
 
-        public ICollection<Issue>? Issues { get; set; }
+        public virtual ICollection<Issue>? Issues { get; set; }
     }
 }

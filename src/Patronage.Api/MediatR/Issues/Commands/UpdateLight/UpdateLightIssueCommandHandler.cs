@@ -1,9 +1,7 @@
-﻿using AutoMapper;
-using MediatR;
-using Patronage.Api.Exceptions;
+﻿using MediatR;
 using Patronage.Contracts.Interfaces;
 
-namespace Patronage.Api.MediatR.Issues.Commands.LightUpdateIssue
+namespace Patronage.Api.MediatR.Issues.Commands
 {
     public class UpdateLightIssueCommandHandler : IRequestHandler<UpdateLightIssueCommand, bool>
     {

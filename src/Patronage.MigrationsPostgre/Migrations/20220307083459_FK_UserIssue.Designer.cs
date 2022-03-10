@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Patronage.Models;
@@ -11,9 +12,10 @@ using Patronage.Models;
 namespace Patronage.MigrationsPostgre.Migrations
 {
     [DbContext(typeof(TableContext))]
-    partial class TableContextModelSnapshot : ModelSnapshot
+    [Migration("20220307083459_FK_UserIssue")]
+    partial class FK_UserIssue
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -50,7 +52,7 @@ namespace Patronage.MigrationsPostgre.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "afceb0fa-dd8b-4aa7-9242-f8c3156d11fd",
+                            Id = "23aedcb1-afc3-4da6-805b-5c6174576a6a",
                             ConcurrencyStamp = "1",
                             Name = "Admin",
                             NormalizedName = "Admin"
@@ -147,7 +149,7 @@ namespace Patronage.MigrationsPostgre.Migrations
                         new
                         {
                             UserId = "1",
-                            RoleId = "afceb0fa-dd8b-4aa7-9242-f8c3156d11fd"
+                            RoleId = "23aedcb1-afc3-4da6-805b-5c6174576a6a"
                         });
                 });
 
@@ -250,7 +252,7 @@ namespace Patronage.MigrationsPostgre.Migrations
                             LockoutEnabled = false,
                             PhoneNumberConfirmed = false,
                             SecondName = "FirstTestSurname",
-                            SecurityStamp = "4a8cf4ba-aaed-4832-8a3f-1c9d9384a220",
+                            SecurityStamp = "d4b1e76d-89cf-456a-a2a7-5c3686fc72ea",
                             TwoFactorEnabled = false
                         });
                 });

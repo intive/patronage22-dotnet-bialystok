@@ -1,15 +1,10 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Patronage.Api.MediatR.Issues.Commands.CreateIssue;
-using Patronage.Api.MediatR.Issues.Commands.DeleteIssue;
-using Patronage.Api.MediatR.Issues.Commands.LightUpdateIssue;
-using Patronage.Api.MediatR.Issues.Commands.UpdateIssue;
-using Patronage.Api.MediatR.Issues.Queries.GetIssues;
-using Patronage.Api.MediatR.Issues.Queries.GetSingleIssue;
+using Patronage.Api.MediatR.Issues.Commands;
+using Patronage.Api.MediatR.Issues.Queries;
 using Patronage.Contracts.Helpers;
 using Patronage.Contracts.ModelDtos.Issues;
 using Patronage.DataAccess;
-using Swashbuckle.AspNetCore.Annotations;
 
 namespace Patronage.Api.Controllers
 {
@@ -24,8 +19,15 @@ namespace Patronage.Api.Controllers
             _mediator = mediator;
         }
 
-        [SwaggerOperation(Summary = "Returns all Issues")]
-        [HttpGet("list")]
+        /// <summary>
+        /// Returns all Issues. When you give "SearchPhrase" in Query you will receive only issue
+        /// in which name, alias or description contains this phrase.
+        /// You need to add the PageSize and PageNumber.
+        /// </summary>
+        /// <response code="200">Searched issues.</response>
+        /// <response code="404">Issues not found.</response>
+        /// <response code="500">Sorry. Try it later.</response>
+        [HttpGet]
         public async Task<ActionResult<PageResult<IssueDto>>> GetAllIssues([FromQuery] FilterIssueDto filter)
         {
             var result = await _mediator.Send(new GetIssuesListQuery(filter));
@@ -45,7 +47,12 @@ namespace Patronage.Api.Controllers
             });
         }
 
-        [SwaggerOperation(Summary = "Returns Issue by id")]
+        /// <summary>
+        /// Returns Issue by id.
+        /// </summary>
+        /// <response code="200">Searched issue.</response>
+        /// <response code="404">Issue not found.</response>
+        /// <response code="500">Sorry. Try it later.</response>
         [HttpGet("{issueId}")]
         public async Task<ActionResult<IssueDto>> GetIssueById([FromRoute] int issueId)
         {
@@ -66,8 +73,14 @@ namespace Patronage.Api.Controllers
             });
         }
 
-        [SwaggerOperation(Summary = "Creates Issue")]
-        [HttpPost("create")]
+        /// <summary>
+        /// Creates Issue.
+        /// </summary>
+        /// <response code="201">Issue correctly created.</response>
+        /// <response code="400">Pease insert correct JSON object with parameters.</response>
+        /// <response code="404">Issue not found.</response>
+        /// <response code="500">Sorry. Try it later.</response>
+        [HttpPost]
         public async Task<ActionResult> Create([FromBody] CreateIssueCommand command)
         {
             var result = await _mediator.Send(command);
@@ -82,13 +95,19 @@ namespace Patronage.Api.Controllers
             return Ok(new BaseResponse<IssueDto>
             {
                 Message = "Issue was created successfully",
-                ResponseCode = StatusCodes.Status200OK,
+                ResponseCode = StatusCodes.Status201Created,
                 Data = result
             });
         }
 
-        [SwaggerOperation(Summary = "Updates Issue")]
-        [HttpPut("update/{issueId}")]
+        /// <summary>
+        /// Updates issue - it's all properties.
+        /// </summary>
+        /// <response code="200">Issue correctly updated.</response>
+        /// <response code="400">Pease insert correct JSON object with parameters.</response>
+        /// <response code="404">Issue not found.</response>
+        /// <response code="500">Sorry. Try it later.</response>
+        [HttpPut("{issueId}")]
         public async Task<ActionResult> Update([FromBody] BaseIssueDto dto, [FromRoute] int issueId)
         {
             var result = await _mediator.Send(new UpdateIssueCommand(issueId, dto));
@@ -109,8 +128,14 @@ namespace Patronage.Api.Controllers
             });
         }
 
-        [SwaggerOperation(Summary = "Light Update Issue")]
-        [HttpPatch("updateLight/{issueId}")]
+        /// <summary>
+        /// Updates issue - only selected properties.
+        /// </summary>
+        /// <response code="200">Issue correctly updated.</response>
+        /// <response code="400">Pease insert correct JSON object with parameters.</response>
+        /// <response code="404">Issue not found.</response>
+        /// <response code="500">Sorry. Try it later.</response>
+        [HttpPatch("{issueId}")]
         public async Task<ActionResult> UpdateLight([FromBody] PartialIssueDto dto, [FromRoute] int issueId)
         {
             var result = await _mediator.Send(new UpdateLightIssueCommand(issueId, dto));
@@ -131,8 +156,13 @@ namespace Patronage.Api.Controllers
             });
         }
 
-        [SwaggerOperation(Summary = "Soft delete Issue by Id")]
-        [HttpDelete("delete/{issueId}")]
+        /// <summary>
+        /// Deletes Issue. (Changes flag "IsActive" to false - Soft delete))
+        /// </summary>
+        /// <response code="200">Issue correctly deleted.</response>
+        /// <response code="404">Issue not found.</response>
+        /// <response code="500">Sorry. Try it later.</response>
+        [HttpDelete("{issueId}")]
         public async Task<ActionResult> Delete([FromRoute] int issueId)
         {
             var result = await _mediator.Send(new DeleteIssueCommand(issueId));
@@ -148,6 +178,33 @@ namespace Patronage.Api.Controllers
             return Ok(new BaseResponse<bool>
             {
                 Message = "Issue was deleted successfully",
+                ResponseCode = StatusCodes.Status200OK,
+                Data = result
+            });
+        }
+
+        /// <summary>
+        /// Assigns issue to user.
+        /// </summary>
+        /// <response code="200">User has assigned correctly.</response>
+        /// <response code="404">Issue or user not found.</response>
+        /// <response code="500">Sorry. Try it later.</response>
+        [HttpPut("{issueId}/assign/{userId}")]
+        public async Task<ActionResult> Assign([FromRoute] int issueId, [FromRoute] string userId)
+        {
+            var result = await _mediator.Send(new AssignIssueCommand(issueId, userId));
+            if (!result)
+            {
+                return NotFound(new BaseResponse<bool>
+                {
+                    ResponseCode = StatusCodes.Status404NotFound,
+                    Message = "Issue or user with given Id not found"
+                });
+            }
+
+            return Ok(new BaseResponse<bool>
+            {
+                Message = "The user has been assigned to the issue successfully",
                 ResponseCode = StatusCodes.Status200OK,
                 Data = result
             });

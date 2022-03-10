@@ -362,6 +362,9 @@ namespace Patronage.Migrations.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
+                    b.Property<string>("AssignUserId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<int?>("BoardId")
                         .HasColumnType("int");
 
@@ -390,6 +393,8 @@ namespace Patronage.Migrations.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("AssignUserId");
+
                     b.HasIndex("BoardId");
 
                     b.HasIndex("ProjectId");
@@ -401,6 +406,7 @@ namespace Patronage.Migrations.Migrations
                         {
                             Id = 1,
                             Alias = "1st issue",
+                            AssignUserId = "1",
                             BoardId = 1,
                             CreatedOn = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Description = "This is a description of first test issue. This Issue is connected to a Board",
@@ -634,6 +640,10 @@ namespace Patronage.Migrations.Migrations
 
             modelBuilder.Entity("Patronage.Models.Issue", b =>
                 {
+                    b.HasOne("Patronage.Models.ApplicationUser", "User")
+                        .WithMany("Issues")
+                        .HasForeignKey("AssignUserId");
+
                     b.HasOne("Patronage.Models.Board", null)
                         .WithMany("Issues")
                         .HasForeignKey("BoardId");
@@ -643,6 +653,13 @@ namespace Patronage.Migrations.Migrations
                         .HasForeignKey("ProjectId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Patronage.Models.ApplicationUser", b =>
+                {
+                    b.Navigation("Issues");
                 });
 
             modelBuilder.Entity("Patronage.Models.Board", b =>
