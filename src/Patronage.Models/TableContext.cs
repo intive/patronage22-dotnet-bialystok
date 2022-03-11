@@ -179,6 +179,10 @@ public class TableContext : IdentityDbContext<ApplicationUser>
              .IsRequired();
 
         modelBuilder.Entity<Comment>()
+             .Property(r => r.UserId)
+             .IsRequired();
+
+        modelBuilder.Entity<Comment>()
              .Property(r => r.Content)
              .HasMaxLength(500);
 

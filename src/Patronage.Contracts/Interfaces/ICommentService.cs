@@ -1,12 +1,15 @@
 ﻿using Patronage.Contracts.Helpers;
+using Patronage.Contracts.ModelDtos.Comments;
 using Patronage.Contracts.ModelDtos.IssuesComments;
+using Patronage.Models;
 
 namespace Patronage.Contracts.Interfaces
 {
-    public interface ICommentService
+    public interface ICommentService : IEntityService<Comment>
     {
-        Task<PageResult<BaseCommentDto>?> GetAllCommentFromIssue(int issueId);
-        Task<CommentDto?> CreateAsync(BaseCommentDto issue);
-        Task<bool> UpdateLightAsync(int issueId, int commentId, PartialCommentDto dto);
+        Task<PageResult<CommentDto>?> GetAllCommentFromIssue(FilterCommentDto filter);
+        Task<CommentDto?> CreateAsync(BaseCommentDto dto);
+        Task<bool> UpdateLightAsync(int commentId, PartialCommentDto dto);
+        Task<bool> DeleteAsync(int commentId);
     }
 }
