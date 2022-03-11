@@ -1,6 +1,6 @@
 ﻿using Patronage.Models;
 
-namespace Patronage.Contracts.ModelDtos.IssuesComments
+namespace Patronage.Contracts.ModelDtos.Comments
 {
     public class CommentDto : BaseCommentDto
     {

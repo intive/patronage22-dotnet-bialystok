@@ -1,4 +1,4 @@
-﻿namespace Patronage.Contracts.ModelDtos.IssuesComments
+﻿namespace Patronage.Contracts.ModelDtos.Comments
 {
     public class PartialCommentDto
     {

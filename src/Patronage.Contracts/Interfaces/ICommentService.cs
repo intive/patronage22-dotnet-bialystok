@@ -1,6 +1,5 @@
 ﻿using Patronage.Contracts.Helpers;
 using Patronage.Contracts.ModelDtos.Comments;
-using Patronage.Contracts.ModelDtos.IssuesComments;
 using Patronage.Models;
 
 namespace Patronage.Contracts.Interfaces
