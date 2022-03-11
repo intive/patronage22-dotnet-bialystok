@@ -1,7 +1,10 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Patronage.Api.MediatR.Comment.Commands;
+using Patronage.Api.MediatR.Comment.Queries;
 using Patronage.Contracts.Helpers;
-using Patronage.Contracts.ModelDtos.IssuesComments;
+using Patronage.Contracts.ModelDtos.Comments;
+using Patronage.DataAccess;
 
 namespace Patronage.Api.Controllers
 {
@@ -16,25 +19,85 @@ namespace Patronage.Api.Controllers
             _mediator = mediator;
         }
 
+        /// <summary>
+        /// Returns all Comments by Issue Id.
+        /// You need to add the PageSize and PageNumber.
+        /// </summary>
+        /// <response code="200">Searched issues.</response>
+        /// <response code="404">Issues not found.</response>
+        /// <response code="500">Sorry. Try it later.</response>
         [HttpGet("{issueId}")]
-        public ActionResult<PageResult<BaseCommentDto>> GetAllCommentFromIssue([FromRoute] int issueId)
+        public async Task<ActionResult<PageResult<CommentDto>>> GetAllCommentFromIssue([FromQuery] FilterCommentDto filter)
         {
-            
-            return Ok();
+            var result = await _mediator.Send(new GetCommentsListQuery(filter));
+            if (result is null)
+            {
+                return NotFound(new BaseResponse<PageResult<CommentDto>>
+                {
+                    ResponseCode = StatusCodes.Status404NotFound,
+                    Message = $"There's no comments for issue id: {filter.IssueId}"
+                });
+            }
+
+            return Ok(new BaseResponse<PageResult<CommentDto>>
+            {
+                ResponseCode = StatusCodes.Status200OK,
+                Data = result
+            });
         }
 
-        [HttpPost("{issueId}")]
-        public ActionResult Create([FromBody] BaseCommentDto dto)
+        /// <summary>
+        /// Creates Comment for Issue.
+        /// </summary>
+        /// <response code="201">Comment correctly created.</response>
+        /// <response code="400">Pease insert correct JSON object with parameters.</response>
+        /// <response code="500">Sorry. Try it later.</response>
+        [HttpPost]
+        public async Task<ActionResult> Create([FromBody] CreateCommentCommand command)
         {
+            var result = await _mediator.Send(command);
+            if (result is null)
+            {
+                return BadRequest(new BaseResponse<CommentDto>
+                {
+                    ResponseCode = StatusCodes.Status400BadRequest,
+                });
+            }
 
-            return Ok();
+            return Ok(new BaseResponse<CommentDto>
+            {
+                Message = $"Comment was created successfully for issue id: {command.Data.IssueId}",
+                ResponseCode = StatusCodes.Status201Created,
+                Data = result
+            });
         }
 
-        [HttpPatch("{issueId}/{commentId}")]
-        public ActionResult UpdateLight([FromBody] PartialCommentDto dto, [FromRoute] int issueId, [FromRoute] int commentId)
+        /// <summary>
+        /// Updates comment - only content.
+        /// </summary>
+        /// <response code="200">Comment correctly updated.</response>
+        /// <response code="400">Pease insert correct JSON object with parameters.</response>
+        /// <response code="404">Comment not found.</response>
+        /// <response code="500">Sorry. Try it later.</response>
+        [HttpPatch("{commentId}")]
+        public async Task<ActionResult> UpdateLight([FromBody] PartialCommentDto dto, [FromRoute] int commentId)
         {
+            var result = await _mediator.Send(new UpdateLightCommentCommand(commentId, dto));
+            if (!result)
+            {
+                return NotFound(new BaseResponse<bool>
+                {
+                    ResponseCode = StatusCodes.Status404NotFound,
+                    Message = $"There's no comment with Id: {commentId}"
+                });
+            }
 
-            return Ok();
+            return Ok(new BaseResponse<bool>
+            {
+                Message = "Comment was updated successfully",
+                ResponseCode = StatusCodes.Status200OK,
+                Data = result
+            });
         }
     }
 }

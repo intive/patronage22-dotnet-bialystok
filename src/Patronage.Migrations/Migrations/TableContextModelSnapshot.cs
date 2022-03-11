@@ -51,7 +51,7 @@ namespace Patronage.Migrations.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "3c16497c-2de1-4420-92f8-0b683e5a7cd9",
+                            Id = "6f0d9462-98c8-4779-aaef-9e5e2846bddd",
                             ConcurrencyStamp = "1",
                             Name = "Admin",
                             NormalizedName = "Admin"
@@ -148,7 +148,7 @@ namespace Patronage.Migrations.Migrations
                         new
                         {
                             UserId = "1",
-                            RoleId = "3c16497c-2de1-4420-92f8-0b683e5a7cd9"
+                            RoleId = "6f0d9462-98c8-4779-aaef-9e5e2846bddd"
                         });
                 });
 
@@ -246,13 +246,13 @@ namespace Patronage.Migrations.Migrations
                         {
                             Id = "1",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "e5f5b51b-41fd-430f-b823-3f4d71a8c2df",
+                            ConcurrencyStamp = "581e634d-5666-40c6-9452-15dad02283a1",
                             EmailConfirmed = false,
                             FirstName = "FirstTestFirstname",
                             LockoutEnabled = false,
                             PhoneNumberConfirmed = false,
                             SecondName = "FirstTestSurname",
-                            SecurityStamp = "8ec8c3f2-5665-4116-9337-05a243e2ba10",
+                            SecurityStamp = "1427e670-e8e7-4d57-96d4-8e027a0a850c",
                             TwoFactorEnabled = false
                         });
                 });
@@ -292,7 +292,7 @@ namespace Patronage.Migrations.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Boards");
+                    b.ToTable("Boards", (string)null);
 
                     b.HasData(
                         new
@@ -329,7 +329,7 @@ namespace Patronage.Migrations.Migrations
 
                     b.HasIndex("StatusId");
 
-                    b.ToTable("BoardsStatus");
+                    b.ToTable("BoardsStatus", (string)null);
 
                     b.HasData(
                         new
@@ -349,40 +349,6 @@ namespace Patronage.Migrations.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Patronage.Models.Comment", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("IssueId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("ModifiedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("IssueId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Comment");
-                });
-
             modelBuilder.Entity("Patronage.Models.Issue", b =>
                 {
                     b.Property<int>("Id")
@@ -395,9 +361,6 @@ namespace Patronage.Migrations.Migrations
                         .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("AssignUserId")
-                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int?>("BoardId")
                         .HasColumnType("int");
@@ -427,20 +390,17 @@ namespace Patronage.Migrations.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AssignUserId");
-
                     b.HasIndex("BoardId");
 
                     b.HasIndex("ProjectId");
 
-                    b.ToTable("Issues");
+                    b.ToTable("Issues", (string)null);
 
                     b.HasData(
                         new
                         {
                             Id = 1,
                             Alias = "1st issue",
-                            AssignUserId = "1",
                             BoardId = 1,
                             CreatedOn = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Description = "This is a description of first test issue. This Issue is connected to a Board",
@@ -500,7 +460,7 @@ namespace Patronage.Migrations.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Logs");
+                    b.ToTable("Logs", (string)null);
                 });
 
             modelBuilder.Entity("Patronage.Models.Project", b =>
@@ -537,7 +497,7 @@ namespace Patronage.Migrations.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Projects");
+                    b.ToTable("Projects", (string)null);
 
                     b.HasData(
                         new
@@ -582,7 +542,7 @@ namespace Patronage.Migrations.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Statuses");
+                    b.ToTable("Statuses", (string)null);
 
                     b.HasData(
                         new
@@ -672,29 +632,8 @@ namespace Patronage.Migrations.Migrations
                     b.Navigation("Status");
                 });
 
-            modelBuilder.Entity("Patronage.Models.Comment", b =>
-                {
-                    b.HasOne("Patronage.Models.Issue", "Issue")
-                        .WithMany("Comment")
-                        .HasForeignKey("IssueId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Patronage.Models.ApplicationUser", "User")
-                        .WithMany("Comment")
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("Issue");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("Patronage.Models.Issue", b =>
                 {
-                    b.HasOne("Patronage.Models.ApplicationUser", "User")
-                        .WithMany("Issues")
-                        .HasForeignKey("AssignUserId");
-
                     b.HasOne("Patronage.Models.Board", null)
                         .WithMany("Issues")
                         .HasForeignKey("BoardId");
@@ -704,15 +643,6 @@ namespace Patronage.Migrations.Migrations
                         .HasForeignKey("ProjectId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Patronage.Models.ApplicationUser", b =>
-                {
-                    b.Navigation("Comment");
-
-                    b.Navigation("Issues");
                 });
 
             modelBuilder.Entity("Patronage.Models.Board", b =>
@@ -720,11 +650,6 @@ namespace Patronage.Migrations.Migrations
                     b.Navigation("BoardStatuses");
 
                     b.Navigation("Issues");
-                });
-
-            modelBuilder.Entity("Patronage.Models.Issue", b =>
-                {
-                    b.Navigation("Comment");
                 });
 
             modelBuilder.Entity("Patronage.Models.Project", b =>

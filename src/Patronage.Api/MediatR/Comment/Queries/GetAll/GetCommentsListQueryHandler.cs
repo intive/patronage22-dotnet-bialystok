@@ -3,7 +3,7 @@ using Patronage.Contracts.Helpers;
 using Patronage.Contracts.Interfaces;
 using Patronage.Contracts.ModelDtos.Comments;
 
-namespace Patronage.Api.MediatR.Issues.Queries
+namespace Patronage.Api.MediatR.Comment.Queries
 {
     public class GetCommentsListQueryHandler : IRequestHandler<GetCommentsListQuery, PageResult<CommentDto>?>
     {

@@ -78,7 +78,6 @@ namespace Patronage.Api.Controllers
         /// </summary>
         /// <response code="201">Issue correctly created.</response>
         /// <response code="400">Pease insert correct JSON object with parameters.</response>
-        /// <response code="404">Issue not found.</response>
         /// <response code="500">Sorry. Try it later.</response>
         [HttpPost]
         public async Task<ActionResult> Create([FromBody] CreateIssueCommand command)

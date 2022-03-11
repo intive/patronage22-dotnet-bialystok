@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Patronage.Contracts.Interfaces;
 
-namespace Patronage.Api.MediatR.Issues.Commands
+namespace Patronage.Api.MediatR.Comment.Commands
 {
     public class UpdateLightCommentCommandHandler : IRequestHandler<UpdateLightCommentCommand, bool>
     {

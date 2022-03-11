@@ -21,6 +21,7 @@ namespace Patronage.DataAccess.Services
             var baseQuery = _dbContext
                 .Issues
                 .Where(x => x.IsActive == true)
+                .Include(x => x.Comment)
                 .AsQueryable();
 
             if (!baseQuery.Any())
@@ -188,6 +189,7 @@ namespace Patronage.DataAccess.Services
         {
             var result = await _dbContext
                 .Issues
+                .Include(x => x.Comment)
                 .FirstOrDefaultAsync(x => x.Id == issueId);
 
             return result;

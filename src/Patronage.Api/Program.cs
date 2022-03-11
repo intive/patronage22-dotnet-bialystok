@@ -38,6 +38,7 @@ try
     builder.Services.AddScoped<IBoardStatusService, BoardStatusService>();
     builder.Services.AddScoped<IUserService, UserService>();
     builder.Services.AddScoped<IStatusService, StatusService>();
+    builder.Services.AddScoped<ICommentService, CommentService>();
 
     builder.Services.AddScoped<ErrorHandlingMiddleware>();
 
