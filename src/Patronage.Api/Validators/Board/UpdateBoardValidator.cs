@@ -4,9 +4,9 @@ using Patronage.Models;
 
 namespace Patronage.Api.Validators.Board
 {
-    public class BoardDtoValidator : AbstractValidator<BoardDto>
+    public class UpdateBoardValidator : AbstractValidator<UpdateBoardDto>
     {
-        public BoardDtoValidator(TableContext tableContext)
+        public UpdateBoardValidator(TableContext tableContext)
         {
             RuleFor(x => x.Alias)
                 .NotNull().WithMessage("Can not be null.")
@@ -41,7 +41,7 @@ namespace Patronage.Api.Validators.Board
             RuleFor(x => x.ProjectId)
                 .NotNull().WithMessage("Can not be null.");
 
-            RuleFor(x => x.IsActive)
+            RuleFor(x => x.StatusId)
                 .NotNull().WithMessage("Can not be null.");
         }
     }

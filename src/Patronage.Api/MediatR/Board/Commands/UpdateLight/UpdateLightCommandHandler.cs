@@ -14,7 +14,7 @@ namespace Patronage.Api.MediatR.Board.Commands.UpdateLight
 
         public async Task<bool> Handle(UpdateBoardLightCommand request, CancellationToken cancellationToken)
         {
-            return await boardService.UpdateBoardLightAsync(request.Data);
+            return await boardService.UpdateBoardLightAsync(request.Data, request.Id);
         }
     }
 }

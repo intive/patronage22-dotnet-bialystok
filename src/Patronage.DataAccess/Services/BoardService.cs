@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Patronage.Contracts.Interfaces;
-using Patronage.Contracts.ModelDtos;
+using Patronage.Contracts.ModelDtos.Board;
 using Patronage.Models;
 
 namespace Patronage.DataAccess.Services
@@ -81,9 +81,9 @@ namespace Patronage.DataAccess.Services
             return mapper.Map<IEnumerable<BoardDto>>(boards);
         }
 
-        public async Task<bool> UpdateBoardAsync(BoardDto request)
+        public async Task<bool> UpdateBoardAsync(UpdateBoardDto request, int id)
         {
-            var board = await tableContext.Boards.FirstOrDefaultAsync(x => x.Id == request.Id);
+            var board = await tableContext.Boards.FirstOrDefaultAsync(x => x.Id == id);
 
             if (board is null)
                 return false;
@@ -98,12 +98,12 @@ namespace Patronage.DataAccess.Services
             return false;
         }
 
-        public async Task<bool> UpdateBoardLightAsync(PartialBoardDto request)
+        public async Task<bool> UpdateBoardLightAsync(PartialBoardDto request, int id)
         {
             if (request is null)
                 return false;
 
-            var board = await tableContext.Boards.FirstOrDefaultAsync(x => x.Id == request.Id);
+            var board = await tableContext.Boards.FirstOrDefaultAsync(x => x.Id == id);
 
             if (board is null)
                 return false;

@@ -1,4 +1,4 @@
-﻿using Patronage.Contracts.ModelDtos;
+﻿using Patronage.Contracts.ModelDtos.Board;
 
 namespace Patronage.Contracts.Interfaces
 {
@@ -7,8 +7,8 @@ namespace Patronage.Contracts.Interfaces
         Task<IEnumerable<BoardDto>?> GetBoardsAsync(FilterBoardDto? filter = null);
         Task<BoardDto?> CreateBoardAsync(BoardDto request);
         Task<BoardDto?> GetBoardByIdAsync(int id);
-        Task<bool> UpdateBoardAsync(BoardDto request);
-        Task<bool> UpdateBoardLightAsync(PartialBoardDto request);
+        Task<bool> UpdateBoardAsync(UpdateBoardDto request, int id);
+        Task<bool> UpdateBoardLightAsync(PartialBoardDto request, int id);
         Task<bool> DeleteBoardAsync(int id);
     }
 }
