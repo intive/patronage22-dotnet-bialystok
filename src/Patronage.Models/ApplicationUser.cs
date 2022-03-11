@@ -7,4 +7,9 @@ namespace Patronage.Models
         public string? FirstName { get; set; }
         public string? SecondName { get; set; }
     }
+
+    public class TokenUser : IdentityUserToken<string>
+    {
+        public DateTime DatexTime { get; set; }
+    }
 }

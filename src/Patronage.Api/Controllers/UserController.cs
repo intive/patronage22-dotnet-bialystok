@@ -309,5 +309,15 @@ namespace Patronage.Api.Controllers
             });
 
         }
+
+        [HttpPost("refreshtoken")]
+        public async Task<ActionResult> RefreshToken([FromHeader(Name ="RefreshToken")] string refreshToken, [FromHeader(Name = "Bearer")] string accessToken)
+        {
+            
+            var response = _userService.RefreshTokenAsync(refreshToken, accessToken);          
+            return Ok(response);
+        }
+
+
     }
 }

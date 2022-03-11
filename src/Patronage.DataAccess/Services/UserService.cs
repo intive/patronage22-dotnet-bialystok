@@ -3,12 +3,14 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using NETCore.MailKit.Core;
-using Patronage.Contracts.Settings;
 using Patronage.Contracts.Interfaces;
 using Patronage.Contracts.ModelDtos.User;
+using Patronage.Contracts.ResponseModels;
+using Patronage.Contracts.Settings;
 using Patronage.Models;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using System.Web;
 
@@ -21,26 +23,33 @@ namespace Patronage.DataAccess.Services
         private readonly TableContext tableContext;
         private readonly IEmailService emailService;
         private readonly ILoggerFactory logger;
+        private readonly ITokenService _tokenService;
 
         public UserService(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager,
-            TableContext tableContext, IEmailService emailService, ILoggerFactory logger)
+            TableContext tableContext, IEmailService emailService, ILoggerFactory logger, ITokenService tokenService)
         {
             this.userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
             this.signInManager = signInManager ?? throw new ArgumentNullException(nameof(signInManager));
             this.tableContext = tableContext ?? throw new ArgumentNullException(nameof(tableContext));
             this.emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _tokenService = tokenService;
         }
+
+
+
+
+
 
         public async Task<bool> ResendEmailConfirmationAsync(string id, string link)
         {
             var user = await userManager.FindByIdAsync(id);
 
-            if(user == null)
+            if (user == null)
             {
                 return false;
             }
-            
+
             var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
 
             var uriBuilder = new UriBuilder(link);
@@ -114,7 +123,8 @@ namespace Patronage.DataAccess.Services
 
                 await transaction.CommitAsync();
 
-                return new UserDto { 
+                return new UserDto
+                {
                     Id = user.Id,
                     Email = user.Email,
                     UserName = user.UserName
@@ -126,7 +136,7 @@ namespace Patronage.DataAccess.Services
         {
             var user = await userManager.FindByIdAsync(id);
 
-            if(user == null)
+            if (user == null)
             {
                 return false;
             }
@@ -150,7 +160,7 @@ namespace Patronage.DataAccess.Services
         {
             var user = await userManager.FindByIdAsync(userPasswordDto.Id);
 
-            if(user == null)
+            if (user == null)
             {
                 return false;
             }
@@ -188,55 +198,96 @@ namespace Patronage.DataAccess.Services
             return false;
         }
 
-        public async Task<string?> LoginUserAsync(SignInDto signInDto)
+        public async Task<RefreshTokenResponse?> LoginUserAsync(SignInDto signInDto)
         {
             var user = await userManager.FindByNameAsync(signInDto.Username);
 
-            if (user is null)
+            if (user is not null)
             {
+                var signInResult = await signInManager.PasswordSignInAsync(user, signInDto.Password, false, false);
+              
+                if (signInResult.Succeeded)
+                {
+                    var claims = new[]
+                    {
+                        new Claim(JwtRegisteredClaimNames.Sub, user.Id),
+                        new Claim(ClaimTypes.Name, user.UserName)
+                    };
+
+                    var accessToken = _tokenService.GenerateAccessToken(claims);
+                    var newRefreshToken = _tokenService.GenerateRefreshToken();
+                    var userRefreshTokenRecord = tableContext.UserTokens.FirstOrDefault(u => u.UserId == user.Id);
+                    if (userRefreshTokenRecord is null)
+                    {
+                        tableContext.UserTokens.Add(new TokenUser
+                        {
+                            UserId = user.Id,
+                            LoginProvider = "111",
+                            Name = "RefreshToken",
+                            Value = newRefreshToken
+                        });
+                    }
+                    else
+                    {
+                        userRefreshTokenRecord.Value = newRefreshToken;
+                    }
+                    await tableContext.SaveChangesAsync();
+                    var response = new RefreshTokenResponse
+                    {
+                        RefreshToken = newRefreshToken,
+                        AccessToken = accessToken
+                    };
+
+                    return response;
+                }
                 return null;
             }
-
-            //var result = await userManager.CheckPasswordAsync(user, signInDto.Password);
-
-            //if (!result)
-            //{
-            //    return null;
-            //}
-
-            var signInResult = await signInManager.PasswordSignInAsync(user, signInDto.Password, false, false);
-            if (!signInResult.Succeeded)
-            {
-                return null;
-            }
-
-            var claims = new[]
-            {
-                new Claim(JwtRegisteredClaimNames.Sub, user.Id),
-                new Claim(ClaimTypes.Name, signInDto.Username),
-            };
-
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(AuthenticationSettings.SecretKey));
-            var algorithm = SecurityAlgorithms.HmacSha256;
-
-            var signingCredentials = new SigningCredentials(key, algorithm);
-
-            var token = new JwtSecurityToken(
-                AuthenticationSettings.Issuer,
-                AuthenticationSettings.Audience,
-                claims,
-                notBefore: DateTime.Now,
-                expires: DateTime.Now.AddHours(1),
-                signingCredentials);
-
-            var tokenJson = new JwtSecurityTokenHandler().WriteToken(token);
-
-            return tokenJson;
+            return null;
         }
 
+        public async Task<RefreshTokenResponse> RefreshTokenAsync(
+            string refreshToken,
+            string accessToken
+            )
+        {
+            var principal = _tokenService.GetPrincipalFromExpiredToken(accessToken);
+
+            var userRefreshTokenRecord = tableContext.UserTokens.FirstOrDefault(u => u.Value == refreshToken);
+
+            if (userRefreshTokenRecord == null)
+            {
+                // TODO: change throw to return? 
+                Console.WriteLine("usertoken is null");
+                throw new Exception();
+            }
+            var user = tableContext.Users.FirstOrDefault(u => u.Id == userRefreshTokenRecord.UserId);
+            if (user == null || userRefreshTokenRecord.Value != refreshToken)
+            {
+                // TODO: change throw to return? 
+                Console.WriteLine("usertoken is null");
+                throw new Exception();
+            }
+            var newAccessToken = _tokenService.GenerateAccessToken(principal.Claims);
+            var newRefreshToken = _tokenService.GenerateRefreshToken();
+
+            userRefreshTokenRecord.Value = newRefreshToken;
+            tableContext.SaveChanges();
+            var response = new RefreshTokenResponse
+            {
+                RefreshToken = newRefreshToken,
+                AccessToken = accessToken
+            };
+
+            return response;
+        }
         public async Task LogOutUserAsync()
         {
             await signInManager.SignOutAsync();
         }
+
     }
 }
+
+
+
+
