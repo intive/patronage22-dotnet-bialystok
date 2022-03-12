@@ -6,14 +6,14 @@ namespace Patronage.Contracts.ModelDtos.Comments
     {
         public string Content { get; set; } = null!;
         public int IssueId { get; set; }
-        public string UserId { get; set; }
+        public string ApplicationUserId { get; set; }
         public DateTime CreatedOn { get; set; }
 
         public BaseCommentDto(Comment comment)
         {
             Content = comment.Content;
             IssueId = comment.IssueId;
-            UserId = comment.UserId;
+            ApplicationUserId = comment.ApplicationUserId;
             CreatedOn = comment.CreatedOn;
         }
 
@@ -21,11 +21,13 @@ namespace Patronage.Contracts.ModelDtos.Comments
         {
             Content = baseComment.Content;
             IssueId = baseComment.IssueId;
-            UserId = baseComment.UserId;
+            ApplicationUserId = baseComment.ApplicationUserId;
             CreatedOn = baseComment.CreatedOn;
         }
 
+#pragma warning disable CS8618
         public BaseCommentDto()
+#pragma warning restore CS8618
         {
 
         }

@@ -179,7 +179,7 @@ public class TableContext : IdentityDbContext<ApplicationUser>
              .IsRequired();
 
         modelBuilder.Entity<Comment>()
-             .Property(r => r.UserId)
+             .Property(r => r.ApplicationUserId)
              .IsRequired();
 
         modelBuilder.Entity<Comment>()
@@ -189,16 +189,6 @@ public class TableContext : IdentityDbContext<ApplicationUser>
         modelBuilder.Entity<Comment>()
              .Property(r => r.CreatedOn)
              .IsRequired();
-
-        modelBuilder.Entity<Comment>()
-            .HasOne(p => p.Issue)
-            .WithMany(b => b.Comment)
-            .HasForeignKey(p => p.IssueId);
-
-        modelBuilder.Entity<Comment>()
-            .HasOne(p => p.User)
-            .WithMany(b => b.Comment)
-            .HasForeignKey(p => p.UserId);
 
         #region Comment
 

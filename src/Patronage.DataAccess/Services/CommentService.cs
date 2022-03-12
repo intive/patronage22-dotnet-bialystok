@@ -55,7 +55,7 @@ namespace Patronage.DataAccess.Services
             {
                 Content = dto.Content,
                 IssueId = dto.IssueId,
-                UserId = dto.UserId,
+                ApplicationUserId = dto.ApplicationUserId,
             };
 
             _dbContext.Comment.Add(comment);

@@ -99,5 +99,32 @@ namespace Patronage.Api.Controllers
                 Data = result
             });
         }
+
+        /// <summary>
+        /// Deletes Comment.
+        /// </summary>
+        /// <response code="200">Deletes correctly deleted.</response>
+        /// <response code="404">Deletes not found.</response>
+        /// <response code="500">Sorry. Try it later.</response>
+        [HttpDelete("{commentId}")]
+        public async Task<ActionResult> Delete([FromRoute] int commentId)
+        {
+            var result = await _mediator.Send(new DeleteCommentCommand(commentId));
+            if (!result)
+            {
+                return NotFound(new BaseResponse<bool>
+                {
+                    ResponseCode = StatusCodes.Status404NotFound,
+                    Message = $"There's no comment with Id: {commentId}"
+                });
+            }
+
+            return Ok(new BaseResponse<bool>
+            {
+                Message = "Comment was deleted successfully",
+                ResponseCode = StatusCodes.Status200OK,
+                Data = result
+            });
+        }
     }
 }
