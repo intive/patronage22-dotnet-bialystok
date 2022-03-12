@@ -5,11 +5,16 @@ namespace Patronage.Api
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddEmailService(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddEmailService(this IServiceCollection services, IConfiguration configuration) =>
+            services.AddMailKit(config => config.UseMailKit(GetMailKitOptions(configuration)));
+
+        public static MailKitOptions GetMailKitOptions(IConfiguration configuration)
         {
+            MailKitOptions mailKitOptions;
+
             if (Environment.GetEnvironmentVariable("IS_HEROKU") == "true")
             {
-                var mailkitOptions = new MailKitOptions()
+                mailKitOptions = new MailKitOptions()
                 {
                     Server = Environment.GetEnvironmentVariable("EMAIL_SERVER"),
                     Port = Int32.Parse(Environment.GetEnvironmentVariable("EMAIL_PORT") ?? throw new Exception("Could not parse EMAIL_PORT to integer. EMAIL_PORT is null.")),
@@ -19,17 +24,13 @@ namespace Patronage.Api
                     Password = Environment.GetEnvironmentVariable("EMAIL_PASSWORD"),
                     Security = Environment.GetEnvironmentVariable("EMAIL_SECURITY") == "true"
                 };
-
-                services.AddMailKit(config => config.UseMailKit(mailkitOptions));
             }
             else
             {
-                var mailkitOptions = configuration.GetSection("Email").Get<MailKitOptions>();
-
-                services.AddMailKit(config => config.UseMailKit(mailkitOptions));
+                mailKitOptions = configuration.GetSection("Email").Get<MailKitOptions>();
             }
 
-            return services;
+            return mailKitOptions;
         }
     }
 }
