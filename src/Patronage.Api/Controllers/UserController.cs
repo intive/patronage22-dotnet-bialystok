@@ -124,7 +124,7 @@ namespace Patronage.Api.Controllers
                 return NotFound(new BaseResponse<bool>
                 {
                     ResponseCode = StatusCodes.Status404NotFound,
-                    Message = $"There's no user with Emial: {email}"
+                    Message = $"There's no user with Email: {email}"
                 });
             }
 
