@@ -38,7 +38,7 @@ namespace Patronage.Api.Controllers
             {
                 return BadRequest(new BaseResponse<BoardDto>
                 {
-                    ResponseCode = StatusCodes.Status500InternalServerError,
+                    ResponseCode = StatusCodes.Status400BadRequest,
                     Message = "Board could not be created."
                 });
             }
@@ -156,7 +156,6 @@ namespace Patronage.Api.Controllers
         /// <response code="200">Board was updated successfully.</response>
         /// <response code="404">There's no board with requested Id.</response>
         /// <returns>True if board was updated successfully.</returns>
-        [SwaggerOperation(Summary = "Updates Board - only selected properties")]
         [HttpPatch("updateLight/{id:int}")]
         public async Task<ActionResult<BaseResponse<bool>>> UpdateBoardLight([FromBody] PartialBoardDto boardDto, [FromRoute] int id)
         {

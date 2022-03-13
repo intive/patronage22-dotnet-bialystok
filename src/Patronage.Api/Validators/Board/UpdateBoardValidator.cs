@@ -9,8 +9,8 @@ namespace Patronage.Api.Validators.Board
         public UpdateBoardValidator(TableContext tableContext)
         {
             RuleFor(x => x.Alias)
-                .NotNull().WithMessage("Can not be null.")
-                .NotEmpty().WithMessage("Can not be empty.")
+                .NotNull()
+                .NotEmpty()
                 .MaximumLength(256).WithMessage("Can not exceed 256 characters.")
                 .Custom((value, context) =>
                 {
@@ -22,8 +22,8 @@ namespace Patronage.Api.Validators.Board
                 }); ;
 
             RuleFor(x => x.Name)
-                .NotNull().WithMessage("Can not be null.")
-                .NotEmpty().WithMessage("Can not be empty.")
+                .NotNull()
+                .NotEmpty()
                 .MaximumLength(1024).WithMessage("Can not exceed 1024 characters.")
                 .Custom((value, context) =>
                 {
@@ -35,14 +35,14 @@ namespace Patronage.Api.Validators.Board
                 }); ;
 
             RuleFor(x => x.Description)
-                .NotNull().WithMessage("Can not be null.")
-                .NotEmpty().WithMessage("Can not be empty.");
+                .NotNull()
+                .NotEmpty();
 
             RuleFor(x => x.ProjectId)
-                .NotNull().WithMessage("Can not be null.");
+                .NotNull();
 
             RuleFor(x => x.StatusId)
-                .NotNull().WithMessage("Can not be null.");
+                .NotNull();
         }
     }
 }
