@@ -99,7 +99,7 @@ namespace Patronage.Api.Controllers
         /// </summary>
         /// <param name="email">User's email</param>
         /// <response code="200">Email was resent successfully.</response>
-        /// <response code="404">There's no user with this Id.</response>
+        /// <response code="404">There's no user registered with this email address. Check spelling and try again.</response>
         /// <response code="500">Link could not be created.</response>
         [HttpPost("resend/{email}")]
         public async Task<ActionResult<bool>> ResendConfirmationEmailAsync(string email)
