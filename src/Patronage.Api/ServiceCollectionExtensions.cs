@@ -5,7 +5,6 @@ using Microsoft.Net.Http.Headers;
 using NETCore.MailKit.Extensions;
 using NETCore.MailKit.Infrastructure.Internal;
 using Newtonsoft.Json;
-using Patronage.Contracts.Settings;
 using System.Text;
 
 namespace Patronage.Api
@@ -39,7 +38,7 @@ namespace Patronage.Api
             return services;
         }
 
-        public static IServiceCollection AddAuthenticationConfiguration(this IServiceCollection services)
+        public static IServiceCollection AddAuthenticationConfiguration(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddAuthentication(config =>
             {
@@ -52,14 +51,15 @@ namespace Patronage.Api
                 config.RequireHttpsMetadata = false;
                 config.TokenValidationParameters = new TokenValidationParameters
                 {
-                    ValidIssuer = AuthenticationSettings.Issuer,
-                    ValidAudience = AuthenticationSettings.Audience,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(AuthenticationSettings.SecretKey)),
-                    ValidateIssuer = false,
-                    ValidateAudience = false,
+                    ValidIssuer = configuration["Authentication:Issuer"],
+                    ValidAudience = configuration["Authentication:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Authentication:SecretKey"])),
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
                     ValidateIssuerSigningKey = true,
                     RequireExpirationTime = false,
                     ValidateLifetime = true,
+                    ClockSkew = TimeSpan.Zero
                 };
                 config.Events = new JwtBearerEvents
                 {

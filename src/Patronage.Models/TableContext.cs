@@ -306,21 +306,10 @@ public class TableContext : IdentityDbContext<
         modelBuilder.Entity<ApplicationUser>().HasData(
             new ApplicationUser
             {
-                Id = "1",
-                FirstName = "FirstTestFirstname",
-                SecondName = "FirstTestSurname",
-
+                Id = "679381f2-06a1-4e22-beda-179e8e9e3236",
+                UserName = "TestUser1",
+                Email = "test1@mail.com",
+                PasswordHash = "AQAAAAEAACcQAAAAEIR44hzbnj/pCIqsHG4vIPm/ARO5F+qPlxQp9Wjhn+EBi/q73B+RlmXZNV+yUOvgPQ=="
             });
-
-        var ide = Guid.NewGuid().ToString();
-
-        modelBuilder.Entity<IdentityRole>().HasData(
-
-             new IdentityRole() { Id = ide, Name = "Admin", ConcurrencyStamp = "1", NormalizedName = "Admin" }
-             );
-
-        modelBuilder.Entity<IdentityUserRole<string>>().HasData(
-             new IdentityUserRole<string>() { RoleId = ide, UserId = "1" }
-             );
     }
 }

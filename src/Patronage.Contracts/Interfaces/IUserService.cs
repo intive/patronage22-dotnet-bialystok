@@ -13,6 +13,6 @@ namespace Patronage.Contracts.Interfaces
         Task<RefreshTokenResponse?> LoginUserAsync(SignInDto signInDto);
         Task LogOutUserAsync();
         Task<bool> RegisterUserTest(CreateUserDto createUser);
-        Task<RefreshTokenResponse> RefreshTokenAsync(string token, string accessToken);
+        Task<RefreshTokenResponse> RefreshTokenAsync(string refreshToken, string accessToken);
     }
 }

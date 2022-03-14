@@ -6,7 +6,6 @@ using NETCore.MailKit.Core;
 using Patronage.Contracts.Interfaces;
 using Patronage.Contracts.ModelDtos.User;
 using Patronage.Contracts.ResponseModels;
-using Patronage.Contracts.Settings;
 using Patronage.Models;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -247,8 +246,7 @@ namespace Patronage.DataAccess.Services
 
         public async Task<RefreshTokenResponse> RefreshTokenAsync(
             string refreshToken,
-            string accessToken
-            )
+            string accessToken)
         {
             var principal = _tokenService.GetPrincipalFromExpiredToken(accessToken);
 
@@ -280,6 +278,7 @@ namespace Patronage.DataAccess.Services
 
             return response;
         }
+
         public async Task LogOutUserAsync()
         {
             await signInManager.SignOutAsync();
