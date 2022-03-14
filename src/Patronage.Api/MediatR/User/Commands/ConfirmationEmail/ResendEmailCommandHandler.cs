@@ -14,7 +14,7 @@ namespace Patronage.Api.MediatR.User.Commands.ConfirmationEmail
 
         public Task<bool> Handle(ResendEmailCommand request, CancellationToken cancellationToken)
         {
-            return userService.ResendEmailConfirmationAsync(request.Id, request.Link);
+            return userService.ResendEmailConfirmationAsync(request.Email, request.Link);
         }
     }
 }
