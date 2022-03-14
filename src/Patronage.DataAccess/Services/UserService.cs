@@ -280,7 +280,7 @@ namespace Patronage.DataAccess.Services
             {
 
                 RefreshToken = newRefreshToken,
-                AccessToken = accessToken
+                AccessToken = newAccessToken
             };
 
             return response;

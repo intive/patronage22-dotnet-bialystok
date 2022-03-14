@@ -61,33 +61,6 @@ namespace Patronage.Api
                     ValidateLifetime = true,
                     ClockSkew = TimeSpan.Zero
                 };
-                config.Events = new JwtBearerEvents
-                {
-                    OnAuthenticationFailed = async context =>
-                    {
-                        Console.WriteLine("jestem przed");
-                        Console.WriteLine(context.Exception.GetType());
-                        if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
-                        {
-                            var client = new HttpClient();
-                            var recivedToken = context.HttpContext.Request.Headers["RefreshToken"];
-
-                            context.HttpContext.Response.Redirect("https://localhost:7009/api/user/refreshtoken");
-
-                            //Console.WriteLine(recivedToken);
-                            //Console.WriteLine("jestem tutaj");
-                            //var json = JsonConvert.SerializeObject(recivedToken);
-                            //var requestMessage = new HttpRequestMessage(
-                            //    HttpMethod.Post, new Uri("https://localhost:7009/api/user/refreshtoken"));
-                            //requestMessage.Content = new StringContent(json,Encoding.UTF8);
-                            //await client.SendAsync(requestMessage);
-
-                        }
-                        Console.WriteLine("jestem po");
-
-                        return;
-                    }
-                };
             });
             return services;
         }
