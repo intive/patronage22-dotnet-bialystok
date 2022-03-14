@@ -265,15 +265,15 @@ namespace Patronage.DataAccess.Services
             var user = tableContext.Users.FirstOrDefault(u => u.Id == userRefreshTokenRecord.UserId);
             if (user == null || userRefreshTokenRecord.Value != refreshToken)
             {
-                // TODO: change throw to return?  
+                // TODO: change throw to return? 
                 Console.WriteLine("usertoken is null");
                 throw new Exception();
             }
             var newAccessToken = _tokenService.GenerateAccessToken(principal.Claims);
             var newRefreshToken = _tokenService.GenerateRefreshToken();
 
-            //tableContext.UserTokens.Update(userRefreshTokenRecord);
-            userRefreshTokenRecord.Value = newRefreshToken;
+            userRefreshTokenRecord.Value = newRefreshToken.Token;
+            userRefreshTokenRecord.ValidUntil = newRefreshToken.ValidUntil;
             
             await tableContext.SaveChangesAsync();
 
