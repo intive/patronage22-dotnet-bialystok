@@ -261,29 +261,51 @@ namespace Patronage.DataAccess.Services
             var user = tableContext.Users.FirstOrDefault(u => u.Id == userRefreshTokenRecord.UserId);
             if (user == null || userRefreshTokenRecord.Value != refreshToken)
             {
-                // TODO: change throw to return? 
+                // TODO: change throw to return?  
                 Console.WriteLine("usertoken is null");
                 throw new Exception();
             }
             var newAccessToken = _tokenService.GenerateAccessToken(principal.Claims);
             var newRefreshToken = _tokenService.GenerateRefreshToken();
 
+            //tableContext.UserTokens.Update(userRefreshTokenRecord);
             userRefreshTokenRecord.Value = newRefreshToken;
-            tableContext.SaveChanges();
+            
+            await tableContext.SaveChangesAsync();
+
             var response = new RefreshTokenResponse
             {
                 RefreshToken = newRefreshToken,
-                AccessToken = accessToken
+                AccessToken = newAccessToken
             };
-
+            
             return response;
         }
 
-        public async Task LogOutUserAsync()
+        public async Task<bool> LogOutUserAsync(string accessToken)
         {
             await signInManager.SignOutAsync();
-        }
 
+            var principal = _tokenService.GetPrincipalFromExpiredToken(accessToken);
+
+            var expiryDateUnix = long.Parse(principal.Claims.Single(x => x.Type == JwtRegisteredClaimNames.Exp).Value);
+
+            var expiryDateTimeUtc = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)
+                .AddSeconds(expiryDateUnix);
+
+            if (expiryDateTimeUtc < DateTime.UtcNow)
+            {
+                return false;
+            }
+
+            var userId = principal.Claims.Single(x => x.Type == JwtRegisteredClaimNames.Sub).Value;
+
+            var userRefreshTokenRecord = tableContext.UserTokens.Single(u => u.UserId == userId);
+
+            userRefreshTokenRecord.Value = null;
+
+            return true;
+        }
     }
 }
 

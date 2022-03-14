@@ -2,5 +2,5 @@
 
 namespace Patronage.Api.MediatR.User.Commands.SignOut
 {
-    public record SignOutCommand() : IRequest;
+    public record SignOutCommand(string accessToken) : IRequest<bool>;
 }

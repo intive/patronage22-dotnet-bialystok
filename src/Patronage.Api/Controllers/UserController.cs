@@ -276,11 +276,20 @@ namespace Patronage.Api.Controllers
         /// <response code="200">Successfully signed in</response>
         /// <response code="500">Sorry. Try it later</response>
         [HttpPost("logoff")]
-        public async Task<ActionResult> Logoff()
+        public async Task<ActionResult> Logoff([FromBody] string accessToken)
         {
-            await mediator.Send(new SignOutCommand());
+            var isSucceded = await mediator.Send(new SignOutCommand(accessToken));
+            
+            if (!isSucceded)
+            {
+                return Unauthorized(new BaseResponse<bool>
+                {
+                    ResponseCode = StatusCodes.Status401Unauthorized,
+                    Message = "Your access token is inactive"
+                });
+            }
 
-            return Ok(new BaseResponse<object>
+            return Ok(new BaseResponse<bool>
             {
                 ResponseCode = StatusCodes.Status200OK,
                 Message = "You have been signed out successfully"
@@ -307,17 +316,14 @@ namespace Patronage.Api.Controllers
                 Data = null,
                 Message = "You have not been registered"
             });
-
         }
 
         [HttpPost("refreshtoken")]
         public async Task<ActionResult> RefreshToken([FromHeader(Name ="RefreshToken")] string refreshToken, [FromHeader(Name = "Bearer")] string accessToken)
         {
             
-            var response = _userService.RefreshTokenAsync(refreshToken, accessToken);          
+            var response = await _userService.RefreshTokenAsync(refreshToken, accessToken);          
             return Ok(response);
         }
-
-
     }
 }

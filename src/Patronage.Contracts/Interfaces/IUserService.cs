@@ -11,7 +11,7 @@ namespace Patronage.Contracts.Interfaces
         Task<bool> SendRecoveryPasswordEmailAsync(string id, string link);
         Task<bool> RecoverPasswordAsync(NewUserPasswordDto userPasswordDto);
         Task<RefreshTokenResponse?> LoginUserAsync(SignInDto signInDto);
-        Task LogOutUserAsync();
+        Task<bool> LogOutUserAsync(string accessToken);
         Task<bool> RegisterUserTest(CreateUserDto createUser);
         Task<RefreshTokenResponse> RefreshTokenAsync(string refreshToken, string accessToken);
     }

@@ -3,7 +3,7 @@ using Patronage.Contracts.Interfaces;
 
 namespace Patronage.Api.MediatR.User.Commands.SignOut
 {
-    public class SignOutHandler : IRequestHandler<SignOutCommand>
+    public class SignOutHandler : IRequestHandler<SignOutCommand, bool>
     {
         private readonly IUserService _userService;
 
@@ -12,10 +12,10 @@ namespace Patronage.Api.MediatR.User.Commands.SignOut
             _userService = userService;
         }
 
-        public async Task<Unit> Handle(SignOutCommand request, CancellationToken cancellationToken)
+        public async Task<bool> Handle(SignOutCommand request, CancellationToken cancellationToken)
         {
-            await _userService.LogOutUserAsync();
-            return Unit.Value;
+            var isTokenActive = await _userService.LogOutUserAsync(request.accessToken);
+            return isTokenActive;
         }
     }
 }

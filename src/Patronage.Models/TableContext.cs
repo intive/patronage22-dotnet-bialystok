@@ -308,7 +308,9 @@ public class TableContext : IdentityDbContext<
             {
                 Id = "679381f2-06a1-4e22-beda-179e8e9e3236",
                 UserName = "TestUser1",
+                NormalizedUserName = "TESTUSER1",
                 Email = "test1@mail.com",
+                NormalizedEmail = "TEST1@MAIL.COM",
                 PasswordHash = "AQAAAAEAACcQAAAAEIR44hzbnj/pCIqsHG4vIPm/ARO5F+qPlxQp9Wjhn+EBi/q73B+RlmXZNV+yUOvgPQ=="
             });
     }
