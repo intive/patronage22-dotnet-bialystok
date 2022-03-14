@@ -23,9 +23,8 @@ namespace Patronage.Api.Controllers
         /// Create new User and send confirmation email to User's email.
         /// </summary>
         /// <param name="createUser">JSON object with properties defining a user to create</param>
-        /// <response code="201"></response>
-        /// <response code="400">"User could not be created."</response>
-        /// <response code="500">Link could not be created.</response>
+        /// <response code="201">User was created successfully and confirmation email was sent.</response>
+        /// <response code="500">Confirmation link could not be created.</response>
         [HttpPost("create")]
         public async Task<ActionResult<UserDto>> RegisterUserAsync([FromBody] CreateUserDto createUser)
         {
@@ -42,15 +41,6 @@ namespace Patronage.Api.Controllers
                     CreateUserDto = createUser,
                     Link = link
                 });
-
-            if (result == null)
-            {
-                return BadRequest(new BaseResponse<UserDto>
-                {
-                    ResponseCode = StatusCodes.Status500InternalServerError,
-                    Message = "User could not be created."
-                });
-            }
 
             return CreatedAtAction(nameof(RegisterUserAsync), new BaseResponse<UserDto>
             {
@@ -70,7 +60,7 @@ namespace Patronage.Api.Controllers
         [HttpGet("confirm")]
         public async Task<ActionResult<bool>> VerifyEmailAsync([FromQuery] string id, string token)
         {
-            var result =  await mediator
+            var result = await mediator
                 .Send(new ConfirmEmailCommand
                 {
                     Id = id,
@@ -109,7 +99,6 @@ namespace Patronage.Api.Controllers
             if (link == null)
             {
                 throw new Exception("Link could not be created.");
-
             }
 
             var result = await mediator
@@ -137,11 +126,11 @@ namespace Patronage.Api.Controllers
         }
 
         /// <summary>
-        /// Send email with the link to generate new password for specifed user.
+        /// Send email with the link to generate new password for specifed user. You have to provide Email or Username.
         /// </summary>
-        /// <param name="sendRecoverEmail"></param>
-        /// <response code="200">Email was send successfully.</response>
-        /// <response code="404">There's no user with specified email or username.</response>
+        /// <param name="sendRecoverEmail">User's email or username.</param>
+        /// <response code="200">Email was sent successfully.</response>
+        /// <response code="404">There's no user with this email or username.</response>
         /// <response code="500">Link could not be created.</response>
         [HttpPost("recover")]
         public async Task<ActionResult<bool>> SendRecoveryPasswordEmailAsync([FromBody] RecoverPasswordDto sendRecoverEmail)
