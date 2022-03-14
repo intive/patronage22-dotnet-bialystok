@@ -17,14 +17,6 @@ namespace Patronage.Contracts.ModelDtos.Comments
             CreatedOn = comment.CreatedOn;
         }
 
-        public BaseCommentDto(BaseCommentDto baseComment)
-        {
-            Content = baseComment.Content;
-            IssueId = baseComment.IssueId;
-            ApplicationUserId = baseComment.ApplicationUserId;
-            CreatedOn = baseComment.CreatedOn;
-        }
-
 #pragma warning disable CS8618
         public BaseCommentDto()
 #pragma warning restore CS8618

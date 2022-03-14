@@ -21,7 +21,6 @@ namespace Patronage.DataAccess.Services
             var baseQuery = _dbContext
                 .Issues
                 .Where(x => x.IsActive == true)
-                .Include(x => x.Comment)
                 .AsQueryable();
 
             if (!baseQuery.Any())
@@ -37,14 +36,9 @@ namespace Patronage.DataAccess.Services
                 .Skip(filter.PageSize * (filter.PageNumber - 1))
                 .Take(filter.PageSize);
 
-            var items = await issues.ToArrayAsync();
+            var items = await issues.Select(x => new IssueDto(x)).ToListAsync();
 
-            List<IssueDto> issuesDtos = new List<IssueDto>();
-            foreach (var issue in items)
-            {
-                issuesDtos.Add(new IssueDto(issue));
-            }
-            return new PageResult<IssueDto>(issuesDtos, totalItemCount, filter.PageSize, filter.PageNumber);
+            return new PageResult<IssueDto>(items, totalItemCount, filter.PageSize, filter.PageNumber);
         }
 
         public async Task<IssueDto?> CreateAsync(BaseIssueDto dto)

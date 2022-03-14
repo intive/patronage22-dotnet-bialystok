@@ -15,7 +15,7 @@ namespace Patronage.Api.MediatR.Comment.Commands
 
         public async Task<CommentDto?> Handle(CreateCommentCommand request, CancellationToken cancellationToken)
         {
-            return await _commentService.CreateAsync(new BaseCommentDto(request.Data));
+            return await _commentService.CreateAsync(request.Data);
         }
     }
 }

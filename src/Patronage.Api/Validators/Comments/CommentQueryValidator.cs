@@ -9,6 +9,7 @@ namespace Patronage.Api.Validators.Comments
 
         public CommentQueryValidator()
         {
+            RuleFor(r => r.filter.IssueId).GreaterThanOrEqualTo(1);
             RuleFor(r => r.filter.PageNumber).GreaterThanOrEqualTo(1);
             RuleFor(r => r.filter.PageSize).Custom((value, context) =>
             {

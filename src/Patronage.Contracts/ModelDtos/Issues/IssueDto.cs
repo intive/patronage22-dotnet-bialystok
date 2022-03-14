@@ -7,7 +7,7 @@ namespace Patronage.Contracts.ModelDtos.Issues
         public int Id { get; set; }
         public bool IsActive { get; set; }
         public DateTime? ModifiedOn { get; set; }
-        public List<Comment> Comments { get; set; }
+        public List<Comment>? Comments { get; set; }
 
         public IssueDto(Issue issue) : base(issue)
         {

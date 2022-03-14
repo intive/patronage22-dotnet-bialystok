@@ -25,18 +25,6 @@ namespace Patronage.Contracts.ModelDtos.Issues
             CreatedOn = issue.CreatedOn;
         }
 
-        public BaseIssueDto(BaseIssueDto baseIssue)
-        {
-            Alias = baseIssue.Alias;
-            Name = baseIssue.Name;
-            Description = baseIssue.Description;
-            ProjectId = baseIssue.ProjectId;
-            BoardId = baseIssue.BoardId;
-            StatusId = baseIssue.StatusId;
-            AssignUserId = baseIssue.AssignUserId;
-            CreatedOn = baseIssue.CreatedOn;
-        }
-
         public BaseIssueDto()
         {
 

@@ -33,15 +33,9 @@ namespace Patronage.DataAccess.Services
                 .Skip(filter.PageSize * (filter.PageNumber - 1))
                 .Take(filter.PageSize);
 
-            var items = await comments.ToArrayAsync();
+            var items = await comments.Select(x => new CommentDto(x)).ToListAsync();
 
-            List<CommentDto> commentsDtos = new List<CommentDto>();
-            foreach (var comment in items)
-            {
-                commentsDtos.Add(new CommentDto(comment));
-            }
-
-            return new PageResult<CommentDto>(commentsDtos, totalItemCount, filter.PageSize, filter.PageNumber);
+            return new PageResult<CommentDto>(items, totalItemCount, filter.PageSize, filter.PageNumber);
         }
 
         public async Task<CommentDto?> CreateAsync(BaseCommentDto dto)

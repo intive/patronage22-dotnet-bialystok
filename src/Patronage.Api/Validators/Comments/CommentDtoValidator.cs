@@ -11,7 +11,7 @@ namespace Patronage.Api.Validators.Comments
             RuleFor(x => x.Content)
                 .NotNull()
                 .NotEmpty()
-                .MaximumLength(500).WithMessage("Can not exceed 500 characters.");
+                .MaximumLength(500);
 
 
             RuleFor(x => x.IssueId)

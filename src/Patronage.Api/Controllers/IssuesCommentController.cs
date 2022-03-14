@@ -25,8 +25,7 @@ namespace Patronage.Api.Controllers
         /// </summary>
         /// <response code="200">Searched issues.</response>
         /// <response code="404">Issues not found.</response>
-        /// <response code="500">Sorry. Try it later.</response>
-        [HttpGet("{issueId}")]
+        [HttpGet]
         public async Task<ActionResult<PageResult<CommentDto>>> GetAllCommentFromIssue([FromQuery] FilterCommentDto filter)
         {
             var result = await _mediator.Send(new GetCommentsListQuery(filter));
@@ -50,8 +49,7 @@ namespace Patronage.Api.Controllers
         /// Creates Comment for Issue.
         /// </summary>
         /// <response code="201">Comment correctly created.</response>
-        /// <response code="400">Pease insert correct JSON object with parameters.</response>
-        /// <response code="500">Sorry. Try it later.</response>
+        /// <response code="400">Please insert correct JSON object with parameters.</response>
         [HttpPost]
         public async Task<ActionResult> Create([FromBody] CreateCommentCommand command)
         {
@@ -76,9 +74,8 @@ namespace Patronage.Api.Controllers
         /// Updates comment - only content.
         /// </summary>
         /// <response code="200">Comment correctly updated.</response>
-        /// <response code="400">Pease insert correct JSON object with parameters.</response>
+        /// <response code="400">Please insert correct JSON object with parameters.</response>
         /// <response code="404">Comment not found.</response>
-        /// <response code="500">Sorry. Try it later.</response>
         [HttpPatch("{commentId}")]
         public async Task<ActionResult> UpdateLight([FromBody] PartialCommentDto dto, [FromRoute] int commentId)
         {
@@ -103,9 +100,8 @@ namespace Patronage.Api.Controllers
         /// <summary>
         /// Deletes Comment.
         /// </summary>
-        /// <response code="200">Deletes correctly deleted.</response>
-        /// <response code="404">Deletes not found.</response>
-        /// <response code="500">Sorry. Try it later.</response>
+        /// <response code="200">Comment correctly deleted.</response>
+        /// <response code="404">Comment not found.</response>
         [HttpDelete("{commentId}")]
         public async Task<ActionResult> Delete([FromRoute] int commentId)
         {
