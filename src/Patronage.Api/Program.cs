@@ -19,6 +19,15 @@ logger.Info("Starting");
 try
 {
     var builder = WebApplication.CreateBuilder(args);
+
+    var envConfig = new ConfigurationBuilder();
+    var envSettings =envConfig.AddJsonFile("appsettings.Development.json",
+                           optional: false,
+                           reloadOnChange: true)
+                           .AddEnvironmentVariables()
+                           .Build();
+    builder.Configuration.AddConfiguration(envSettings);
+
     builder.Services.AddControllers();
     // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
     builder.Services.AddEndpointsApiExplorer();

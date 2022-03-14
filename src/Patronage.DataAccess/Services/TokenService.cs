@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using Patronage.Contracts.Helpers;
+using Patronage.Contracts.Interfaces;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -7,14 +9,6 @@ using System.Text;
 
 namespace Patronage.DataAccess.Services
 {
-    public interface ITokenService
-    {
-        string GenerateAccessToken(IEnumerable<Claim> claims);
-        string GenerateRefreshToken();
-        ClaimsPrincipal GetPrincipalFromExpiredToken(string accessToken);
-    }
-
-
     public class TokenService : ITokenService
     {
         private readonly IConfiguration _configuration;
@@ -26,26 +20,31 @@ namespace Patronage.DataAccess.Services
         }
 
         public string GenerateAccessToken(IEnumerable<Claim> claims)
-		{
-			var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Authentication:SecretKey"]));
-			var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+        {
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Authentication:SecretKey"]));
+            var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-			var jwt = new JwtSecurityToken(
-				audience: Environment.GetEnvironmentVariable("Authentication:Audience") ?? _configuration["Authentication:Audience"] ,
-				issuer: _configuration["Authentication:Issuer"],
-				claims: claims, 
-				notBefore: DateTime.UtcNow,
-				expires: DateTime.UtcNow.AddMinutes(1),
-				signingCredentials: credentials
-			);
+            var jwt = new JwtSecurityToken(
+                audience: Environment.GetEnvironmentVariable("Authentication:Audience") ?? _configuration["Authentication:Audience"],
+                issuer: _configuration["Authentication:Issuer"],
+                claims: claims,
+                notBefore: DateTime.UtcNow,
+                expires: DateTime.UtcNow.AddSeconds(20),
+                signingCredentials: credentials
+            );
 
-			return new JwtSecurityTokenHandler().WriteToken(jwt);
-		}
-		public string GenerateRefreshToken()
-		{
-			var refreshToken = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
-			return refreshToken;
-		}
+            return new JwtSecurityTokenHandler().WriteToken(jwt);
+        }
+
+        public RefreshToken GenerateRefreshToken()
+        {
+            var refreshToken = new RefreshToken
+            {
+                Token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64)),
+                ValidUntil = DateTime.UtcNow.AddDays(2)
+            };
+            return refreshToken;
+        }
 
         public ClaimsPrincipal GetPrincipalFromExpiredToken(string accessToken)
         {
@@ -75,6 +74,4 @@ namespace Patronage.DataAccess.Services
             return principal;
         }
     }
-
-
 }

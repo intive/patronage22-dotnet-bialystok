@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using NETCore.MailKit.Core;
+using Patronage.Contracts.Helpers;
 using Patronage.Contracts.Interfaces;
 using Patronage.Contracts.ModelDtos.User;
 using Patronage.Contracts.ResponseModels;
@@ -223,16 +224,19 @@ namespace Patronage.DataAccess.Services
                             UserId = user.Id,
                             LoginProvider = "111",
                             Name = "RefreshToken",
-                            Value = newRefreshToken
+                            Value = newRefreshToken.Token,
+                            ValidUntil = newRefreshToken.ValidUntil,
                         });
                     }
                     else
                     {
-                        userRefreshTokenRecord.Value = newRefreshToken;
+                        userRefreshTokenRecord.Value = newRefreshToken.Token;
+                        userRefreshTokenRecord.ValidUntil = newRefreshToken.ValidUntil;
                     }
                     await tableContext.SaveChangesAsync();
                     var response = new RefreshTokenResponse
                     {
+                        
                         RefreshToken = newRefreshToken,
                         AccessToken = accessToken
                     };
@@ -275,6 +279,7 @@ namespace Patronage.DataAccess.Services
 
             var response = new RefreshTokenResponse
             {
+
                 RefreshToken = newRefreshToken,
                 AccessToken = newAccessToken
             };
