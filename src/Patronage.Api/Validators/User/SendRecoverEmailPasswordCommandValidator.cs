@@ -9,8 +9,8 @@ namespace Patronage.Api.Validators.User
         public SendRecoverEmailPasswordCommandValidator(TableContext tableContext)
         {
             RuleFor(x => x.recoverPasswordDto.Email!.Data)
-                .NotNull().WithMessage("Can not be null.")
-                .EmailAddress().WithMessage("'Email' is not a valid email address.")
+                .NotNull()
+                .EmailAddress()
                 .Custom((value, context) =>
                 {
                     var exist = tableContext.Users.Any(p => p.Email == value);
@@ -22,7 +22,7 @@ namespace Patronage.Api.Validators.User
                 .When(y => y.recoverPasswordDto.Email != null);
 
             RuleFor(x => x.recoverPasswordDto.Username!.Data)
-                .NotNull().WithMessage("'UserName can not be null.")
+                .NotNull()
                 .Custom((value, context) =>
                 {
                     var exist = tableContext.Users.Any(p => p.UserName == value);

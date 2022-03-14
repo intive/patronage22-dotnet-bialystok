@@ -9,11 +9,11 @@ namespace Patronage.Api.Validators.User
         public CreateUserValidator(TableContext tableContext)
         {
             RuleFor(x => x.Email)
-                .NotNull().WithMessage("'Email' can not be null.")
-                .EmailAddress().WithMessage("'Email' is not a valid email address.");
+                .NotNull()
+                .EmailAddress();
 
             RuleFor(x => x.Password)
-                .NotNull().WithMessage("'Password can not be null.")
+                .NotNull()
                 .MinimumLength(6).WithMessage("Password must be at least 6 characters")
                 .Matches("[a-z]").WithMessage("Password must have at least one lowercase ('a'-'z')")
                 .Matches("[A-Z]").WithMessage("Password must have at least one uppercase ('A'-'Z')")
@@ -21,8 +21,8 @@ namespace Patronage.Api.Validators.User
                 .Matches(@"[\W]").WithMessage("Password must have at least one non alphanumeric character");
 
             RuleFor(x => x.UserName)
-                .NotNull().WithMessage("'UserName can not be null.")
-                .MaximumLength(256).WithMessage("UserName can not exceed 256 characters.")
+                .NotNull()
+                .MaximumLength(256)
                 .Custom((value, context) =>
                 {
                     var isNameAlreadyTaken = tableContext.Users.Any(p => p.UserName == value);
