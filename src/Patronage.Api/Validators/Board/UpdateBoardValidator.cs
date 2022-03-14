@@ -11,7 +11,7 @@ namespace Patronage.Api.Validators.Board
             RuleFor(x => x.Alias)
                 .NotNull()
                 .NotEmpty()
-                .MaximumLength(256).WithMessage("Can not exceed 256 characters.")
+                .MaximumLength(256)
                 .Custom((value, context) =>
                 {
                     var isAliasAlreadyTaken = tableContext.Boards.Any(p => p.Alias == value);
@@ -24,7 +24,7 @@ namespace Patronage.Api.Validators.Board
             RuleFor(x => x.Name)
                 .NotNull()
                 .NotEmpty()
-                .MaximumLength(1024).WithMessage("Can not exceed 1024 characters.")
+                .MaximumLength(1024)
                 .Custom((value, context) =>
                 {
                     var isNameAlreadyTaken = tableContext.Boards.Any(p => p.Name == value);

@@ -9,9 +9,9 @@ namespace Patronage.Api.Validators.Board
         public BoardDtoValidator(TableContext tableContext)
         {
             RuleFor(x => x.Alias)
-                .NotNull().WithMessage("Can not be null.")
-                .NotEmpty().WithMessage("Can not be empty.")
-                .MaximumLength(256).WithMessage("Can not exceed 256 characters.")
+                .NotNull()
+                .NotEmpty()
+                .MaximumLength(256)
                 .Custom((value, context) =>
                 {
                     var isAliasAlreadyTaken = tableContext.Boards.Any(p => p.Alias == value);
@@ -22,9 +22,9 @@ namespace Patronage.Api.Validators.Board
                 }); ;
 
             RuleFor(x => x.Name)
-                .NotNull().WithMessage("Can not be null.")
-                .NotEmpty().WithMessage("Can not be empty.")
-                .MaximumLength(1024).WithMessage("Can not exceed 1024 characters.")
+                .NotNull()
+                .NotEmpty()
+                .MaximumLength(1024)
                 .Custom((value, context) =>
                 {
                     var isNameAlreadyTaken = tableContext.Boards.Any(p => p.Name == value);
@@ -35,14 +35,14 @@ namespace Patronage.Api.Validators.Board
                 }); ;
 
             RuleFor(x => x.Description)
-                .NotNull().WithMessage("Can not be null.")
-                .NotEmpty().WithMessage("Can not be empty.");
+                .NotNull()
+                .NotEmpty();
 
             RuleFor(x => x.ProjectId)
-                .NotNull().WithMessage("Can not be null.");
+                .NotNull();
 
             RuleFor(x => x.IsActive)
-                .NotNull().WithMessage("Can not be null.");
+                .NotNull();
         }
     }
 }

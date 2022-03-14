@@ -8,7 +8,6 @@ using Patronage.Api.MediatR.Board.Queries.GetAll;
 using Patronage.Api.MediatR.Board.Queries.GetSingle;
 using Patronage.Contracts.ModelDtos.Board;
 using Patronage.DataAccess;
-using Swashbuckle.AspNetCore.Annotations;
 
 namespace Patronage.Api.Controllers
 {
@@ -17,6 +16,7 @@ namespace Patronage.Api.Controllers
     public class BoardController : Controller
     {
         private readonly IMediator mediator;
+
         public BoardController(IMediator mediator)
         {
             this.mediator = mediator;
@@ -27,21 +27,11 @@ namespace Patronage.Api.Controllers
         /// </summary>
         /// <param name="boardDto">JSON object with properties defining a board to create</param>
         /// <response code="201">Board was created successfully.</response>
-        /// <response code="400">Board could not be created.</response>
         /// <returns>Created board or null if board could not be created.</returns>
         [HttpPost("create")]
         public async Task<ActionResult<BaseResponse<BoardDto>>> CreateBoard([FromBody] CreateBoardCommand boardDto)
         {
             var result = await mediator.Send(boardDto);
-
-            if (result is null)
-            {
-                return BadRequest(new BaseResponse<BoardDto>
-                {
-                    ResponseCode = StatusCodes.Status400BadRequest,
-                    Message = "Board could not be created."
-                });
-            }
 
             return CreatedAtAction(nameof(CreateBoard), new BaseResponse<BoardDto>
             {
@@ -52,12 +42,13 @@ namespace Patronage.Api.Controllers
         }
 
         /// <summary>
-        /// Returns all Boards or filter Boards by Alias, Name or Description.
+        /// Returns all Boards or filter board's collection by Alias, Name and Description.
+        /// E.g if Alias and Name are present method return boards with the requested Alias and Name.
         /// </summary>
         /// <param name="filter">Object created from query containing Alias, Name and Descripion.</param>
-        /// <response code="200">Boards was fetched successfully.</response>
+        /// <response code="200">Boards were fetched successfully.</response>
         /// <response code="404">There's no boards.</response>
-        /// <returns>Fetch all Board or filter Boards if filter is presents.</returns>
+        /// <returns>Return all boards.</returns>
         [HttpGet("list")]
         public async Task<ActionResult<BaseResponse<IEnumerable<BoardDto>>>> GetBoards([FromQuery] FilterBoardDto filter)
         {

@@ -19,9 +19,6 @@ namespace Patronage.DataAccess.Services
 
         public async Task<BoardDto?> CreateBoardAsync(BoardDto request)
         {
-            if (request is null)
-                return null;
-
             var board = mapper.Map<Board>(request);
             tableContext.Boards.Add(board);
 
@@ -30,15 +27,21 @@ namespace Patronage.DataAccess.Services
                 request.Id = board.Id;
                 return request;
             }
-            return null;
+
+            throw new DbUpdateException($"Could not save changes to database at: {nameof(CreateBoardAsync)}");
         }
 
         public async Task<bool> DeleteBoardAsync(int id)
         {
-            var board = await tableContext.Boards.FirstOrDefaultAsync(x => x.Id == id);
+            var board = await GetByIdAsync(id);
 
             if (board is null)
                 return false;
+
+            if (!board.IsActive)
+            {
+                return true;
+            }
 
             board.IsActive = false;
 
@@ -47,12 +50,12 @@ namespace Patronage.DataAccess.Services
                 return true;
             }
 
-            return false;
+            throw new DbUpdateException($"Could not save changes to database at: {nameof(DeleteBoardAsync)}");
         }
 
         public async Task<BoardDto?> GetBoardByIdAsync(int id)
         {
-            var board = await tableContext.Boards.FirstOrDefaultAsync(x => x.Id == id);
+            var board = await GetByIdAsync(id);
 
             if (board is null)
                 return null;
@@ -81,9 +84,14 @@ namespace Patronage.DataAccess.Services
             return mapper.Map<IEnumerable<BoardDto>>(boards);
         }
 
+        public async Task<Board?> GetByIdAsync(int id)
+        {
+            return await tableContext.Boards.FirstOrDefaultAsync(x => x.Id == id);
+        }
+
         public async Task<bool> UpdateBoardAsync(UpdateBoardDto request, int id)
         {
-            var board = await tableContext.Boards.FirstOrDefaultAsync(x => x.Id == id);
+            var board = await GetByIdAsync(id);
 
             if (board is null)
                 return false;
@@ -95,15 +103,12 @@ namespace Patronage.DataAccess.Services
                 return true;
             }
 
-            return false;
+            throw new DbUpdateException($"Could not save changes to database at: {nameof(UpdateBoardAsync)}");
         }
 
         public async Task<bool> UpdateBoardLightAsync(PartialBoardDto request, int id)
         {
-            if (request is null)
-                return false;
-
-            var board = await tableContext.Boards.FirstOrDefaultAsync(x => x.Id == id);
+            var board = await GetByIdAsync(id);
 
             if (board is null)
                 return false;
@@ -115,7 +120,7 @@ namespace Patronage.DataAccess.Services
                 return true;
             }
 
-            return false;
+            throw new DbUpdateException($"Could not save changes to database at: {nameof(UpdateBoardLightAsync)}");
         }
     }
 }
