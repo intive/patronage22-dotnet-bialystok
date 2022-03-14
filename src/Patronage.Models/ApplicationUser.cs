@@ -13,5 +13,6 @@ namespace Patronage.Models
     public class TokenUser : IdentityUserToken<string>
     {
         public DateTime ValidUntil { get; set; }
+        public bool IsActive => DateTime.UtcNow <= ValidUntil;
     }
 }
