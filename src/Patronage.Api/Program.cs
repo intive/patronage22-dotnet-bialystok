@@ -28,6 +28,32 @@ try
         c.SwaggerDoc("v1", new OpenApiInfo { Title = "Patronage 2022 API", Version = "v1" });
         var filePath = Path.Combine(System.AppContext.BaseDirectory, "Patronage.Api.xml");
         c.IncludeXmlComments(filePath);
+        c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+        {
+            Description = "JWT Authorization header using the Bearer scheme.",
+            Name = "Authorization",
+            In = ParameterLocation.Header,
+            Type = SecuritySchemeType.ApiKey,
+            Scheme = "Bearer"
+        });
+        c.AddSecurityRequirement(new OpenApiSecurityRequirement()
+        {
+            {
+                new OpenApiSecurityScheme
+                {
+                    Reference = new OpenApiReference
+                    {
+                        Type = ReferenceType.SecurityScheme,
+                        Id = "Bearer"
+                    },
+                    Scheme = "oauth2",
+                    Name = "Bearer",
+                    In = ParameterLocation.Header,
+
+                },
+                new List<string>()
+            }
+        });
     });
     builder.Logging.ClearProviders();
     builder.Host.UseNLog();
@@ -122,7 +148,7 @@ try
 
     builder.Services.AddEmailService(builder.Configuration);
 
-    builder.Services.AddAuthenticationConfiguration();
+    builder.Services.AddAuthenticationConfiguration(builder.Configuration);
 
     var app = builder.Build();
 

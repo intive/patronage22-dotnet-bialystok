@@ -13,7 +13,8 @@ namespace Patronage.DataAccess.Services
     {
         private readonly IConfiguration _configuration;
 
-        public TokenService(IConfiguration configuration)
+        public TokenService(
+            IConfiguration configuration)
         {
             _configuration = configuration;
         }
@@ -49,6 +50,8 @@ namespace Patronage.DataAccess.Services
         {
             var tokenValidationParameters = new TokenValidationParameters
             {
+                ValidIssuer = _configuration["Authentication:Issuer"],
+                ValidAudience = _configuration["Authentication:Audience"],
                 ValidateAudience = true,
                 ValidateIssuer = true,
                 ValidateIssuerSigningKey = true,
@@ -57,12 +60,17 @@ namespace Patronage.DataAccess.Services
             };
 
             var tokenHandler = new JwtSecurityTokenHandler();
-            SecurityToken securityToken;
-            var principal = tokenHandler.ValidateToken(accessToken, tokenValidationParameters, out securityToken);
-            var jwtSecurityToken = securityToken as JwtSecurityToken;
-            if (jwtSecurityToken == null || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
-                throw new SecurityTokenException("Invalid token");
 
+            var principal = tokenHandler.ValidateToken(accessToken, tokenValidationParameters, out var securityToken);
+
+            var jwtSecurityToken = securityToken as JwtSecurityToken;
+
+            if (jwtSecurityToken == null || 
+                !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
+            {
+                throw new SecurityTokenException("Invalid token");
+            }
+                
             return principal;
         }
     }
