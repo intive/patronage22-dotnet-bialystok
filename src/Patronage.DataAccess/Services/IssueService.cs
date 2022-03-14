@@ -46,7 +46,7 @@ namespace Patronage.DataAccess.Services
             return new PageResult<IssueDto>(issuesDtos, totalItemCount, filter.PageSize, filter.PageNumber);
         }
 
-        public async Task<IssueDto?> CreateAsync(IssueDto dto)
+        public async Task<IssueDto?> CreateAsync(BaseIssueDto dto)
         {
             if (dto is null)
             {
@@ -57,10 +57,11 @@ namespace Patronage.DataAccess.Services
             {
                 Alias = dto.Alias,
                 Name = dto.Name,
-                Description = dto.Description,
-                ProjectId = dto.ProjectId,
-                BoardId = dto.BoardId,
-                StatusId = dto.StatusId,
+                Description = dto?.Description ?? null,
+                ProjectId = dto!.ProjectId,
+                BoardId = dto?.BoardId ?? null,
+                StatusId = dto!.StatusId,
+                AssignUserId = dto?.AssignUserId ?? null,
                 IsActive = true
             };
 
@@ -68,8 +69,8 @@ namespace Patronage.DataAccess.Services
 
             if (await _dbContext.SaveChangesAsync() > 0)
             {
-                dto.Id = issue.Id;
-                return dto;
+                var issueDto = new IssueDto(issue);
+                return issueDto;
             }
             return null;
         }
@@ -77,7 +78,7 @@ namespace Patronage.DataAccess.Services
         public async Task<bool> UpdateAsync(int issueId, BaseIssueDto dto)
         {
             var issue = await GetByIdAsync(issueId);
-            if (issue == null)
+            if (issue == null || !issue.IsActive)
             {
                 return false;
             }
@@ -88,6 +89,7 @@ namespace Patronage.DataAccess.Services
             issue.ProjectId = dto.ProjectId;
             issue.BoardId = dto.BoardId;
             issue.StatusId = dto.StatusId;
+            issue.AssignUserId = dto.AssignUserId;
 
             if ((await _dbContext.SaveChangesAsync()) > 0)
             {
@@ -100,7 +102,7 @@ namespace Patronage.DataAccess.Services
         public async Task<bool> UpdateLightAsync(int issueId, PartialIssueDto dto)
         {
             var issue = await GetByIdAsync(issueId);
-            if (issue == null)
+            if (issue == null || !issue.IsActive)
             {
                 return false;
             }
@@ -133,6 +135,10 @@ namespace Patronage.DataAccess.Services
             {
                 issue.IsActive = dto.IsActive?.Data ?? issue.IsActive;
             }
+            if (dto.AssignUserId is not null)
+            {
+                issue.AssignUserId = dto.AssignUserId?.Data ?? issue.AssignUserId;
+            }
 
             if ((await _dbContext.SaveChangesAsync()) > 0)
             {
@@ -145,7 +151,7 @@ namespace Patronage.DataAccess.Services
         public async Task<bool> DeleteAsync(int issueId)
         {
             var issue = await GetByIdAsync(issueId);
-            if (issue == null)
+            if (issue == null || !issue.IsActive)
             {
                 return false;
             }
@@ -160,6 +166,23 @@ namespace Patronage.DataAccess.Services
             return false;
         }
 
+        public async Task<bool> AssignUserAsync(int issueId, string userId)
+        {
+            var issue = await GetByIdAsync(issueId);
+            if (issue == null || !issue.IsActive)
+            {
+                return false;
+            }
+
+            issue.AssignUserId = userId;
+
+            if ((await _dbContext.SaveChangesAsync()) > 0)
+            {
+                return true;
+            }
+
+            return false;
+        }
 
         public async Task<Issue?> GetByIdAsync(int issueId)
         {

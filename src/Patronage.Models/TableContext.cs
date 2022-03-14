@@ -31,7 +31,6 @@ public class TableContext : IdentityDbContext<
         // I had to add it to fix problems with identity
         base.OnModelCreating(modelBuilder);
         //Very important!!!
-        //Set every string field to .IsUnicode(false);
         //Do not use .HasColumnType("datetime"); it breaks postgre
 
         #region Project
@@ -150,6 +149,10 @@ public class TableContext : IdentityDbContext<
              .HasMaxLength(1024);
 
         modelBuilder.Entity<Issue>()
+             .Property(r => r.Description)
+             .IsRequired(false);
+
+        modelBuilder.Entity<Issue>()
              .Property(r => r.ProjectId)
              .IsRequired();
 
@@ -158,8 +161,21 @@ public class TableContext : IdentityDbContext<
              .IsRequired();
 
         modelBuilder.Entity<Issue>()
+             .Property(r => r.BoardId)
+             .IsRequired(false);
+
+        modelBuilder.Entity<Issue>()
+             .Property(r => r.AssignUserId)
+             .IsRequired(false);
+
+        modelBuilder.Entity<Issue>()
              .Property(r => r.CreatedOn)
              .IsRequired();
+
+        modelBuilder.Entity<Issue>()
+            .HasOne(p => p.User)
+            .WithMany(b => b.Issues)
+            .HasForeignKey(p => p.AssignUserId);
 
         #endregion
 
@@ -192,32 +208,32 @@ public class TableContext : IdentityDbContext<
     private void TestDataSeed(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Project>().HasData(
-        new Project()
-        {
-            Id = 1,
-            Name = "First project",
-            Alias = "1st",
-            Description = "This is a description of first test project",
-            IsActive = true
-        },
+                new Project()
+                {
+                    Id = 1,
+                    Name = "First project",
+                    Alias = "1st",
+                    Description = "This is a description of first test project",
+                    IsActive = true
+                },
 
-        new Project()
-        {
-            Id = 2,
-            Name = "Second test project",
-            Alias = "2nd",
-            Description = "This is a description of 2nd test project",
-            IsActive = false
-        },
+                new Project()
+                {
+                    Id = 2,
+                    Name = "Second test project",
+                    Alias = "2nd",
+                    Description = "This is a description of 2nd test project",
+                    IsActive = false
+                },
 
-        new Project()
-        {
-            Id = 3,
-            Name = "Third test project",
-            Alias = "3rd",
-            Description = null,
-            IsActive = false
-        });
+                new Project()
+                {
+                    Id = 3,
+                    Name = "Third test project",
+                    Alias = "3rd",
+                    Description = null,
+                    IsActive = false
+                });
 
         modelBuilder.Entity<Board>().HasData(
                 new Board()
@@ -250,6 +266,7 @@ public class TableContext : IdentityDbContext<
                     ProjectId = 1,
                     StatusId = 1,
                     BoardId = 1,
+                    AssignUserId = "1",
                     IsActive = true
                 },
 
@@ -262,6 +279,7 @@ public class TableContext : IdentityDbContext<
                     ProjectId = 1,
                     StatusId = 1,
                     BoardId = null,
+                    AssignUserId = null,
                     IsActive = true
                 });
 

@@ -50,7 +50,7 @@ namespace Patronage.MigrationsPostgre.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "2f022446-1ba9-4920-837f-3b2b4cdd768a",
+                            Id = "afceb0fa-dd8b-4aa7-9242-f8c3156d11fd",
                             ConcurrencyStamp = "1",
                             Name = "Admin",
                             NormalizedName = "Admin"
@@ -147,7 +147,7 @@ namespace Patronage.MigrationsPostgre.Migrations
                         new
                         {
                             UserId = "1",
-                            RoleId = "2f022446-1ba9-4920-837f-3b2b4cdd768a"
+                            RoleId = "afceb0fa-dd8b-4aa7-9242-f8c3156d11fd"
                         });
                 });
 
@@ -244,13 +244,13 @@ namespace Patronage.MigrationsPostgre.Migrations
                         {
                             Id = "1",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "da88d64d-a626-4d71-bb30-4d8460c7463c",
+                            ConcurrencyStamp = "90c69ed4-fb0d-4e85-8201-c85183d0b1a7",
                             EmailConfirmed = false,
                             FirstName = "FirstTestFirstname",
                             LockoutEnabled = false,
                             PhoneNumberConfirmed = false,
                             SecondName = "FirstTestSurname",
-                            SecurityStamp = "e9bd2550-4579-4be6-8810-68ff6972cdf2",
+                            SecurityStamp = "4a8cf4ba-aaed-4832-8a3f-1c9d9384a220",
                             TwoFactorEnabled = false
                         });
                 });
@@ -360,6 +360,9 @@ namespace Patronage.MigrationsPostgre.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
 
+                    b.Property<string>("AssignUserId")
+                        .HasColumnType("text");
+
                     b.Property<int?>("BoardId")
                         .HasColumnType("integer");
 
@@ -388,6 +391,8 @@ namespace Patronage.MigrationsPostgre.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("AssignUserId");
+
                     b.HasIndex("BoardId");
 
                     b.HasIndex("ProjectId");
@@ -399,6 +404,7 @@ namespace Patronage.MigrationsPostgre.Migrations
                         {
                             Id = 1,
                             Alias = "1st issue",
+                            AssignUserId = "1",
                             BoardId = 1,
                             CreatedOn = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Description = "This is a description of first test issue. This Issue is connected to a Board",
@@ -632,6 +638,10 @@ namespace Patronage.MigrationsPostgre.Migrations
 
             modelBuilder.Entity("Patronage.Models.Issue", b =>
                 {
+                    b.HasOne("Patronage.Models.ApplicationUser", "User")
+                        .WithMany("Issues")
+                        .HasForeignKey("AssignUserId");
+
                     b.HasOne("Patronage.Models.Board", null)
                         .WithMany("Issues")
                         .HasForeignKey("BoardId");
@@ -641,6 +651,13 @@ namespace Patronage.MigrationsPostgre.Migrations
                         .HasForeignKey("ProjectId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Patronage.Models.ApplicationUser", b =>
+                {
+                    b.Navigation("Issues");
                 });
 
             modelBuilder.Entity("Patronage.Models.Board", b =>
