@@ -10,6 +10,6 @@ namespace Patronage.Models
 
     public class TokenUser : IdentityUserToken<string>
     {
-        public DateTime DatexTime { get; set; }
+        public DateTime ValidUntil { get; set; }
     }
 }

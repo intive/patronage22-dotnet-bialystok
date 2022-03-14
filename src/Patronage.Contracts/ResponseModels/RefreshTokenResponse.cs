@@ -1,4 +1,5 @@
-﻿using Patronage.Contracts.ModelDtos;
+﻿using Patronage.Contracts.Helpers;
+using Patronage.Contracts.ModelDtos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace Patronage.Contracts.ResponseModels
 {
     public class RefreshTokenResponse
     {
-        public string? RefreshToken { get; set; }
+        public RefreshToken? RefreshToken { get; set; }
         public string? AccessToken { get; set; }
     }
 }
