@@ -10,32 +10,32 @@ namespace Patronage.DataAccess.Services
 {
     public class UserService : IUserService
     {
-        private readonly UserManager<ApplicationUser> userManager;
-        private readonly SignInManager<ApplicationUser> signInManager;
-        private readonly TableContext tableContext;
-        private readonly IEmailService emailService;
-        private readonly ILoggerFactory logger;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly TableContext _tableContext;
+        private readonly IEmailService _emailService;
+        private readonly ILoggerFactory _logger;
 
         public UserService(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager,
             TableContext tableContext, IEmailService emailService, ILoggerFactory logger)
         {
-            this.userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
-            this.signInManager = signInManager ?? throw new ArgumentNullException(nameof(signInManager));
-            this.tableContext = tableContext ?? throw new ArgumentNullException(nameof(tableContext));
-            this.emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));
-            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
+            _signInManager = signInManager ?? throw new ArgumentNullException(nameof(signInManager));
+            _tableContext = tableContext ?? throw new ArgumentNullException(nameof(tableContext));
+            _emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public async Task<bool> ResendEmailConfirmationAsync(string id, string link)
         {
-            var user = await userManager.FindByIdAsync(id);
+            var user = await _userManager.FindByIdAsync(id);
 
-            if(user == null)
+            if (user == null)
             {
                 return false;
             }
-            
-            var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
+
+            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
             var uriBuilder = new UriBuilder(link);
             var query = HttpUtility.ParseQueryString(uriBuilder.Query);
@@ -45,19 +45,19 @@ namespace Patronage.DataAccess.Services
 
             link = uriBuilder.ToString();
 
-            await emailService.SendAsync(user.Email, "Confirm your email", link);
+            await _emailService.SendAsync(user.Email, "Confirm your email", link);
 
             return true;
         }
 
         public async Task<bool> ConfirmEmail(string id, string token)
         {
-            var user = await userManager.FindByIdAsync(id);
+            var user = await _userManager.FindByIdAsync(id);
 
             if (user == null)
                 return false;
 
-            var result = await userManager.ConfirmEmailAsync(user, token);
+            var result = await _userManager.ConfirmEmailAsync(user, token);
 
             if (!result.Succeeded)
             {
@@ -80,9 +80,9 @@ namespace Patronage.DataAccess.Services
                 Email = createUser.Email,
             };
 
-            using (var transaction = tableContext.Database.BeginTransaction())
+            using (var transaction = _tableContext.Database.BeginTransaction())
             {
-                var result = await userManager.CreateAsync(user, createUser.Password);
+                var result = await _userManager.CreateAsync(user, createUser.Password);
 
                 if (!result.Succeeded)
                 {
@@ -94,7 +94,7 @@ namespace Patronage.DataAccess.Services
                     throw new Exception("Error occured while creating user: " + result.Errors.First().Description);
                 }
 
-                var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
+                var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
                 var uriBuilder = new UriBuilder(link);
                 var query = HttpUtility.ParseQueryString(uriBuilder.Query);
@@ -104,11 +104,12 @@ namespace Patronage.DataAccess.Services
 
                 link = uriBuilder.ToString();
 
-                await emailService.SendAsync(user.Email, "Confirm your email", link);
+                await _emailService.SendAsync(user.Email, "Confirm your email", link);
 
                 await transaction.CommitAsync();
 
-                return new UserDto { 
+                return new UserDto
+                {
                     Id = user.Id,
                     Email = user.Email,
                     UserName = user.UserName
@@ -118,14 +119,14 @@ namespace Patronage.DataAccess.Services
 
         public async Task<bool> SendRecoveryPasswordEmailAsync(string id, string link)
         {
-            var user = await userManager.FindByIdAsync(id);
+            var user = await _userManager.FindByIdAsync(id);
 
-            if(user == null)
+            if (user == null)
             {
                 return false;
             }
 
-            var token = await userManager.GeneratePasswordResetTokenAsync(user);
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
 
             var uriBuilder = new UriBuilder(link);
             var query = HttpUtility.ParseQueryString(uriBuilder.Query);
@@ -135,21 +136,21 @@ namespace Patronage.DataAccess.Services
 
             link = uriBuilder.ToString();
 
-            await emailService.SendAsync(user.Email, "Recover your password", link);
+            await _emailService.SendAsync(user.Email, "Recover your password", link);
 
             return true;
         }
 
         public async Task<bool> RecoverPasswordAsync(NewUserPasswordDto userPasswordDto)
         {
-            var user = await userManager.FindByIdAsync(userPasswordDto.Id);
+            var user = await _userManager.FindByIdAsync(userPasswordDto.Id);
 
-            if(user == null)
+            if (user == null)
             {
                 return false;
             }
 
-            var result = await userManager.ResetPasswordAsync(user, userPasswordDto.Token, userPasswordDto.Password);
+            var result = await _userManager.ResetPasswordAsync(user, userPasswordDto.Token, userPasswordDto.Password);
 
             if (!result.Succeeded)
             {

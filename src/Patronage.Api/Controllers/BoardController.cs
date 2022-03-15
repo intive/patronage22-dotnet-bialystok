@@ -15,11 +15,11 @@ namespace Patronage.Api.Controllers
     [ApiController]
     public class BoardController : Controller
     {
-        private readonly IMediator mediator;
+        private readonly IMediator _mediator;
 
         public BoardController(IMediator mediator)
         {
-            this.mediator = mediator;
+            _mediator = mediator;
         }
 
         /// <summary>
@@ -31,7 +31,7 @@ namespace Patronage.Api.Controllers
         [HttpPost("create")]
         public async Task<ActionResult<BaseResponse<BoardDto>>> CreateBoard([FromBody] CreateBoardCommand boardDto)
         {
-            var result = await mediator.Send(boardDto);
+            var result = await _mediator.Send(boardDto);
 
             return CreatedAtAction(nameof(CreateBoard), new BaseResponse<BoardDto>
             {
@@ -54,7 +54,7 @@ namespace Patronage.Api.Controllers
         {
             var query = new GetBoardsQuery(filter);
 
-            var result = await mediator.Send(query);
+            var result = await _mediator.Send(query);
 
             if (result is null)
             {
@@ -85,7 +85,7 @@ namespace Patronage.Api.Controllers
         {
             var query = new GetBoardByIdQuery(id);
 
-            var result = await mediator.Send(query);
+            var result = await _mediator.Send(query);
 
             if (result is null)
             {
@@ -115,7 +115,7 @@ namespace Patronage.Api.Controllers
         [HttpPut("update/{id:int}")]
         public async Task<ActionResult<BaseResponse<bool>>> UpdateBoard([FromBody] UpdateBoardDto boardDto, [FromRoute] int id)
         {
-            var result = await mediator.Send(new UpdateBoardCommand
+            var result = await _mediator.Send(new UpdateBoardCommand
             {
                 Data = boardDto,
                 Id = id
@@ -150,7 +150,7 @@ namespace Patronage.Api.Controllers
         [HttpPatch("updateLight/{id:int}")]
         public async Task<ActionResult<BaseResponse<bool>>> UpdateBoardLight([FromBody] PartialBoardDto boardDto, [FromRoute] int id)
         {
-            var result = await mediator.Send(new UpdateBoardLightCommand
+            var result = await _mediator.Send(new UpdateBoardLightCommand
             {
                 Data = boardDto,
                 Id = id
@@ -184,7 +184,7 @@ namespace Patronage.Api.Controllers
         [HttpDelete("delete/{id:int}")]
         public async Task<ActionResult<BaseResponse<bool>>> DeleteBoard(int id)
         {
-            var result = await mediator.Send(new DeleteBoardCommand { Id = id });
+            var result = await _mediator.Send(new DeleteBoardCommand { Id = id });
 
             if (!result)
             {

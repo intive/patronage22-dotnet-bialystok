@@ -12,11 +12,11 @@ namespace Patronage.Api.Controllers
     [ApiController]
     public class UserController : Controller
     {
-        private readonly IMediator mediator;
+        private readonly IMediator _mediator;
 
         public UserController(IMediator mediator)
         {
-            this.mediator = mediator;
+            _mediator = mediator;
         }
 
         /// <summary>
@@ -30,7 +30,7 @@ namespace Patronage.Api.Controllers
         {
             var link = Url.Action(nameof(VerifyEmail), "User", null, Request.Scheme, Request.Host.ToString());
 
-            if (link == null)
+            if (link is null)
             {
                 return BadRequest(new BaseResponse<UserDto>
                 {
@@ -39,14 +39,14 @@ namespace Patronage.Api.Controllers
                 });
             }
 
-            var result = await mediator
+            var result = await _mediator
                 .Send(new CreateUserCommand
                 {
                     CreateUserDto = createUser,
                     Link = link
                 });
 
-            if (result == null)
+            if (result is null)
             {
                 return BadRequest(new BaseResponse<UserDto>
                 {
@@ -73,7 +73,7 @@ namespace Patronage.Api.Controllers
         [HttpGet("confirm")]
         public async Task<ActionResult<bool>> VerifyEmail([FromQuery] string id, string token)
         {
-            var result =  await mediator
+            var result = await _mediator
                 .Send(new ConfirmEmailCommand
                 {
                     Id = id,
@@ -109,14 +109,14 @@ namespace Patronage.Api.Controllers
         {
             var link = Url.Action(nameof(VerifyEmail), "User", null, Request.Scheme, Request.Host.ToString());
 
-            if (link == null)
+            if (link is null)
                 return BadRequest(new BaseResponse<UserDto>
                 {
                     ResponseCode = StatusCodes.Status500InternalServerError,
                     Message = "Could not create confirmation link."
                 });
 
-            var result = await mediator
+            var result = await _mediator
                 .Send(new ResendEmailCommand
                 {
                     Id = id,
@@ -152,7 +152,7 @@ namespace Patronage.Api.Controllers
         {
             var link = Url.Action(nameof(ResetPasswordCredentials), "User", null, Request.Scheme, Request.Host.ToString());
 
-            if (link == null)
+            if (link is null)
             {
                 return BadRequest(new BaseResponse<bool>
                 {
@@ -161,7 +161,7 @@ namespace Patronage.Api.Controllers
                 });
             }
 
-            var result = await mediator.Send(new SendRecoverEmailCommand
+            var result = await _mediator.Send(new SendRecoverEmailCommand
             {
                 Id = id,
                 Link = link
@@ -213,7 +213,7 @@ namespace Patronage.Api.Controllers
         [HttpPost("reset")]
         public async Task<ActionResult<bool>> ResetPassword([FromBody] NewUserPasswordDto newUserPassword)
         {
-            var result = await mediator.Send(new RecoverPasswordCommand
+            var result = await _mediator.Send(new RecoverPasswordCommand
             {
                 NewUserPassword = newUserPassword
             });

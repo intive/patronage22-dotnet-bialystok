@@ -8,21 +8,21 @@ namespace Patronage.DataAccess.Services
 {
     public class BoardService : IBoardService
     {
-        public readonly TableContext tableContext;
-        public readonly IMapper mapper;
+        public readonly TableContext _tableContext;
+        public readonly IMapper _mapper;
 
         public BoardService(TableContext tableContext, IMapper mapper)
         {
-            this.tableContext = tableContext ?? throw new ArgumentNullException(nameof(tableContext));
-            this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            _tableContext = tableContext ?? throw new ArgumentNullException(nameof(tableContext));
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
         public async Task<BoardDto?> CreateBoardAsync(BoardDto request)
         {
-            var board = mapper.Map<Board>(request);
-            tableContext.Boards.Add(board);
+            var board = _mapper.Map<Board>(request);
+            _tableContext.Boards.Add(board);
 
-            if (await tableContext.SaveChangesAsync() > 0)
+            if (await _tableContext.SaveChangesAsync() > 0)
             {
                 request.Id = board.Id;
                 return request;
@@ -45,7 +45,7 @@ namespace Patronage.DataAccess.Services
 
             board.IsActive = false;
 
-            if ((await tableContext.SaveChangesAsync()) > 0)
+            if ((await _tableContext.SaveChangesAsync()) > 0)
             {
                 return true;
             }
@@ -60,18 +60,18 @@ namespace Patronage.DataAccess.Services
             if (board is null)
                 return null;
 
-            return mapper.Map<BoardDto>(board);
+            return _mapper.Map<BoardDto>(board);
         }
 
         public async Task<IEnumerable<BoardDto>?> GetBoardsAsync(FilterBoardDto? filter = null)
         {
-            var query = tableContext.Boards.AsQueryable();
+            var query = _tableContext.Boards.AsQueryable();
             if (filter is null)
             {
                 if (!query.Any())
                     return null;
 
-                return mapper
+                return _mapper
                     .Map<IEnumerable<BoardDto>>(await query.ToArrayAsync());
             }
             var boards = await query
@@ -81,12 +81,12 @@ namespace Patronage.DataAccess.Services
                     x.Description != null && x.Description.Equals(filter.Description ?? x.Description))
                 .ToArrayAsync();
 
-            return mapper.Map<IEnumerable<BoardDto>>(boards);
+            return _mapper.Map<IEnumerable<BoardDto>>(boards);
         }
 
         public async Task<Board?> GetByIdAsync(int id)
         {
-            return await tableContext.Boards.FirstOrDefaultAsync(x => x.Id == id);
+            return await _tableContext.Boards.FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<bool> UpdateBoardAsync(UpdateBoardDto request, int id)
@@ -96,9 +96,9 @@ namespace Patronage.DataAccess.Services
             if (board is null)
                 return false;
 
-            mapper.Map(request, board);
+            _mapper.Map(request, board);
 
-            if ((await tableContext.SaveChangesAsync()) > 0)
+            if ((await _tableContext.SaveChangesAsync()) > 0)
             {
                 return true;
             }
@@ -113,9 +113,9 @@ namespace Patronage.DataAccess.Services
             if (board is null)
                 return false;
 
-            mapper.Map(request, board);
+            _mapper.Map(request, board);
 
-            if ((await tableContext.SaveChangesAsync()) > 0)
+            if ((await _tableContext.SaveChangesAsync()) > 0)
             {
                 return true;
             }
