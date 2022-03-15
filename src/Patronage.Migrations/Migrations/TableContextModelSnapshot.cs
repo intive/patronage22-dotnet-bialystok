@@ -51,7 +51,7 @@ namespace Patronage.Migrations.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "6f0d9462-98c8-4779-aaef-9e5e2846bddd",
+                            Id = "ab59b070-bb62-41a5-928e-0f91132472e3",
                             ConcurrencyStamp = "1",
                             Name = "Admin",
                             NormalizedName = "Admin"
@@ -148,7 +148,7 @@ namespace Patronage.Migrations.Migrations
                         new
                         {
                             UserId = "1",
-                            RoleId = "6f0d9462-98c8-4779-aaef-9e5e2846bddd"
+                            RoleId = "ab59b070-bb62-41a5-928e-0f91132472e3"
                         });
                 });
 
@@ -246,13 +246,13 @@ namespace Patronage.Migrations.Migrations
                         {
                             Id = "1",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "581e634d-5666-40c6-9452-15dad02283a1",
+                            ConcurrencyStamp = "9427f7c4-c118-4e4f-9332-bd852d4c9d64",
                             EmailConfirmed = false,
                             FirstName = "FirstTestFirstname",
                             LockoutEnabled = false,
                             PhoneNumberConfirmed = false,
                             SecondName = "FirstTestSurname",
-                            SecurityStamp = "1427e670-e8e7-4d57-96d4-8e027a0a850c",
+                            SecurityStamp = "05bc821a-598e-4d02-aca5-61dd3539d277",
                             TwoFactorEnabled = false
                         });
                 });
@@ -292,7 +292,7 @@ namespace Patronage.Migrations.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Boards");
+                    b.ToTable("Boards", (string)null);
 
                     b.HasData(
                         new
@@ -329,7 +329,7 @@ namespace Patronage.Migrations.Migrations
 
                     b.HasIndex("StatusId");
 
-                    b.ToTable("BoardsStatus");
+                    b.ToTable("BoardsStatus", (string)null);
 
                     b.HasData(
                         new
@@ -399,7 +399,7 @@ namespace Patronage.Migrations.Migrations
 
                     b.HasIndex("ProjectId");
 
-                    b.ToTable("Issues");
+                    b.ToTable("Issues", (string)null);
 
                     b.HasData(
                         new
@@ -466,7 +466,7 @@ namespace Patronage.Migrations.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Logs");
+                    b.ToTable("Logs", (string)null);
                 });
 
             modelBuilder.Entity("Patronage.Models.Project", b =>
@@ -503,7 +503,7 @@ namespace Patronage.Migrations.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Projects");
+                    b.ToTable("Projects", (string)null);
 
                     b.HasData(
                         new
@@ -548,7 +548,7 @@ namespace Patronage.Migrations.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Statuses");
+                    b.ToTable("Statuses", (string)null);
 
                     b.HasData(
                         new
