@@ -299,11 +299,14 @@ namespace Patronage.DataAccess.Services
                 return false;
             }
 
-            var userId = principal.Claims.Single(x => x.Type == JwtRegisteredClaimNames.Sub).Value;
+            var userId = principal.Claims.Single(x => x.Type == ClaimTypes.NameIdentifier).Value;
 
             var userRefreshTokenRecord = tableContext.UserTokens.Single(u => u.UserId == userId);
 
             userRefreshTokenRecord.Value = null;
+            userRefreshTokenRecord.ValidUntil = DateTime.MinValue;
+
+            await tableContext.SaveChangesAsync();
 
             return true;
         }
