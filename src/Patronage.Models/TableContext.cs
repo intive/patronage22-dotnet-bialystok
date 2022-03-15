@@ -143,6 +143,10 @@ public class TableContext : IdentityDbContext<ApplicationUser>
              .HasMaxLength(1024);
 
         modelBuilder.Entity<Issue>()
+             .Property(r => r.Description)
+             .IsRequired(false);
+
+        modelBuilder.Entity<Issue>()
              .Property(r => r.ProjectId)
              .IsRequired();
 
@@ -151,8 +155,21 @@ public class TableContext : IdentityDbContext<ApplicationUser>
              .IsRequired();
 
         modelBuilder.Entity<Issue>()
+             .Property(r => r.BoardId)
+             .IsRequired(false);
+
+        modelBuilder.Entity<Issue>()
+             .Property(r => r.AssignUserId)
+             .IsRequired(false);
+
+        modelBuilder.Entity<Issue>()
              .Property(r => r.CreatedOn)
              .IsRequired();
+
+        modelBuilder.Entity<Issue>()
+            .HasOne(p => p.User)
+            .WithMany(b => b.Issues)
+            .HasForeignKey(p => p.AssignUserId);
 
         #endregion
 
@@ -243,6 +260,7 @@ public class TableContext : IdentityDbContext<ApplicationUser>
                     ProjectId = 1,
                     StatusId = 1,
                     BoardId = 1,
+                    AssignUserId = "1",
                     IsActive = true
                 },
 
@@ -255,6 +273,7 @@ public class TableContext : IdentityDbContext<ApplicationUser>
                     ProjectId = 1,
                     StatusId = 1,
                     BoardId = null,
+                    AssignUserId = null,
                     IsActive = true
                 });
 

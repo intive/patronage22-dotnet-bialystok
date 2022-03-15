@@ -26,7 +26,7 @@ namespace Patronage.DataAccess.Services
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public async Task<bool> ResendEmailConfirmationAsync(string id, string link)
+        public async Task<bool> ResendEmailConfirmationAsync(string email, string link)
         {
             var user = await _userManager.FindByIdAsync(id);
 
@@ -117,9 +117,11 @@ namespace Patronage.DataAccess.Services
             }
         }
 
-        public async Task<bool> SendRecoveryPasswordEmailAsync(string id, string link)
+        public async Task<bool> SendRecoveryPasswordEmailAsync(RecoverPasswordDto recoverPasswordDto, string link)
         {
-            var user = await _userManager.FindByIdAsync(id);
+            var user = await (recoverPasswordDto.Username == null ? 
+                userManager.FindByEmailAsync(recoverPasswordDto.Email!.Data) : 
+                userManager.FindByNameAsync(recoverPasswordDto.Username!.Data));
 
             if (user == null)
             {

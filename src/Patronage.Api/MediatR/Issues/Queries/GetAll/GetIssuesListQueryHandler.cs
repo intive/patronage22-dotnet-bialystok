@@ -3,7 +3,7 @@ using Patronage.Contracts.Helpers;
 using Patronage.Contracts.Interfaces;
 using Patronage.Contracts.ModelDtos.Issues;
 
-namespace Patronage.Api.MediatR.Issues.Queries.GetIssues
+namespace Patronage.Api.MediatR.Issues.Queries
 {
     public class GetIssuesListQueryHandler : IRequestHandler<GetIssuesListQuery, PageResult<IssueDto>?>
     {
