@@ -8,13 +8,7 @@ namespace Patronage.MigrationsPostgre.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_Issues_AspNetUsers_ApplicationUserId",
-                table: "Issues");
 
-            migrationBuilder.DropIndex(
-                name: "IX_Issues_ApplicationUserId",
-                table: "Issues");
 
             migrationBuilder.DeleteData(
                 table: "AspNetUserRoles",
@@ -140,12 +134,6 @@ namespace Patronage.MigrationsPostgre.Migrations
                 table: "Issues",
                 column: "ApplicationUserId");
 
-            migrationBuilder.AddForeignKey(
-                name: "FK_Issues_AspNetUsers_ApplicationUserId",
-                table: "Issues",
-                column: "ApplicationUserId",
-                principalTable: "AspNetUsers",
-                principalColumn: "Id");
         }
     }
 }
