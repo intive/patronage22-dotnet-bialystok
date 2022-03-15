@@ -22,17 +22,17 @@ namespace Patronage.DataAccess.Services
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly TableContext _tableContext;
         private readonly IEmailService _emailService;
-        private readonly ILoggerFactory __logger;
+        private readonly ILoggerFactory _logger;
         private readonly ITokenService _tokenService;
 
         public UserService(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager,
-            TableContext tableContext, IEmailService emailService, ILoggerFactory _logger, ITokenService tokenService)
+            TableContext tableContext, IEmailService emailService, ILoggerFactory logger, ITokenService tokenService)
         {
             _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
             _signInManager = signInManager ?? throw new ArgumentNullException(nameof(signInManager));
             _tableContext = tableContext ?? throw new ArgumentNullException(nameof(tableContext));
             _emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));
-            _logger = _logger ?? throw new ArgumentNullException(nameof(_logger));
+            _logger = logger ?? throw new ArgumentNullException(nameof(_logger));
             _tokenService = tokenService;
         }
 
