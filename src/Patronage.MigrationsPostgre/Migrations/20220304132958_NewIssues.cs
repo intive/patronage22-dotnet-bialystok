@@ -47,29 +47,10 @@ namespace Patronage.MigrationsPostgre.Migrations
                 columns: new[] { "RoleId", "UserId" },
                 values: new object[] { "17388f4b-4c67-4e99-a515-5c987844896c", "1" });
 
-            migrationBuilder.CreateIndex(
-                name: "IX_Issues_AssignUserId",
-                table: "Issues",
-                column: "AssignUserId");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Issues_AspNetUsers_AssignUserId",
-                table: "Issues",
-                column: "AssignUserId",
-                principalTable: "AspNetUsers",
-                principalColumn: "Id");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_Issues_AspNetUsers_ApplicationUserId",
-                table: "Issues");
-
-            migrationBuilder.DropIndex(
-                name: "IX_Issues_ApplicationUserId",
-                table: "Issues");
-
             migrationBuilder.DeleteData(
                 table: "AspNetUserRoles",
                 keyColumns: new[] { "RoleId", "UserId" },
