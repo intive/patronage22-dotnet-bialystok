@@ -330,9 +330,6 @@ namespace Patronage.Migrations.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
-                    b.Property<string>("AssignUserId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<int?>("BoardId")
                         .HasColumnType("int");
 
@@ -360,8 +357,6 @@ namespace Patronage.Migrations.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AssignUserId");
 
                     b.HasIndex("BoardId");
 
@@ -621,10 +616,6 @@ namespace Patronage.Migrations.Migrations
 
             modelBuilder.Entity("Patronage.Models.Issue", b =>
                 {
-                    b.HasOne("Patronage.Models.ApplicationUser", "User")
-                        .WithMany("Issues")
-                        .HasForeignKey("AssignUserId");
-
                     b.HasOne("Patronage.Models.Board", null)
                         .WithMany("Issues")
                         .HasForeignKey("BoardId");

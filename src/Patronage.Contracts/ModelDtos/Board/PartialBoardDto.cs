@@ -2,7 +2,6 @@
 {
     public class PartialBoardDto
     {
-        public int Id { get; set; }
         public PropInfo<string>? Alias { get; set; }
         public PropInfo<string>? Name { get; set; }
         public PropInfo<string>? Description { get; set; }

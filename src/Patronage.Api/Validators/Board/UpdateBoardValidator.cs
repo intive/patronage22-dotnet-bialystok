@@ -4,11 +4,11 @@ using Patronage.Models;
 
 namespace Patronage.Api.Validators.Board
 {
-    public class PartialBoardValidator : AbstractValidator<PartialBoardDto>
+    public class UpdateBoardValidator : AbstractValidator<UpdateBoardDto>
     {
-        public PartialBoardValidator(TableContext tableContext)
+        public UpdateBoardValidator(TableContext tableContext)
         {
-            RuleFor(x => x.Alias!.Data)
+            RuleFor(x => x.Alias)
                 .NotNull()
                 .NotEmpty()
                 .MaximumLength(256)
@@ -19,10 +19,9 @@ namespace Patronage.Api.Validators.Board
                     {
                         context.AddFailure("Alias", "This board's alias has been already taken");
                     }
-                })
-                .When(y => y.Alias != null);
+                }); ;
 
-            RuleFor(x => x.Name!.Data)
+            RuleFor(x => x.Name)
                 .NotNull()
                 .NotEmpty()
                 .MaximumLength(1024)
@@ -33,17 +32,17 @@ namespace Patronage.Api.Validators.Board
                     {
                         context.AddFailure("Name", "This board's name has been already taken");
                     }
-                })
-                .When(y => y.Name != null);
+                }); ;
 
-            RuleFor(x => x.Description!.Data)
+            RuleFor(x => x.Description)
                 .NotNull()
-                .NotEmpty()
-                .When(y => y.Description != null);
+                .NotEmpty();
 
-            RuleFor(x => x.ProjectId!.Data)
-                .NotNull()
-                .When(y => y.ProjectId != null);
+            RuleFor(x => x.ProjectId)
+                .NotNull();
+
+            RuleFor(x => x.StatusId)
+                .NotNull();
         }
     }
 }

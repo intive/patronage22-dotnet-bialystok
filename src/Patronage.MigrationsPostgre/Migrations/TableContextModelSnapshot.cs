@@ -328,9 +328,6 @@ namespace Patronage.MigrationsPostgre.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
 
-                    b.Property<string>("AssignUserId")
-                        .HasColumnType("text");
-
                     b.Property<int?>("BoardId")
                         .HasColumnType("integer");
 
@@ -358,8 +355,6 @@ namespace Patronage.MigrationsPostgre.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AssignUserId");
 
                     b.HasIndex("BoardId");
 
@@ -619,10 +614,6 @@ namespace Patronage.MigrationsPostgre.Migrations
 
             modelBuilder.Entity("Patronage.Models.Issue", b =>
                 {
-                    b.HasOne("Patronage.Models.ApplicationUser", "User")
-                        .WithMany("Issues")
-                        .HasForeignKey("AssignUserId");
-
                     b.HasOne("Patronage.Models.Board", null)
                         .WithMany("Issues")
                         .HasForeignKey("BoardId");

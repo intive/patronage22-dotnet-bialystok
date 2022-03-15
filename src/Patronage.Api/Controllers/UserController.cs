@@ -15,12 +15,12 @@ namespace Patronage.Api.Controllers
     [ApiController]
     public class UserController : Controller
     {
-        private readonly IMediator mediator;
+        private readonly IMediator _mediator;
         private readonly IUserService _userService;
 
         public UserController(IMediator mediator, IUserService userService)
         {
-            this.mediator = mediator;
+            _mediator = mediator;
             _userService = userService;
         }
 
@@ -35,12 +35,12 @@ namespace Patronage.Api.Controllers
         {
             var link = Url.Action(nameof(VerifyEmailAsync), "User", null, Request.Scheme, Request.Host.ToString());
 
-            if (link == null)
+            if (link is null)
             {
                 throw new Exception("Link could not be created.");
             }
 
-            var result = await mediator
+            var result = await _mediator
                 .Send(new CreateUserCommand
                 {
                     CreateUserDto = createUser,
@@ -65,7 +65,7 @@ namespace Patronage.Api.Controllers
         [HttpGet("confirm")]
         public async Task<ActionResult<bool>> VerifyEmailAsync([FromQuery] string id, string token)
         {
-            var result = await mediator
+            var result = await _mediator
                 .Send(new ConfirmEmailCommand
                 {
                     Id = id,
@@ -106,7 +106,7 @@ namespace Patronage.Api.Controllers
                 throw new Exception("Link could not be created.");
             }
 
-            var result = await mediator
+            var result = await _mediator
                 .Send(new ResendEmailCommand
                 {
                     Email = email,
@@ -142,12 +142,12 @@ namespace Patronage.Api.Controllers
         {
             var link = Url.Action(nameof(ResetPasswordCredentials), "User", null, Request.Scheme, Request.Host.ToString());
 
-            if (link == null)
+            if (link is null)
             {
                 throw new Exception("Link could not be created.");
             }
 
-            var result = await mediator.Send(new SendRecoverEmailPasswordCommand
+            var result = await _mediator.Send(new SendRecoverEmailPasswordCommand
             {
                 recoverPasswordDto = sendRecoverEmail,
                 Link = link
@@ -201,7 +201,7 @@ namespace Patronage.Api.Controllers
         [HttpPost("reset")]
         public async Task<ActionResult<bool>> ResetPasswordAsync([FromBody] NewUserPasswordDto newUserPassword)
         {
-            var result = await mediator.Send(new RecoverPasswordCommand
+            var result = await _mediator.Send(new RecoverPasswordCommand
             {
                 NewUserPassword = newUserPassword
             });
@@ -231,11 +231,11 @@ namespace Patronage.Api.Controllers
         /// <response code="400">Username or password is not valid</response>
         /// <response code="500">Sorry. Try it later</response>
         [HttpPost("login")]
-        public async Task<ActionResult> Login([FromBody]SignInDto dto)
+        public async Task<ActionResult> Login([FromBody] SignInDto dto)
         {
-            var response = await mediator.Send(new SignInCommand(dto));
+            var response = await _mediator.Send(new SignInCommand(dto));
 
-            if (response is not null) 
+            if (response is not null)
             {
                 return Ok(new BaseResponse<object>
                 {
@@ -261,8 +261,8 @@ namespace Patronage.Api.Controllers
         [HttpPost("logoff")]
         public async Task<ActionResult> Logoff([FromBody] string accessToken)
         {
-            var isSucceded = await mediator.Send(new SignOutCommand(accessToken));
-            
+            var isSucceded = await _mediator.Send(new SignOutCommand(accessToken));
+
             if (!isSucceded)
             {
                 return Unauthorized(new BaseResponse<bool>
@@ -302,10 +302,9 @@ namespace Patronage.Api.Controllers
         }
 
         [HttpPost("refreshtoken")]
-        public async Task<ActionResult> RefreshToken([FromHeader(Name ="RefreshToken")] string refreshToken, [FromHeader(Name = "Bearer")] string accessToken)
+        public async Task<ActionResult> RefreshToken([FromHeader(Name = "RefreshToken")] string refreshToken, [FromHeader(Name = "Bearer")] string accessToken)
         {
-            
-            var response = await _userService.RefreshTokenAsync(refreshToken, accessToken);          
+            var response = await _userService.RefreshTokenAsync(refreshToken, accessToken);
             return Ok(response);
         }
     }
