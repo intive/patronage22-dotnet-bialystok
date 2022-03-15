@@ -1,4 +1,5 @@
 ﻿using Patronage.Contracts.ModelDtos.User;
+using Patronage.Contracts.ResponseModels;
 
 namespace Patronage.Contracts.Interfaces
 {
@@ -9,5 +10,9 @@ namespace Patronage.Contracts.Interfaces
         Task<bool> ConfirmEmail(string id, string token);
         Task<bool> SendRecoveryPasswordEmailAsync(RecoverPasswordDto recoverPasswordDto, string link);
         Task<bool> RecoverPasswordAsync(NewUserPasswordDto userPasswordDto);
+        Task<RefreshTokenResponse?> LoginUserAsync(SignInDto signInDto);
+        Task<bool> LogOutUserAsync(string accessToken);
+        Task<bool> RegisterUserTest(CreateUserDto createUser);
+        Task<RefreshTokenResponse> RefreshTokenAsync(string refreshToken, string accessToken);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Patronage.Api.MediatR.Projects.Commands;
 using Patronage.Api.MediatR.Projects.Queries;
@@ -46,6 +47,7 @@ namespace Patronage.Api.Controllers
         /// <response code="200">Searched project</response>
         /// <response code="404">Poroject not found</response>
         /// <response code="500">Sorry. Try it later</response>
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<ActionResult<ProjectDto>> GetById([FromRoute] int id)
         {

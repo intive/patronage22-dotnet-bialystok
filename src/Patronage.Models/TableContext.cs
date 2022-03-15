@@ -5,7 +5,13 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Patronage.Api;
 
 namespace Patronage.Models;
-public class TableContext : IdentityDbContext<ApplicationUser>
+public class TableContext : IdentityDbContext<
+        ApplicationUser, IdentityRole, string,
+        IdentityUserClaim<string>,
+        IdentityUserRole<string>,
+        IdentityUserLogin<string>,
+        IdentityRoleClaim<string>,      
+        TokenUser>
 {
     public virtual DbSet<Issue> Issues => Set<Issue>();
     public virtual DbSet<Project> Projects => Set<Project>();
@@ -260,7 +266,7 @@ public class TableContext : IdentityDbContext<ApplicationUser>
                     ProjectId = 1,
                     StatusId = 1,
                     BoardId = 1,
-                    AssignUserId = "1",
+                    AssignUserId = "679381f2-06a1-4e22-beda-179e8e9e3236",
                     IsActive = true
                 },
 
@@ -318,21 +324,12 @@ public class TableContext : IdentityDbContext<ApplicationUser>
         modelBuilder.Entity<ApplicationUser>().HasData(
             new ApplicationUser
             {
-                Id = "1",
-                FirstName = "FirstTestFirstname",
-                SecondName = "FirstTestSurname",
-
+                Id = "679381f2-06a1-4e22-beda-179e8e9e3236",
+                UserName = "TestUser1",
+                NormalizedUserName = "TESTUSER1",
+                Email = "test1@mail.com",
+                NormalizedEmail = "TEST1@MAIL.COM",
+                PasswordHash = "AQAAAAEAACcQAAAAEIR44hzbnj/pCIqsHG4vIPm/ARO5F+qPlxQp9Wjhn+EBi/q73B+RlmXZNV+yUOvgPQ=="
             });
-
-        var ide = Guid.NewGuid().ToString();
-
-        modelBuilder.Entity<IdentityRole>().HasData(
-
-             new IdentityRole() { Id = ide, Name = "Admin", ConcurrencyStamp = "1", NormalizedName = "Admin" }
-             );
-
-        modelBuilder.Entity<IdentityUserRole<string>>().HasData(
-             new IdentityUserRole<string>() { RoleId = ide, UserId = "1" }
-             );
     }
 }

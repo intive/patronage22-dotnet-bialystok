@@ -4,7 +4,7 @@
 
 namespace Patronage.MigrationsPostgre.Migrations
 {
-    public partial class adds_ids_to_projects : Migration
+    public partial class NewIssues : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -18,22 +18,35 @@ namespace Patronage.MigrationsPostgre.Migrations
                 keyColumn: "Id",
                 keyValue: "2f022446-1ba9-4920-837f-3b2b4cdd768a");
 
+            migrationBuilder.AddColumn<string>(
+                name: "ApplicationUserId",
+                table: "Issues",
+                type: "text",
+                nullable: true);
+
+            migrationBuilder.AddColumn<int>(
+                name: "AssignUserId",
+                table: "Issues",
+                type: "integer",
+                nullable: true);
+
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "afceb0fa-dd8b-4aa7-9242-f8c3156d11fd", "1", "Admin", "Admin" });
+                values: new object[] { "17388f4b-4c67-4e99-a515-5c987844896c", "1", "Admin", "Admin" });
 
             migrationBuilder.UpdateData(
                 table: "AspNetUsers",
                 keyColumn: "Id",
                 keyValue: "1",
                 columns: new[] { "ConcurrencyStamp", "SecurityStamp" },
-                values: new object[] { "33bcc014-584e-4d4d-9fbc-dfa3e3a27d18", "4a8cf4ba-aaed-4832-8a3f-1c9d9384a220" });
+                values: new object[] { "7deae26b-c64d-4402-8a06-5e4daed421f6", "620cea54-2bd1-46ab-8f96-398b5415de6b" });
 
             migrationBuilder.InsertData(
                 table: "AspNetUserRoles",
                 columns: new[] { "RoleId", "UserId" },
-                values: new object[] { "afceb0fa-dd8b-4aa7-9242-f8c3156d11fd", "1" });
+                values: new object[] { "17388f4b-4c67-4e99-a515-5c987844896c", "1" });
+
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -41,12 +54,20 @@ namespace Patronage.MigrationsPostgre.Migrations
             migrationBuilder.DeleteData(
                 table: "AspNetUserRoles",
                 keyColumns: new[] { "RoleId", "UserId" },
-                keyValues: new object[] { "afceb0fa-dd8b-4aa7-9242-f8c3156d11fd", "1" });
+                keyValues: new object[] { "17388f4b-4c67-4e99-a515-5c987844896c", "1" });
 
             migrationBuilder.DeleteData(
                 table: "AspNetRoles",
                 keyColumn: "Id",
-                keyValue: "afceb0fa-dd8b-4aa7-9242-f8c3156d11fd");
+                keyValue: "17388f4b-4c67-4e99-a515-5c987844896c");
+
+            migrationBuilder.DropColumn(
+                name: "ApplicationUserId",
+                table: "Issues");
+
+            migrationBuilder.DropColumn(
+                name: "AssignUserId",
+                table: "Issues");
 
             migrationBuilder.InsertData(
                 table: "AspNetRoles",

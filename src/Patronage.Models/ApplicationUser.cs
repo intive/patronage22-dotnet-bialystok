@@ -9,4 +9,10 @@ namespace Patronage.Models
 
         public List<Issue>? Issues { get; set; }
     }
+
+    public class TokenUser : IdentityUserToken<string>
+    {
+        public DateTime ValidUntil { get; set; }
+        public bool IsActive => DateTime.UtcNow <= ValidUntil;
+    }
 }

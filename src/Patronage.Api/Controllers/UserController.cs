@@ -3,6 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using Patronage.Api.MediatR.User.Commands.ConfirmationEmail;
 using Patronage.Api.MediatR.User.Commands.Create;
 using Patronage.Api.MediatR.User.Commands.Password;
+using Patronage.Api.MediatR.User.Commands.SignIn;
+using Patronage.Api.MediatR.User.Commands.SignOut;
+using Patronage.Contracts.Interfaces;
 using Patronage.Contracts.ModelDtos.User;
 using Patronage.DataAccess;
 
@@ -12,11 +15,13 @@ namespace Patronage.Api.Controllers
     [ApiController]
     public class UserController : Controller
     {
-        private readonly IMediator _mediator;
+        private readonly IMediator mediator;
+        private readonly IUserService _userService;
 
-        public UserController(IMediator mediator)
+        public UserController(IMediator mediator, IUserService userService)
         {
-            _mediator = mediator;
+            this.mediator = mediator;
+            _userService = userService;
         }
 
         /// <summary>
@@ -216,6 +221,92 @@ namespace Patronage.Api.Controllers
                 Data = result,
                 Message = "Password was changed successfully."
             });
+        }
+
+        /// <summary>
+        /// Action to sign in a user by username and password
+        /// </summary>
+        /// <param name="dto">JSON object with username, password and confirmed password</param>
+        /// <response code="200">Successfully signed in</response>
+        /// <response code="400">Username or password is not valid</response>
+        /// <response code="500">Sorry. Try it later</response>
+        [HttpPost("login")]
+        public async Task<ActionResult> Login([FromBody]SignInDto dto)
+        {
+            var response = await mediator.Send(new SignInCommand(dto));
+
+            if (response is not null) 
+            {
+                return Ok(new BaseResponse<object>
+                {
+                    ResponseCode = StatusCodes.Status200OK,
+                    Data = response,
+                    Message = "You have been signed in successfully"
+                });
+            }
+
+            return BadRequest(new BaseResponse<object>
+            {
+                ResponseCode = StatusCodes.Status400BadRequest,
+                Data = null,
+                Message = "Username or password is not valid"
+            });
+        }
+
+        /// <summary>
+        /// Action to sign out the user
+        /// </summary>
+        /// <response code="200">Successfully signed in</response>
+        /// <response code="500">Sorry. Try it later</response>
+        [HttpPost("logoff")]
+        public async Task<ActionResult> Logoff([FromBody] string accessToken)
+        {
+            var isSucceded = await mediator.Send(new SignOutCommand(accessToken));
+            
+            if (!isSucceded)
+            {
+                return Unauthorized(new BaseResponse<bool>
+                {
+                    ResponseCode = StatusCodes.Status401Unauthorized,
+                    Message = "Your access token is inactive"
+                });
+            }
+
+            return Ok(new BaseResponse<bool>
+            {
+                ResponseCode = StatusCodes.Status200OK,
+                Message = "You have been signed out successfully"
+            });
+        }
+
+        [HttpPost("registerTest")]
+        public async Task<ActionResult> RegisterTest([FromBody] CreateUserDto createUser)
+        {
+            var isSucceded = await _userService.RegisterUserTest(createUser);
+
+            if (isSucceded)
+            {
+                return Ok(new BaseResponse<object>
+                {
+                    ResponseCode = StatusCodes.Status200OK,
+                    Message = "You have been registered successfully"
+                });
+            }
+
+            return BadRequest(new BaseResponse<object>
+            {
+                ResponseCode = StatusCodes.Status400BadRequest,
+                Data = null,
+                Message = "You have not been registered"
+            });
+        }
+
+        [HttpPost("refreshtoken")]
+        public async Task<ActionResult> RefreshToken([FromHeader(Name ="RefreshToken")] string refreshToken, [FromHeader(Name = "Bearer")] string accessToken)
+        {
+            
+            var response = await _userService.RefreshTokenAsync(refreshToken, accessToken);          
+            return Ok(response);
         }
     }
 }

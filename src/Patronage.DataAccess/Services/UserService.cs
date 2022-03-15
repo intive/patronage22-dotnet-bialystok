@@ -1,29 +1,39 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using NETCore.MailKit.Core;
+using Patronage.Contracts.Helpers;
 using Patronage.Contracts.Interfaces;
 using Patronage.Contracts.ModelDtos.User;
+using Patronage.Contracts.ResponseModels;
 using Patronage.Models;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Security.Cryptography;
+using System.Text;
 using System.Web;
 
 namespace Patronage.DataAccess.Services
 {
     public class UserService : IUserService
     {
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly SignInManager<ApplicationUser> _signInManager;
-        private readonly TableContext _tableContext;
-        private readonly IEmailService _emailService;
-        private readonly ILoggerFactory _logger;
+        private readonly UserManager<ApplicationUser> userManager;
+        private readonly SignInManager<ApplicationUser> signInManager;
+        private readonly TableContext tableContext;
+        private readonly IEmailService emailService;
+        private readonly ILoggerFactory logger;
+        private readonly ITokenService _tokenService;
 
         public UserService(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager,
-            TableContext tableContext, IEmailService emailService, ILoggerFactory logger)
+            TableContext tableContext, IEmailService emailService, ILoggerFactory logger, ITokenService tokenService)
         {
-            _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
-            _signInManager = signInManager ?? throw new ArgumentNullException(nameof(signInManager));
-            _tableContext = tableContext ?? throw new ArgumentNullException(nameof(tableContext));
-            _emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this.userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
+            this.signInManager = signInManager ?? throw new ArgumentNullException(nameof(signInManager));
+            this.tableContext = tableContext ?? throw new ArgumentNullException(nameof(tableContext));
+            this.emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _tokenService = tokenService;
         }
 
         public async Task<bool> ResendEmailConfirmationAsync(string email, string link)
@@ -163,6 +173,138 @@ namespace Patronage.DataAccess.Services
                 }
                 throw new Exception("Error occured while reseting password." + result.Errors.First().Description);
             }
+
+            return true;
+        }
+
+        public async Task<bool> RegisterUserTest(CreateUserDto createUser)
+        {
+            var user = new ApplicationUser
+            {
+                UserName = createUser.UserName,
+                Email = createUser.Email,
+            };
+
+            var result = await userManager.CreateAsync(user, createUser.Password);
+
+            if (result.Succeeded)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        public async Task<RefreshTokenResponse?> LoginUserAsync(SignInDto signInDto)
+        {
+            var user = await userManager.FindByNameAsync(signInDto.Username);
+
+            if (user is not null)
+            {
+                var signInResult = await signInManager.PasswordSignInAsync(user, signInDto.Password, false, false);
+              
+                if (signInResult.Succeeded)
+                {
+                    var claims = new[]
+                    {
+                        new Claim(JwtRegisteredClaimNames.Sub, user.Id),
+                        new Claim(ClaimTypes.Name, user.UserName)
+                    };
+
+                    var accessToken = _tokenService.GenerateAccessToken(claims);
+                    var newRefreshToken = _tokenService.GenerateRefreshToken();
+                    var userRefreshTokenRecord = tableContext.UserTokens.FirstOrDefault(u => u.UserId == user.Id);
+                    if (userRefreshTokenRecord is null)
+                    {
+                        tableContext.UserTokens.Add(new TokenUser
+                        {
+                            UserId = user.Id,
+                            LoginProvider = "111",
+                            Name = "RefreshToken",
+                            Value = newRefreshToken.Token,
+                            ValidUntil = newRefreshToken.ValidUntil,
+                        });
+                    }
+                    else
+                    {
+                        userRefreshTokenRecord.Value = newRefreshToken.Token;
+                        userRefreshTokenRecord.ValidUntil = newRefreshToken.ValidUntil;
+                    }
+                    await tableContext.SaveChangesAsync();
+                    var response = new RefreshTokenResponse
+                    {
+                        
+                        RefreshToken = newRefreshToken,
+                        AccessToken = accessToken
+                    };
+
+                    return response;
+                }
+                return null;
+            }
+            return null;
+        }
+
+        public async Task<RefreshTokenResponse> RefreshTokenAsync(
+            string refreshToken,
+            string accessToken)
+        {
+            var principal = _tokenService.GetPrincipalFromExpiredToken(accessToken);
+
+            var userRefreshTokenRecord = tableContext.UserTokens.FirstOrDefault(u => u.Value == refreshToken);
+
+            if (userRefreshTokenRecord == null)
+            {
+                // TODO: change throw to return? 
+                Console.WriteLine("usertoken is null");
+                throw new Exception();
+            }
+            var user = tableContext.Users.FirstOrDefault(u => u.Id == userRefreshTokenRecord.UserId);
+            if (user == null || userRefreshTokenRecord.Value != refreshToken)
+            {
+                // TODO: change throw to return? 
+                Console.WriteLine("usertoken is null");
+                throw new Exception();
+            }
+            var newAccessToken = _tokenService.GenerateAccessToken(principal.Claims);
+            var newRefreshToken = _tokenService.GenerateRefreshToken();
+
+            userRefreshTokenRecord.Value = newRefreshToken.Token;
+            userRefreshTokenRecord.ValidUntil = newRefreshToken.ValidUntil;
+            
+            await tableContext.SaveChangesAsync();
+
+            var response = new RefreshTokenResponse
+            {
+
+                RefreshToken = newRefreshToken,
+                AccessToken = newAccessToken
+            };
+            
+            return response;
+        }
+
+        public async Task<bool> LogOutUserAsync(string accessToken)
+        {
+            await signInManager.SignOutAsync();
+
+            var principal = _tokenService.GetPrincipalFromExpiredToken(accessToken);
+
+            var expiryDateUnix = long.Parse(principal.Claims.Single(x => x.Type == JwtRegisteredClaimNames.Exp).Value);
+
+            var expiryDateTimeUtc = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)
+                .AddSeconds(expiryDateUnix);
+
+            if (expiryDateTimeUtc < DateTime.UtcNow)
+            {
+                return false;
+            }
+
+            var userId = principal.Claims.Single(x => x.Type == JwtRegisteredClaimNames.Sub).Value;
+
+            var userRefreshTokenRecord = tableContext.UserTokens.Single(u => u.UserId == userId);
+
+            userRefreshTokenRecord.Value = null;
 
             return true;
         }
