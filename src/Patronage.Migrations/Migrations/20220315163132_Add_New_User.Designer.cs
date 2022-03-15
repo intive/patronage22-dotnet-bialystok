@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Patronage.Models;
 
@@ -11,9 +12,10 @@ using Patronage.Models;
 namespace Patronage.Migrations.Migrations
 {
     [DbContext(typeof(TableContext))]
-    partial class TableContextModelSnapshot : ModelSnapshot
+    [Migration("20220315163132_Add_New_User")]
+    partial class Add_New_User
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -211,7 +213,7 @@ namespace Patronage.Migrations.Migrations
                         {
                             Id = "679381f2-06a1-4e22-beda-179e8e9e3236",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "c93346d2-9d8e-40fe-9895-908d71d72833",
+                            ConcurrencyStamp = "f80a4385-14c0-4592-a7f8-7d2551fc7351",
                             Email = "test1@mail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
@@ -219,9 +221,25 @@ namespace Patronage.Migrations.Migrations
                             NormalizedUserName = "TESTUSER1",
                             PasswordHash = "AQAAAAEAACcQAAAAEIR44hzbnj/pCIqsHG4vIPm/ARO5F+qPlxQp9Wjhn+EBi/q73B+RlmXZNV+yUOvgPQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "86200e79-87cb-43ae-b99e-c27037fa547b",
+                            SecurityStamp = "aa93b3a4-af52-4a79-8f81-9ae0be419dee",
                             TwoFactorEnabled = false,
                             UserName = "TestUser1"
+                        },
+                        new
+                        {
+                            Id = "1",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "31d02bbe-b886-4ae9-bed9-7f68f194a2d6",
+                            Email = "test2@mail.com",
+                            EmailConfirmed = false,
+                            LockoutEnabled = false,
+                            NormalizedEmail = "TEST2@MAIL.COM",
+                            NormalizedUserName = "TESTUSER2",
+                            PasswordHash = "AQAAAAEAACcQAAAAEIR44hzbnj/pCIqsHG4vIPm/ARO5F+qPlxQp9Wjhn+EBi/q73B+RlmXZNV+yUOvgPQ==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "98e970ed-485b-4aa0-bf6c-fac3670cc7d4",
+                            TwoFactorEnabled = false,
+                            UserName = "TestUser2"
                         });
                 });
 

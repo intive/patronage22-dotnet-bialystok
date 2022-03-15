@@ -266,7 +266,7 @@ public class TableContext : IdentityDbContext<
                     ProjectId = 1,
                     StatusId = 1,
                     BoardId = 1,
-                    AssignUserId = "1",
+                    AssignUserId = "679381f2-06a1-4e22-beda-179e8e9e3236",
                     IsActive = true
                 },
 
