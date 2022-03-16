@@ -315,6 +315,41 @@ namespace Patronage.MigrationsPostgre.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Patronage.Models.Comment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ApplicationUserId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("IssueId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId");
+
+                    b.HasIndex("IssueId");
+
+                    b.ToTable("Comment");
+                });
+
             modelBuilder.Entity("Patronage.Models.Issue", b =>
                 {
                     b.Property<int>("Id")
@@ -612,6 +647,21 @@ namespace Patronage.MigrationsPostgre.Migrations
                     b.Navigation("Status");
                 });
 
+            modelBuilder.Entity("Patronage.Models.Comment", b =>
+                {
+                    b.HasOne("Patronage.Models.ApplicationUser", null)
+                        .WithMany("Comment")
+                        .HasForeignKey("ApplicationUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Patronage.Models.Issue", null)
+                        .WithMany("Comment")
+                        .HasForeignKey("IssueId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Patronage.Models.Issue", b =>
                 {
                     b.HasOne("Patronage.Models.Board", null)
@@ -638,6 +688,8 @@ namespace Patronage.MigrationsPostgre.Migrations
 
             modelBuilder.Entity("Patronage.Models.ApplicationUser", b =>
                 {
+                    b.Navigation("Comment");
+
                     b.Navigation("Issues");
                 });
 
@@ -646,6 +698,11 @@ namespace Patronage.MigrationsPostgre.Migrations
                     b.Navigation("BoardStatuses");
 
                     b.Navigation("Issues");
+                });
+
+            modelBuilder.Entity("Patronage.Models.Issue", b =>
+                {
+                    b.Navigation("Comment");
                 });
 
             modelBuilder.Entity("Patronage.Models.Project", b =>

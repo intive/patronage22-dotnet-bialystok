@@ -19,6 +19,7 @@ public class TableContext : IdentityDbContext<
     public virtual DbSet<Board> Boards => Set<Board>();
     public virtual DbSet<Status> Statuses => Set<Status>();
     public virtual DbSet<BoardStatus> BoardsStatus => Set<BoardStatus>();
+    public virtual DbSet<Comment> Comment => Set<Comment>();
 
     public TableContext(DbContextOptions options) : base(options)
     {

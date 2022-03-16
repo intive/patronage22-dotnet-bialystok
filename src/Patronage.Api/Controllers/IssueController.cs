@@ -26,7 +26,6 @@ namespace Patronage.Api.Controllers
         /// </summary>
         /// <response code="200">Searched issues.</response>
         /// <response code="404">Issues not found.</response>
-        /// <response code="500">Sorry. Try it later.</response>
         [HttpGet]
         public async Task<ActionResult<PageResult<IssueDto>>> GetAllIssues([FromQuery] FilterIssueDto filter)
         {
@@ -52,7 +51,6 @@ namespace Patronage.Api.Controllers
         /// </summary>
         /// <response code="200">Searched issue.</response>
         /// <response code="404">Issue not found.</response>
-        /// <response code="500">Sorry. Try it later.</response>
         [HttpGet("{issueId}")]
         public async Task<ActionResult<IssueDto>> GetIssueById([FromRoute] int issueId)
         {
@@ -77,11 +75,9 @@ namespace Patronage.Api.Controllers
         /// Creates Issue.
         /// </summary>
         /// <response code="201">Issue correctly created.</response>
-        /// <response code="400">Pease insert correct JSON object with parameters.</response>
-        /// <response code="404">Issue not found.</response>
-        /// <response code="500">Sorry. Try it later.</response>
+        /// <response code="400">Please insert correct JSON object with parameters.</response>
         [HttpPost]
-        public async Task<ActionResult> Create([FromBody] CreateIssueCommand command)
+        public async Task<ActionResult<BaseResponse<bool>>> Create([FromBody] CreateIssueCommand command)
         {
             var result = await _mediator.Send(command);
             if (result is null)
@@ -104,11 +100,10 @@ namespace Patronage.Api.Controllers
         /// Updates issue - it's all properties.
         /// </summary>
         /// <response code="200">Issue correctly updated.</response>
-        /// <response code="400">Pease insert correct JSON object with parameters.</response>
+        /// <response code="400">Please insert correct JSON object with parameters.</response>
         /// <response code="404">Issue not found.</response>
-        /// <response code="500">Sorry. Try it later.</response>
         [HttpPut("{issueId}")]
-        public async Task<ActionResult> Update([FromBody] BaseIssueDto dto, [FromRoute] int issueId)
+        public async Task<ActionResult<BaseResponse<bool>>> Update([FromBody] BaseIssueDto dto, [FromRoute] int issueId)
         {
             var result = await _mediator.Send(new UpdateIssueCommand(issueId, dto));
             if (!result)
@@ -132,11 +127,10 @@ namespace Patronage.Api.Controllers
         /// Updates issue - only selected properties.
         /// </summary>
         /// <response code="200">Issue correctly updated.</response>
-        /// <response code="400">Pease insert correct JSON object with parameters.</response>
+        /// <response code="400">Please insert correct JSON object with parameters.</response>
         /// <response code="404">Issue not found.</response>
-        /// <response code="500">Sorry. Try it later.</response>
         [HttpPatch("{issueId}")]
-        public async Task<ActionResult> UpdateLight([FromBody] PartialIssueDto dto, [FromRoute] int issueId)
+        public async Task<ActionResult<BaseResponse<bool>>> UpdateLight([FromBody] PartialIssueDto dto, [FromRoute] int issueId)
         {
             var result = await _mediator.Send(new UpdateLightIssueCommand(issueId, dto));
             if (!result)
@@ -161,9 +155,8 @@ namespace Patronage.Api.Controllers
         /// </summary>
         /// <response code="200">Issue correctly deleted.</response>
         /// <response code="404">Issue not found.</response>
-        /// <response code="500">Sorry. Try it later.</response>
         [HttpDelete("{issueId}")]
-        public async Task<ActionResult> Delete([FromRoute] int issueId)
+        public async Task<ActionResult<BaseResponse<bool>>> Delete([FromRoute] int issueId)
         {
             var result = await _mediator.Send(new DeleteIssueCommand(issueId));
             if (!result)
@@ -188,9 +181,8 @@ namespace Patronage.Api.Controllers
         /// </summary>
         /// <response code="200">User has assigned correctly.</response>
         /// <response code="404">Issue or user not found.</response>
-        /// <response code="500">Sorry. Try it later.</response>
         [HttpPut("{issueId}/assign/{userId}")]
-        public async Task<ActionResult> Assign([FromRoute] int issueId, [FromRoute] string userId)
+        public async Task<ActionResult<BaseResponse<bool>>> Assign([FromRoute] int issueId, [FromRoute] string userId)
         {
             var result = await _mediator.Send(new AssignIssueCommand(issueId, userId));
             if (!result)

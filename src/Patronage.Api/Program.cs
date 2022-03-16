@@ -86,6 +86,7 @@ try
     builder.Services.AddScoped<IUserService, UserService>();
     builder.Services.AddTransient<ITokenService, TokenService>();
     builder.Services.AddScoped<IStatusService, StatusService>();
+    builder.Services.AddScoped<ICommentService, CommentService>();
 
     builder.Services.AddScoped<ErrorHandlingMiddleware>();
 
