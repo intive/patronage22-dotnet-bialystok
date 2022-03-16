@@ -28,7 +28,12 @@ try
                            .AddEnvironmentVariables()
                            .Build();
     builder.Configuration.AddConfiguration(envSettings);
-
+    // TODO: P2022-1704
+    builder.Services.AddCors(config =>
+    {
+        config.AddPolicy("PatronageCorsPolicy", policy => policy.AllowAnyOrigin()
+            .AllowAnyHeader());
+    });
     builder.Services.AddControllers();
     builder.Services.AddControllers(options =>
     {
@@ -117,6 +122,8 @@ try
     app.UseMiddleware<ErrorHandlingMiddleware>();
 
     app.UseHttpsRedirection();
+
+    app.UseCors("PatronageCorsPolicy");
 
     app.UseAuthentication();
 
