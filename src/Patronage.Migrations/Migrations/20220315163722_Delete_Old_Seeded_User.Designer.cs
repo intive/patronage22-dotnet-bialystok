@@ -12,8 +12,8 @@ using Patronage.Models;
 namespace Patronage.Migrations.Migrations
 {
     [DbContext(typeof(TableContext))]
-    [Migration("20220307081237_FK_UserIssue")]
-    partial class FK_UserIssue
+    [Migration("20220315163722_Delete_Old_Seeded_User")]
+    partial class Delete_Old_Seeded_User
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -49,15 +49,6 @@ namespace Patronage.Migrations.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "ab59b070-bb62-41a5-928e-0f91132472e3",
-                            ConcurrencyStamp = "1",
-                            Name = "Admin",
-                            NormalizedName = "Admin"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -145,32 +136,6 @@ namespace Patronage.Migrations.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            UserId = "1",
-                            RoleId = "ab59b070-bb62-41a5-928e-0f91132472e3"
-                        });
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
-                {
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Value")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("UserId", "LoginProvider", "Name");
-
-                    b.ToTable("AspNetUserTokens", (string)null);
                 });
 
             modelBuilder.Entity("Patronage.Models.ApplicationUser", b =>
@@ -246,16 +211,19 @@ namespace Patronage.Migrations.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "1",
+                            Id = "679381f2-06a1-4e22-beda-179e8e9e3236",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "9427f7c4-c118-4e4f-9332-bd852d4c9d64",
+                            ConcurrencyStamp = "c93346d2-9d8e-40fe-9895-908d71d72833",
+                            Email = "test1@mail.com",
                             EmailConfirmed = false,
-                            FirstName = "FirstTestFirstname",
                             LockoutEnabled = false,
+                            NormalizedEmail = "TEST1@MAIL.COM",
+                            NormalizedUserName = "TESTUSER1",
+                            PasswordHash = "AQAAAAEAACcQAAAAEIR44hzbnj/pCIqsHG4vIPm/ARO5F+qPlxQp9Wjhn+EBi/q73B+RlmXZNV+yUOvgPQ==",
                             PhoneNumberConfirmed = false,
-                            SecondName = "FirstTestSurname",
-                            SecurityStamp = "05bc821a-598e-4d02-aca5-61dd3539d277",
-                            TwoFactorEnabled = false
+                            SecurityStamp = "86200e79-87cb-43ae-b99e-c27037fa547b",
+                            TwoFactorEnabled = false,
+                            UserName = "TestUser1"
                         });
                 });
 
@@ -408,7 +376,7 @@ namespace Patronage.Migrations.Migrations
                         {
                             Id = 1,
                             Alias = "1st issue",
-                            AssignUserId = "1",
+                            AssignUserId = "679381f2-06a1-4e22-beda-179e8e9e3236",
                             BoardId = 1,
                             CreatedOn = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Description = "This is a description of first test issue. This Issue is connected to a Board",
@@ -570,6 +538,28 @@ namespace Patronage.Migrations.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Patronage.Models.TokenUser", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("ValidUntil")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Value")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("UserId", "LoginProvider", "Name");
+
+                    b.ToTable("AspNetUserTokens", (string)null);
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -605,15 +595,6 @@ namespace Patronage.Migrations.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Patronage.Models.ApplicationUser", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
-                {
                     b.HasOne("Patronage.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
@@ -657,6 +638,15 @@ namespace Patronage.Migrations.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Patronage.Models.TokenUser", b =>
+                {
+                    b.HasOne("Patronage.Models.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Patronage.Models.ApplicationUser", b =>

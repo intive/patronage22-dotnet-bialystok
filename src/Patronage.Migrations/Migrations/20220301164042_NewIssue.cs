@@ -46,30 +46,10 @@ namespace Patronage.Migrations.Migrations
                 table: "AspNetUserRoles",
                 columns: new[] { "RoleId", "UserId" },
                 values: new object[] { "6ec3b0c8-3a99-4f8c-9143-85c2e10f5d1f", "1" });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Issues_ApplicationUserId",
-                table: "Issues",
-                column: "ApplicationUserId");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Issues_AspNetUsers_ApplicationUserId",
-                table: "Issues",
-                column: "ApplicationUserId",
-                principalTable: "AspNetUsers",
-                principalColumn: "Id");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_Issues_AspNetUsers_ApplicationUserId",
-                table: "Issues");
-
-            migrationBuilder.DropIndex(
-                name: "IX_Issues_ApplicationUserId",
-                table: "Issues");
-
             migrationBuilder.DeleteData(
                 table: "AspNetUserRoles",
                 keyColumns: new[] { "RoleId", "UserId" },

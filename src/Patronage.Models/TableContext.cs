@@ -5,7 +5,13 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Patronage.Api;
 
 namespace Patronage.Models;
-public class TableContext : IdentityDbContext<ApplicationUser>
+public class TableContext : IdentityDbContext<
+        ApplicationUser, IdentityRole, string,
+        IdentityUserClaim<string>,
+        IdentityUserRole<string>,
+        IdentityUserLogin<string>,
+        IdentityRoleClaim<string>,      
+        TokenUser>
 {
     public virtual DbSet<Issue> Issues => Set<Issue>();
     public virtual DbSet<Project> Projects => Set<Project>();
@@ -28,182 +34,14 @@ public class TableContext : IdentityDbContext<ApplicationUser>
         //Very important!!!
         //Do not use .HasColumnType("datetime"); it breaks postgre
 
-        #region Project
-
-        modelBuilder.Entity<Project>()
-            .Property(p => p.Alias)
-            .HasMaxLength(256);
-
-        modelBuilder.Entity<Project>()
-            .Property(p => p.Name)
-            .HasMaxLength(1024);
-
-        modelBuilder.Entity<Project>()
-            .Property(p => p.CreatedOn)
-            .HasPrecision(0);
-
-        modelBuilder.Entity<Project>()
-            .Property(p => p.ModifiedOn)
-            .HasPrecision(0);
-
-        
-
-        #endregion
-
-        #region logTable
-        modelBuilder.Entity<Log>()
-            .HasKey(e => e.Id);
-
-        modelBuilder.Entity<Log>()
-            .Property(r => r.MachineName)
-            .IsRequired()
-            .HasMaxLength(50);
-
-        modelBuilder.Entity<Log>()
-            .Property(r => r.Logged)
-            .IsRequired();
-
-        modelBuilder.Entity<Log>()
-            .Property(r => r.Level)
-            .IsRequired()
-            .HasMaxLength(50);
-
-        modelBuilder.Entity<Log>()
-            .Property(r => r.Message)
-            .IsRequired();
-
-        modelBuilder.Entity<Log>()
-            .Property(r => r.Logger)
-            .IsRequired(false)
-            .HasMaxLength(250);
-
-        modelBuilder.Entity<Log>()
-            .Property(r => r.Callsite)
-            .IsRequired(false)
-            .IsUnicode(false);
-
-        modelBuilder.Entity<Log>()
-            .Property(r => r.Exception)
-            .IsRequired(false);
-        #endregion
-
-        #region Board
-
-        modelBuilder.Entity<Board>()
-            .HasKey(a => a.Id);
-
-        modelBuilder.Entity<Board>()
-            .Property(a => a.Alias)
-            .HasMaxLength(256);
-
-        modelBuilder.Entity<Board>()
-            .Property(a => a.Name)
-            .HasMaxLength(1024);
-
-        modelBuilder.Entity<Board>()
-            .Property(a => a.ProjectId)
-            .IsRequired();
-
-        modelBuilder.Entity<Board>()
-            .Property(a => a.CreatedOn)
-            .IsRequired();
-
-        #endregion
-
-        #region Status
-        modelBuilder.Entity<Status>()
-            .Property(s => s.Code)
-            .IsRequired();
-        #endregion
-
-        #region BoardStatus
-
-        modelBuilder.Entity<BoardStatus>()
-            .HasKey(bs => new { bs.BoardId, bs.StatusId });
-
-
-        modelBuilder.Entity<BoardStatus>()
-            .HasOne(b => b.Board)
-            .WithMany(s => s.BoardStatuses)
-            .HasForeignKey(bi => bi.BoardId);
-
-        modelBuilder.Entity<BoardStatus>()
-            .HasOne(b => b.Status)
-            .WithMany(s => s.BoardStatuses)
-            .HasForeignKey(si => si.StatusId);
-
-        #endregion
-
-        #region Issue
-        modelBuilder.Entity<Issue>()
-            .Property(r => r.Alias)
-            .HasMaxLength(256);
-
-        modelBuilder.Entity<Issue>()
-             .Property(r => r.Name)
-             .HasMaxLength(1024);
-
-        modelBuilder.Entity<Issue>()
-             .Property(r => r.Description)
-             .IsRequired(false);
-
-        modelBuilder.Entity<Issue>()
-             .Property(r => r.ProjectId)
-             .IsRequired();
-
-        modelBuilder.Entity<Issue>()
-             .Property(r => r.StatusId)
-             .IsRequired();
-
-        modelBuilder.Entity<Issue>()
-             .Property(r => r.BoardId)
-             .IsRequired(false);
-
-        modelBuilder.Entity<Issue>()
-             .Property(r => r.AssignUserId)
-             .IsRequired(false);
-
-        modelBuilder.Entity<Issue>()
-             .Property(r => r.CreatedOn)
-             .IsRequired();
-
-        modelBuilder.Entity<Issue>()
-            .HasOne(p => p.User)
-            .WithMany(b => b.Issues)
-            .HasForeignKey(p => p.AssignUserId);
-
-        #endregion
-
-        #region Comment
-
-        modelBuilder.Entity<Comment>()
-             .Property(r => r.IssueId)
-             .IsRequired();
-
-        modelBuilder.Entity<Comment>()
-             .Property(r => r.ApplicationUserId)
-             .IsRequired();
-
-        modelBuilder.Entity<Comment>()
-             .Property(r => r.Content)
-             .HasMaxLength(500);
-
-        modelBuilder.Entity<Comment>()
-             .Property(r => r.CreatedOn)
-             .IsRequired();
-
-        #endregion
-
-        #region DataSeed
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(TableContext).Assembly);
 
         TestDataSeed(modelBuilder);
-
-        #endregion
     }
 
     private void Timestamps(object? sender, EntityEntryEventArgs e)
     {
-        if(sender is null)
+        if (sender is null)
         {
             return;
         }
@@ -212,7 +50,6 @@ public class TableContext : IdentityDbContext<ApplicationUser>
         {
             createdEntity.CreatedOn = DateTime.UtcNow;
         }
-
         else if (e.Entry.Entity is IModifable modifiedEntity &&
         e.Entry.State == EntityState.Modified)
         {
@@ -281,7 +118,7 @@ public class TableContext : IdentityDbContext<ApplicationUser>
                     ProjectId = 1,
                     StatusId = 1,
                     BoardId = 1,
-                    AssignUserId = "1",
+                    AssignUserId = "679381f2-06a1-4e22-beda-179e8e9e3236",
                     IsActive = true
                 },
 
@@ -339,21 +176,12 @@ public class TableContext : IdentityDbContext<ApplicationUser>
         modelBuilder.Entity<ApplicationUser>().HasData(
             new ApplicationUser
             {
-                Id = "1",
-                FirstName = "FirstTestFirstname",
-                SecondName = "FirstTestSurname",
-
+                Id = "679381f2-06a1-4e22-beda-179e8e9e3236",
+                UserName = "TestUser1",
+                NormalizedUserName = "TESTUSER1",
+                Email = "test1@mail.com",
+                NormalizedEmail = "TEST1@MAIL.COM",
+                PasswordHash = "AQAAAAEAACcQAAAAEIR44hzbnj/pCIqsHG4vIPm/ARO5F+qPlxQp9Wjhn+EBi/q73B+RlmXZNV+yUOvgPQ=="
             });
-
-        var ide = Guid.NewGuid().ToString();
-
-        modelBuilder.Entity<IdentityRole>().HasData(
-
-             new IdentityRole() { Id = ide, Name = "Admin", ConcurrencyStamp = "1", NormalizedName = "Admin" }
-             );
-
-        modelBuilder.Entity<IdentityUserRole<string>>().HasData(
-             new IdentityUserRole<string>() { RoleId = ide, UserId = "1" }
-             );
     }
 }

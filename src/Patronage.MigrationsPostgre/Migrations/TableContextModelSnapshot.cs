@@ -46,15 +46,6 @@ namespace Patronage.MigrationsPostgre.Migrations
                         .HasDatabaseName("RoleNameIndex");
 
                     b.ToTable("AspNetRoles", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "e9a0977c-bc0c-458c-a8f7-4e138adde808",
-                            ConcurrencyStamp = "1",
-                            Name = "Admin",
-                            NormalizedName = "Admin"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -142,32 +133,6 @@ namespace Patronage.MigrationsPostgre.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            UserId = "1",
-                            RoleId = "e9a0977c-bc0c-458c-a8f7-4e138adde808"
-                        });
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
-                {
-                    b.Property<string>("UserId")
-                        .HasColumnType("text");
-
-                    b.Property<string>("LoginProvider")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Value")
-                        .HasColumnType("text");
-
-                    b.HasKey("UserId", "LoginProvider", "Name");
-
-                    b.ToTable("AspNetUserTokens", (string)null);
                 });
 
             modelBuilder.Entity("Patronage.Models.ApplicationUser", b =>
@@ -242,16 +207,19 @@ namespace Patronage.MigrationsPostgre.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "1",
+                            Id = "679381f2-06a1-4e22-beda-179e8e9e3236",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "26b00873-97b0-49df-9e15-d5aa50221016",
+                            ConcurrencyStamp = "b8d468b2-3685-4504-97ed-27f27ef55a8e",
+                            Email = "test1@mail.com",
                             EmailConfirmed = false,
-                            FirstName = "FirstTestFirstname",
                             LockoutEnabled = false,
+                            NormalizedEmail = "TEST1@MAIL.COM",
+                            NormalizedUserName = "TESTUSER1",
+                            PasswordHash = "AQAAAAEAACcQAAAAEIR44hzbnj/pCIqsHG4vIPm/ARO5F+qPlxQp9Wjhn+EBi/q73B+RlmXZNV+yUOvgPQ==",
                             PhoneNumberConfirmed = false,
-                            SecondName = "FirstTestSurname",
-                            SecurityStamp = "3de6f27d-a086-469a-a657-33abad5b8956",
-                            TwoFactorEnabled = false
+                            SecurityStamp = "137bcb77-6213-4d4f-a11e-cf813583ab22",
+                            TwoFactorEnabled = false,
+                            UserName = "TestUser1"
                         });
                 });
 
@@ -395,9 +363,6 @@ namespace Patronage.MigrationsPostgre.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
 
-                    b.Property<string>("AssignUserId")
-                        .HasColumnType("text");
-
                     b.Property<int?>("BoardId")
                         .HasColumnType("integer");
 
@@ -426,8 +391,6 @@ namespace Patronage.MigrationsPostgre.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AssignUserId");
-
                     b.HasIndex("BoardId");
 
                     b.HasIndex("ProjectId");
@@ -439,7 +402,7 @@ namespace Patronage.MigrationsPostgre.Migrations
                         {
                             Id = 1,
                             Alias = "1st issue",
-                            AssignUserId = "1",
+                            AssignUserId = "679381f2-06a1-4e22-beda-179e8e9e3236",
                             BoardId = 1,
                             CreatedOn = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Description = "This is a description of first test issue. This Issue is connected to a Board",
@@ -601,6 +564,28 @@ namespace Patronage.MigrationsPostgre.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Patronage.Models.TokenUser", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("text");
+
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("ValidUntil")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Value")
+                        .HasColumnType("text");
+
+                    b.HasKey("UserId", "LoginProvider", "Name");
+
+                    b.ToTable("AspNetUserTokens", (string)null);
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -636,15 +621,6 @@ namespace Patronage.MigrationsPostgre.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Patronage.Models.ApplicationUser", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
-                {
                     b.HasOne("Patronage.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
@@ -688,10 +664,6 @@ namespace Patronage.MigrationsPostgre.Migrations
 
             modelBuilder.Entity("Patronage.Models.Issue", b =>
                 {
-                    b.HasOne("Patronage.Models.ApplicationUser", "User")
-                        .WithMany("Issues")
-                        .HasForeignKey("AssignUserId");
-
                     b.HasOne("Patronage.Models.Board", null)
                         .WithMany("Issues")
                         .HasForeignKey("BoardId");
@@ -703,6 +675,15 @@ namespace Patronage.MigrationsPostgre.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Patronage.Models.TokenUser", b =>
+                {
+                    b.HasOne("Patronage.Models.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Patronage.Models.ApplicationUser", b =>

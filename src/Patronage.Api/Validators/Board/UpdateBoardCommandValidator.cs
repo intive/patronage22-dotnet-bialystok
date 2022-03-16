@@ -5,7 +5,7 @@ namespace Patronage.Api.Validators.Board
 {
     public class UpdateBoardCommandValidator : AbstractValidator<UpdateBoardCommand>
     {
-        public UpdateBoardCommandValidator(BoardDtoValidator boardValidator)
+        public UpdateBoardCommandValidator(UpdateBoardValidator boardValidator)
         {
             RuleFor(x => x.Data).SetValidator(boardValidator);
         }
