@@ -29,7 +29,6 @@ try
                            .Build();
     builder.Configuration.AddConfiguration(envSettings);
 
-    builder.Services.AddControllers();
     builder.Services.AddControllers(options =>
     {
         options.SuppressAsyncSuffixInActionNames = false;
