@@ -51,7 +51,7 @@ namespace Patronage.Api.Controllers
         /// <response code="201">Comment correctly created.</response>
         /// <response code="400">Please insert correct JSON object with parameters.</response>
         [HttpPost]
-        public async Task<ActionResult> Create([FromBody] CreateCommentCommand command)
+        public async Task<ActionResult<BaseResponse<bool>>> Create([FromBody] CreateCommentCommand command)
         {
             var result = await _mediator.Send(command);
             if (result is null)
@@ -77,7 +77,7 @@ namespace Patronage.Api.Controllers
         /// <response code="400">Please insert correct JSON object with parameters.</response>
         /// <response code="404">Comment not found.</response>
         [HttpPatch("{commentId}")]
-        public async Task<ActionResult> UpdateLight([FromBody] PartialCommentDto dto, [FromRoute] int commentId)
+        public async Task<ActionResult<BaseResponse<bool>>> UpdateLight([FromBody] PartialCommentDto dto, [FromRoute] int commentId)
         {
             var result = await _mediator.Send(new UpdateLightCommentCommand(commentId, dto));
             if (!result)
@@ -103,7 +103,7 @@ namespace Patronage.Api.Controllers
         /// <response code="200">Comment correctly deleted.</response>
         /// <response code="404">Comment not found.</response>
         [HttpDelete("{commentId}")]
-        public async Task<ActionResult> Delete([FromRoute] int commentId)
+        public async Task<ActionResult<BaseResponse<bool>>> Delete([FromRoute] int commentId)
         {
             var result = await _mediator.Send(new DeleteCommentCommand(commentId));
             if (!result)

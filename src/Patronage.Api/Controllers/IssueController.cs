@@ -77,7 +77,7 @@ namespace Patronage.Api.Controllers
         /// <response code="201">Issue correctly created.</response>
         /// <response code="400">Please insert correct JSON object with parameters.</response>
         [HttpPost]
-        public async Task<ActionResult> Create([FromBody] CreateIssueCommand command)
+        public async Task<ActionResult<BaseResponse<bool>>> Create([FromBody] CreateIssueCommand command)
         {
             var result = await _mediator.Send(command);
             if (result is null)
@@ -103,7 +103,7 @@ namespace Patronage.Api.Controllers
         /// <response code="400">Please insert correct JSON object with parameters.</response>
         /// <response code="404">Issue not found.</response>
         [HttpPut("{issueId}")]
-        public async Task<ActionResult> Update([FromBody] BaseIssueDto dto, [FromRoute] int issueId)
+        public async Task<ActionResult<BaseResponse<bool>>> Update([FromBody] BaseIssueDto dto, [FromRoute] int issueId)
         {
             var result = await _mediator.Send(new UpdateIssueCommand(issueId, dto));
             if (!result)
@@ -130,7 +130,7 @@ namespace Patronage.Api.Controllers
         /// <response code="400">Please insert correct JSON object with parameters.</response>
         /// <response code="404">Issue not found.</response>
         [HttpPatch("{issueId}")]
-        public async Task<ActionResult> UpdateLight([FromBody] PartialIssueDto dto, [FromRoute] int issueId)
+        public async Task<ActionResult<BaseResponse<bool>>> UpdateLight([FromBody] PartialIssueDto dto, [FromRoute] int issueId)
         {
             var result = await _mediator.Send(new UpdateLightIssueCommand(issueId, dto));
             if (!result)
@@ -156,7 +156,7 @@ namespace Patronage.Api.Controllers
         /// <response code="200">Issue correctly deleted.</response>
         /// <response code="404">Issue not found.</response>
         [HttpDelete("{issueId}")]
-        public async Task<ActionResult> Delete([FromRoute] int issueId)
+        public async Task<ActionResult<BaseResponse<bool>>> Delete([FromRoute] int issueId)
         {
             var result = await _mediator.Send(new DeleteIssueCommand(issueId));
             if (!result)
@@ -182,7 +182,7 @@ namespace Patronage.Api.Controllers
         /// <response code="200">User has assigned correctly.</response>
         /// <response code="404">Issue or user not found.</response>
         [HttpPut("{issueId}/assign/{userId}")]
-        public async Task<ActionResult> Assign([FromRoute] int issueId, [FromRoute] string userId)
+        public async Task<ActionResult<BaseResponse<bool>>> Assign([FromRoute] int issueId, [FromRoute] string userId)
         {
             var result = await _mediator.Send(new AssignIssueCommand(issueId, userId));
             if (!result)

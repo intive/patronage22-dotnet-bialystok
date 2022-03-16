@@ -174,6 +174,8 @@ public class TableContext : IdentityDbContext<ApplicationUser>
 
         #endregion
 
+        #region Comment
+
         modelBuilder.Entity<Comment>()
              .Property(r => r.IssueId)
              .IsRequired();
@@ -189,8 +191,6 @@ public class TableContext : IdentityDbContext<ApplicationUser>
         modelBuilder.Entity<Comment>()
              .Property(r => r.CreatedOn)
              .IsRequired();
-
-        #region Comment
 
         #endregion
 
