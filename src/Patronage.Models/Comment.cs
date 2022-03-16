@@ -10,5 +10,8 @@ namespace Patronage.Models
         public string Content { get; set; } = null!;
         public DateTime CreatedOn { get; set; }
         public DateTime? ModifiedOn { get; set; }
+
+        public virtual Issue? Issue { get; set; }
+        public virtual ApplicationUser? User { get; set; }
     }
 }
