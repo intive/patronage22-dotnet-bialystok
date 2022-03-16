@@ -2,17 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Patronage.Models;
 
 #nullable disable
 
-namespace Patronage.MigrationsPostgre.Migrations
+namespace Patronage.Migrations.Migrations
 {
     [DbContext(typeof(TableContext))]
-    [Migration("20220312124939_Comment")]
+    [Migration("20220316205652_Comment")]
     partial class Comment
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -20,62 +20,54 @@ namespace Patronage.MigrationsPostgre.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "6.0.2")
-                .HasAnnotation("Relational:MaxIdentifierLength", 63);
+                .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
-            NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("NormalizedName")
                         .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
+                        .HasColumnType("nvarchar(256)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("NormalizedName")
                         .IsUnique()
-                        .HasDatabaseName("RoleNameIndex");
+                        .HasDatabaseName("RoleNameIndex")
+                        .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "e9a0977c-bc0c-458c-a8f7-4e138adde808",
-                            ConcurrencyStamp = "1",
-                            Name = "Admin",
-                            NormalizedName = "Admin"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("ClaimType")
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ClaimValue")
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("RoleId")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
@@ -88,19 +80,19 @@ namespace Patronage.MigrationsPostgre.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("ClaimType")
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ClaimValue")
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
@@ -112,17 +104,17 @@ namespace Patronage.MigrationsPostgre.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ProviderKey")
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ProviderDisplayName")
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("LoginProvider", "ProviderKey");
 
@@ -134,101 +126,75 @@ namespace Patronage.MigrationsPostgre.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
                 {
                     b.Property<string>("UserId")
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("RoleId")
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("UserId", "RoleId");
 
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            UserId = "1",
-                            RoleId = "e9a0977c-bc0c-458c-a8f7-4e138adde808"
-                        });
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
-                {
-                    b.Property<string>("UserId")
-                        .HasColumnType("text");
-
-                    b.Property<string>("LoginProvider")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Value")
-                        .HasColumnType("text");
-
-                    b.HasKey("UserId", "LoginProvider", "Name");
-
-                    b.ToTable("AspNetUserTokens", (string)null);
                 });
 
             modelBuilder.Entity("Patronage.Models.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("AccessFailedCount")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<bool>("EmailConfirmed")
-                        .HasColumnType("boolean");
+                        .HasColumnType("bit");
 
                     b.Property<string>("FirstName")
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("LockoutEnabled")
-                        .HasColumnType("boolean");
+                        .HasColumnType("bit");
 
                     b.Property<DateTimeOffset?>("LockoutEnd")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("NormalizedUserName")
                         .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("PasswordHash")
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhoneNumber")
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("PhoneNumberConfirmed")
-                        .HasColumnType("boolean");
+                        .HasColumnType("bit");
 
                     b.Property<string>("SecondName")
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SecurityStamp")
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("TwoFactorEnabled")
-                        .HasColumnType("boolean");
+                        .HasColumnType("bit");
 
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
+                        .HasColumnType("nvarchar(256)");
 
                     b.HasKey("Id");
 
@@ -237,23 +203,27 @@ namespace Patronage.MigrationsPostgre.Migrations
 
                     b.HasIndex("NormalizedUserName")
                         .IsUnique()
-                        .HasDatabaseName("UserNameIndex");
+                        .HasDatabaseName("UserNameIndex")
+                        .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
 
                     b.HasData(
                         new
                         {
-                            Id = "1",
+                            Id = "679381f2-06a1-4e22-beda-179e8e9e3236",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "26b00873-97b0-49df-9e15-d5aa50221016",
+                            ConcurrencyStamp = "cd19ecb3-5cfc-4910-a31b-ad64868bc6e4",
+                            Email = "test1@mail.com",
                             EmailConfirmed = false,
-                            FirstName = "FirstTestFirstname",
                             LockoutEnabled = false,
+                            NormalizedEmail = "TEST1@MAIL.COM",
+                            NormalizedUserName = "TESTUSER1",
+                            PasswordHash = "AQAAAAEAACcQAAAAEIR44hzbnj/pCIqsHG4vIPm/ARO5F+qPlxQp9Wjhn+EBi/q73B+RlmXZNV+yUOvgPQ==",
                             PhoneNumberConfirmed = false,
-                            SecondName = "FirstTestSurname",
-                            SecurityStamp = "3de6f27d-a086-469a-a657-33abad5b8956",
-                            TwoFactorEnabled = false
+                            SecurityStamp = "8f785328-4088-49c1-b6e9-c0ac7e702458",
+                            TwoFactorEnabled = false,
+                            UserName = "TestUser1"
                         });
                 });
 
@@ -261,34 +231,34 @@ namespace Patronage.MigrationsPostgre.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("Alias")
                         .IsRequired()
                         .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("boolean");
+                        .HasColumnType("bit");
 
                     b.Property<DateTime?>("ModifiedOn")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(1024)
-                        .HasColumnType("character varying(1024)");
+                        .HasColumnType("nvarchar(1024)");
 
                     b.Property<int>("ProjectId")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -320,10 +290,10 @@ namespace Patronage.MigrationsPostgre.Migrations
             modelBuilder.Entity("Patronage.Models.BoardStatus", b =>
                 {
                     b.Property<int>("BoardId")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<int>("StatusId")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.HasKey("BoardId", "StatusId");
 
@@ -353,27 +323,27 @@ namespace Patronage.MigrationsPostgre.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("ApplicationUserId")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Content")
                         .IsRequired()
                         .HasMaxLength(500)
-                        .HasColumnType("character varying(500)");
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("IssueId")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<DateTime?>("ModifiedOn")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -388,43 +358,43 @@ namespace Patronage.MigrationsPostgre.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("Alias")
                         .IsRequired()
                         .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("AssignUserId")
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int?>("BoardId")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("boolean");
+                        .HasColumnType("bit");
 
                     b.Property<DateTime?>("ModifiedOn")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(1024)
-                        .HasColumnType("character varying(1024)");
+                        .HasColumnType("nvarchar(1024)");
 
                     b.Property<int>("ProjectId")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<int>("StatusId")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -441,7 +411,7 @@ namespace Patronage.MigrationsPostgre.Migrations
                         {
                             Id = 1,
                             Alias = "1st issue",
-                            AssignUserId = "1",
+                            AssignUserId = "679381f2-06a1-4e22-beda-179e8e9e3236",
                             BoardId = 1,
                             CreatedOn = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Description = "This is a description of first test issue. This Issue is connected to a Board",
@@ -467,37 +437,37 @@ namespace Patronage.MigrationsPostgre.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("Callsite")
                         .IsUnicode(false)
-                        .HasColumnType("text");
+                        .HasColumnType("varchar(max)");
 
                     b.Property<string>("Exception")
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Level")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<DateTime>("Logged")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Logger")
                         .HasMaxLength(250)
-                        .HasColumnType("character varying(250)");
+                        .HasColumnType("nvarchar(250)");
 
                     b.Property<string>("MachineName")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Message")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -508,33 +478,33 @@ namespace Patronage.MigrationsPostgre.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("Alias")
                         .IsRequired()
                         .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<DateTime>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("timestamp(0) with time zone");
+                        .HasColumnType("datetime2(0)");
 
                     b.Property<string>("Description")
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("boolean");
+                        .HasColumnType("bit");
 
                     b.Property<DateTime?>("ModifiedOn")
                         .HasPrecision(0)
-                        .HasColumnType("timestamp(0) with time zone");
+                        .HasColumnType("datetime2(0)");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(1024)
-                        .HasColumnType("character varying(1024)");
+                        .HasColumnType("nvarchar(1024)");
 
                     b.HasKey("Id");
 
@@ -573,13 +543,13 @@ namespace Patronage.MigrationsPostgre.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("Code")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -601,6 +571,28 @@ namespace Patronage.MigrationsPostgre.Migrations
                             Id = 3,
                             Code = "DONE"
                         });
+                });
+
+            modelBuilder.Entity("Patronage.Models.TokenUser", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("ValidUntil")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Value")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("UserId", "LoginProvider", "Name");
+
+                    b.ToTable("AspNetUserTokens", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -645,15 +637,6 @@ namespace Patronage.MigrationsPostgre.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
-                {
-                    b.HasOne("Patronage.Models.ApplicationUser", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Patronage.Models.BoardStatus", b =>
                 {
                     b.HasOne("Patronage.Models.Board", "Board")
@@ -675,17 +658,21 @@ namespace Patronage.MigrationsPostgre.Migrations
 
             modelBuilder.Entity("Patronage.Models.Comment", b =>
                 {
-                    b.HasOne("Patronage.Models.ApplicationUser", null)
+                    b.HasOne("Patronage.Models.ApplicationUser", "User")
                         .WithMany("Comment")
                         .HasForeignKey("ApplicationUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Patronage.Models.Issue", null)
+                    b.HasOne("Patronage.Models.Issue", "Issue")
                         .WithMany("Comment")
                         .HasForeignKey("IssueId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Issue");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Patronage.Models.Issue", b =>
@@ -705,6 +692,15 @@ namespace Patronage.MigrationsPostgre.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Patronage.Models.TokenUser", b =>
+                {
+                    b.HasOne("Patronage.Models.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Patronage.Models.ApplicationUser", b =>

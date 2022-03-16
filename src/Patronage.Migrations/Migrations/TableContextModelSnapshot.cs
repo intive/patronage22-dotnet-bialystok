@@ -211,7 +211,7 @@ namespace Patronage.Migrations.Migrations
                         {
                             Id = "679381f2-06a1-4e22-beda-179e8e9e3236",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "c93346d2-9d8e-40fe-9895-908d71d72833",
+                            ConcurrencyStamp = "cd19ecb3-5cfc-4910-a31b-ad64868bc6e4",
                             Email = "test1@mail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
@@ -219,7 +219,7 @@ namespace Patronage.Migrations.Migrations
                             NormalizedUserName = "TESTUSER1",
                             PasswordHash = "AQAAAAEAACcQAAAAEIR44hzbnj/pCIqsHG4vIPm/ARO5F+qPlxQp9Wjhn+EBi/q73B+RlmXZNV+yUOvgPQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "86200e79-87cb-43ae-b99e-c27037fa547b",
+                            SecurityStamp = "8f785328-4088-49c1-b6e9-c0ac7e702458",
                             TwoFactorEnabled = false,
                             UserName = "TestUser1"
                         });
@@ -365,6 +365,9 @@ namespace Patronage.Migrations.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
+                    b.Property<string>("AssignUserId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<int?>("BoardId")
                         .HasColumnType("int");
 
@@ -392,6 +395,8 @@ namespace Patronage.Migrations.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AssignUserId");
 
                     b.HasIndex("BoardId");
 
@@ -651,21 +656,29 @@ namespace Patronage.Migrations.Migrations
 
             modelBuilder.Entity("Patronage.Models.Comment", b =>
                 {
-                    b.HasOne("Patronage.Models.ApplicationUser", null)
+                    b.HasOne("Patronage.Models.ApplicationUser", "User")
                         .WithMany("Comment")
                         .HasForeignKey("ApplicationUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Patronage.Models.Issue", null)
+                    b.HasOne("Patronage.Models.Issue", "Issue")
                         .WithMany("Comment")
                         .HasForeignKey("IssueId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Issue");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Patronage.Models.Issue", b =>
                 {
+                    b.HasOne("Patronage.Models.ApplicationUser", "User")
+                        .WithMany("Issues")
+                        .HasForeignKey("AssignUserId");
+
                     b.HasOne("Patronage.Models.Board", null)
                         .WithMany("Issues")
                         .HasForeignKey("BoardId");
