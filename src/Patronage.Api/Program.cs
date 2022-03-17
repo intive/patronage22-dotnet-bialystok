@@ -1,18 +1,17 @@
 using NLog;
 using NLog.Web;
 using Patronage.Models;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using MediatR;
 using Patronage.Contracts.Interfaces;
 using Patronage.DataAccess.Services;
-using Patronage.DataAccess;
 using FluentValidation;
 using Patronage.Api;
 using Patronage.Api.Middleware;
-using Npgsql;
 using Microsoft.AspNetCore.Identity;
 using Patronage.Api.Controllers;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 
 var logger = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
 logger.Info("Starting");
@@ -22,7 +21,7 @@ try
     var builder = WebApplication.CreateBuilder(args);
 
     var envConfig = new ConfigurationBuilder();
-    var envSettings =envConfig.AddJsonFile("appsettings.Development.json",
+    var envSettings = envConfig.AddJsonFile("appsettings.Development.json",
                            optional: false,
                            reloadOnChange: true)
                            .AddEnvironmentVariables()
@@ -34,7 +33,7 @@ try
         config.AddPolicy("PatronageCorsPolicy", policy => policy.AllowAnyOrigin()
             .AllowAnyHeader());
     });
-    builder.Services.AddControllers();
+
     builder.Services.AddControllers(options =>
     {
         options.SuppressAsyncSuffixInActionNames = false;
@@ -68,7 +67,6 @@ try
                     Scheme = "oauth2",
                     Name = "Bearer",
                     In = ParameterLocation.Header,
-
                 },
                 new List<string>()
             }
@@ -98,12 +96,21 @@ try
     builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
     builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
-    .AddEntityFrameworkStores<TableContext>()
-    .AddDefaultTokenProviders();
+            .AddEntityFrameworkStores<TableContext>()
+            .AddDefaultTokenProviders();
 
     builder.Services.AddEmailService(builder.Configuration);
 
     builder.Services.AddAuthenticationConfiguration(builder.Configuration);
+
+    builder.Services.AddAuthorization(options =>
+    {
+        var defaultPolicyBuilder = new AuthorizationPolicyBuilder(JwtBearerDefaults.AuthenticationScheme);
+
+        defaultPolicyBuilder = defaultPolicyBuilder.RequireAuthenticatedUser();
+
+        options.DefaultPolicy = defaultPolicyBuilder.Build();
+    });
 
     var app = builder.Build();
 
@@ -118,6 +125,7 @@ try
             c.SwaggerEndpoint("/swagger/v1/swagger.json", "Patronage 2022 API v1");
         });
     }
+    app.UseRouting();
 
     app.UseMiddleware<ErrorHandlingMiddleware>();
 
@@ -131,14 +139,13 @@ try
     // ErrorHandlingMiddleware does not work if UseDeveloperExceptionPage is enabled so I commented it
     //app.UseDeveloperExceptionPage();
 
-    app.MapControllers();
+    app.MapControllers().RequireAuthorization();
 
     logger.Info("Initializing complete!");
     string? port = Environment.GetEnvironmentVariable("PORT") ?? "80";
     logger.Info("App listening on port:" + port);
 
     app.Run();
-
 }
 catch (Exception exception)
 {

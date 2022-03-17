@@ -19,12 +19,18 @@ namespace Patronage.Api
         private const string Password = "EMAIL_PASSWORD";
         private const string Security = "EMAIL_SECURITY";
 
-        public static string GetServer() =>  Server;
+        public static string GetServer() => Server;
+
         public static string GetPort() => Port;
+
         public static string GetSenderName() => SenderName;
+
         public static string GetSenderEmail() => SenderEmail;
+
         public static string GetAccount() => Account;
+
         public static string GetPassword() => Password;
+
         public static string GetSecurity() => Security;
     }
 
@@ -69,6 +75,17 @@ namespace Patronage.Api
             {
                 config.SaveToken = true;
                 config.RequireHttpsMetadata = false;
+                config.Events = new JwtBearerEvents()
+                {
+                    OnMessageReceived = context =>
+                    {
+                        if (context.Request.Query.ContainsKey("accessToken"))
+                        {
+                            context.Token = context.Request.Query["accessToken"];
+                        }
+                        return Task.CompletedTask;
+                    }
+                };
                 config.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidIssuer = configuration["Authentication:Issuer"],

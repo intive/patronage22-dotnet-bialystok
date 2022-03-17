@@ -29,7 +29,7 @@ namespace Patronage.DataAccess.Services
                 issuer: _configuration["Authentication:Issuer"],
                 claims: claims,
                 notBefore: DateTime.UtcNow,
-                expires: DateTime.UtcNow.AddSeconds(20),
+                expires: DateTime.UtcNow.AddMinutes(5),
                 signingCredentials: credentials
             );
 
