@@ -7,10 +7,12 @@ namespace Patronage.DataAccess.Services
     public class BoardStatusService : IBoardStatusService
     {
         private readonly TableContext _dbContext;
+
         public BoardStatusService(TableContext dbContext)
         {
             _dbContext = dbContext;
         }
+
         public IEnumerable<BoardStatusDto> GetAll()
         {
             var boardSat = _dbContext
@@ -78,6 +80,7 @@ namespace Patronage.DataAccess.Services
             }
             return boardsStatusDto;
         }
+
         public bool Create(BoardStatusDto dto)
         {
             try
@@ -98,6 +101,7 @@ namespace Patronage.DataAccess.Services
                 return false;
             }
         }
+
         public bool Delete(int boardId, int statusId)
         {
             if (boardId != 0 && statusId != 0)
@@ -108,7 +112,7 @@ namespace Patronage.DataAccess.Services
                     .Where(b => b.StatusId.Equals(statusId))
                     .FirstOrDefault();
 
-                if(boardStatus == null)
+                if (boardStatus == null)
                 {
                     return false;
                 }

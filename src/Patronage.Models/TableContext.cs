@@ -5,12 +5,13 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Patronage.Api;
 
 namespace Patronage.Models;
+
 public class TableContext : IdentityDbContext<
         ApplicationUser, IdentityRole, string,
         IdentityUserClaim<string>,
         IdentityUserRole<string>,
         IdentityUserLogin<string>,
-        IdentityRoleClaim<string>,      
+        IdentityRoleClaim<string>,
         TokenUser>
 {
     public virtual DbSet<Issue> Issues => Set<Issue>();

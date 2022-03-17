@@ -19,7 +19,6 @@ namespace Patronage.Contracts.ModelDtos.Issues
 
         public IssueDto()
         {
-
         }
     }
 }

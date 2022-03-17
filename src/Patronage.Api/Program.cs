@@ -1,18 +1,15 @@
+using FluentValidation;
+using MediatR;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.OpenApi.Models;
 using NLog;
 using NLog.Web;
-using Patronage.Models;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Models;
-using MediatR;
+using Patronage.Api;
+using Patronage.Api.Controllers;
+using Patronage.Api.Middleware;
 using Patronage.Contracts.Interfaces;
 using Patronage.DataAccess.Services;
-using Patronage.DataAccess;
-using FluentValidation;
-using Patronage.Api;
-using Patronage.Api.Middleware;
-using Npgsql;
-using Microsoft.AspNetCore.Identity;
-using Patronage.Api.Controllers;
+using Patronage.Models;
 
 var logger = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
 logger.Info("Starting");
@@ -22,7 +19,7 @@ try
     var builder = WebApplication.CreateBuilder(args);
 
     var envConfig = new ConfigurationBuilder();
-    var envSettings =envConfig.AddJsonFile("appsettings.Development.json",
+    var envSettings = envConfig.AddJsonFile("appsettings.Development.json",
                            optional: false,
                            reloadOnChange: true)
                            .AddEnvironmentVariables()
@@ -68,7 +65,6 @@ try
                     Scheme = "oauth2",
                     Name = "Bearer",
                     In = ParameterLocation.Header,
-
                 },
                 new List<string>()
             }
@@ -139,7 +135,6 @@ try
     logger.Info("App listening on port:" + port);
 
     app.Run();
-
 }
 catch (Exception exception)
 {

@@ -46,7 +46,6 @@ namespace Patronage.MigrationsPostgre.Migrations
                 table: "AspNetUserRoles",
                 columns: new[] { "RoleId", "UserId" },
                 values: new object[] { "17388f4b-4c67-4e99-a515-5c987844896c", "1" });
-
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

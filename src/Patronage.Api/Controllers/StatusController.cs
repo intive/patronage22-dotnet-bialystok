@@ -5,6 +5,7 @@ using Patronage.Api.MediatR.Status.Queries;
 using Patronage.Contracts.ModelDtos;
 using Patronage.DataAccess;
 using Swashbuckle.AspNetCore.Annotations;
+
 namespace Patronage.Api.Controllers
 {
     [Route("api/status")]
@@ -17,6 +18,7 @@ namespace Patronage.Api.Controllers
         {
             _mediator = mediator;
         }
+
         [SwaggerOperation(Summary = "Get all Statuses", Description = "Returns all Statuses records available in the database")]
         [HttpGet]
         [SwaggerResponse(StatusCodes.Status200OK, "Returning all Statuses")]
@@ -36,6 +38,7 @@ namespace Patronage.Api.Controllers
             }
             return NotFound(new BaseResponse<IEnumerable<StatusDto>>());
         }
+
         [SwaggerOperation(Summary = "Get status with id")]
         [HttpGet("id")]
         [SwaggerResponse(StatusCodes.Status200OK, "Returning all records matching provided criteria")]
@@ -57,9 +60,7 @@ namespace Patronage.Api.Controllers
             {
                 ResponseCode = StatusCodes.Status404NotFound,
                 Message = "Status not found"
-
             });
-
         }
 
         [SwaggerOperation(Summary = "Create new Status", Description = "Create Status with string code")]
@@ -71,13 +72,12 @@ namespace Patronage.Api.Controllers
         {
             var id = await _mediator.Send(new CreateStatusCommand(code));
 
-                return Created($"/api/status/{id}", new BaseResponse<int>
-                {
-                    ResponseCode = StatusCodes.Status201Created,
-                    Data = id,
-                    Message = "Status created successfully"
-                });
-      
+            return Created($"/api/status/{id}", new BaseResponse<int>
+            {
+                ResponseCode = StatusCodes.Status201Created,
+                Data = id,
+                Message = "Status created successfully"
+            });
         }
 
         [SwaggerOperation(Summary = "Update Status", Description = "Update status code providing statusId and updated status code")]
@@ -91,12 +91,12 @@ namespace Patronage.Api.Controllers
             var isSucceded = await _mediator.Send(new UpdateStatusCommand(id, code));
             if (isSucceded)
             {
-            return Ok(new BaseResponse<bool>
-            {
-                ResponseCode = StatusCodes.Status201Created,
-                Data = isSucceded,
-                Message = "Status updated successfully"
-            });
+                return Ok(new BaseResponse<bool>
+                {
+                    ResponseCode = StatusCodes.Status201Created,
+                    Data = isSucceded,
+                    Message = "Status updated successfully"
+                });
             }
             return BadRequest(new BaseResponse<bool>
             {
@@ -104,7 +104,6 @@ namespace Patronage.Api.Controllers
                 Data = isSucceded,
                 Message = "An error occured trying to update resource"
             });
-
         }
 
         [SwaggerOperation(Summary = "Delete Status by id", Description = "Delete Status specifying statusId")]

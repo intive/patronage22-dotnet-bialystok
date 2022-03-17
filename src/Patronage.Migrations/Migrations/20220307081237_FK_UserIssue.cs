@@ -8,10 +8,10 @@ namespace Patronage.Migrations.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-           migrationBuilder.DeleteData(
-                table: "AspNetUserRoles",
-                keyColumns: new[] { "RoleId", "UserId" },
-                keyValues: new object[] { "6ec3b0c8-3a99-4f8c-9143-85c2e10f5d1f", "1" });
+            migrationBuilder.DeleteData(
+                 table: "AspNetUserRoles",
+                 keyColumns: new[] { "RoleId", "UserId" },
+                 keyValues: new object[] { "6ec3b0c8-3a99-4f8c-9143-85c2e10f5d1f", "1" });
 
             migrationBuilder.DeleteData(
                 table: "AspNetRoles",

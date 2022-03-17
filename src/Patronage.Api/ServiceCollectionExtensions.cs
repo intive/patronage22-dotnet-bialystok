@@ -1,10 +1,7 @@
-﻿using IdentityModel.Client;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.Net.Http.Headers;
 using NETCore.MailKit.Extensions;
 using NETCore.MailKit.Infrastructure.Internal;
-using Newtonsoft.Json;
 using System.Text;
 
 namespace Patronage.Api
@@ -19,12 +16,18 @@ namespace Patronage.Api
         private const string Password = "EMAIL_PASSWORD";
         private const string Security = "EMAIL_SECURITY";
 
-        public static string GetServer() =>  Server;
+        public static string GetServer() => Server;
+
         public static string GetPort() => Port;
+
         public static string GetSenderName() => SenderName;
+
         public static string GetSenderEmail() => SenderEmail;
+
         public static string GetAccount() => Account;
+
         public static string GetPassword() => Password;
+
         public static string GetSecurity() => Security;
     }
 

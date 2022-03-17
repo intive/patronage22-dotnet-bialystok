@@ -1,7 +1,7 @@
 ﻿using Patronage.Models;
 
 namespace Patronage.Contracts.ModelDtos.Issues
-{  
+{
     public class BaseIssueDto
     {
         public string Alias { get; set; } = null!;
@@ -27,7 +27,6 @@ namespace Patronage.Contracts.ModelDtos.Issues
 
         public BaseIssueDto()
         {
-
         }
     }
 }

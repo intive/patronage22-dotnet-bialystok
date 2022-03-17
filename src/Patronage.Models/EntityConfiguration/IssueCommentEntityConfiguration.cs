@@ -1,10 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Patronage.Models.EntityConfiguration
 {
@@ -12,7 +7,6 @@ namespace Patronage.Models.EntityConfiguration
     {
         public void Configure(EntityTypeBuilder<Comment> builder)
         {
-
             builder
                  .Property(r => r.IssueId)
                  .IsRequired();

@@ -3,7 +3,6 @@ using FluentValidation.Results;
 using Patronage.Api.Exceptions;
 using Patronage.DataAccess;
 using System.Text.Json;
-using System.Linq;
 
 namespace Patronage.Api.Middleware
 {
@@ -29,7 +28,7 @@ namespace Patronage.Api.Middleware
                     ResponseCode = StatusCodes.Status422UnprocessableEntity,
                     Message = "One or more validation errors has occured.",
                     BaseResponseError = validationException.Errors
-                        .Select(x => new BaseResponseError(x.PropertyName, x.ErrorCode, x.ErrorMessage)).ToList()    
+                        .Select(x => new BaseResponseError(x.PropertyName, x.ErrorCode, x.ErrorMessage)).ToList()
                 };
                 context.Response.ContentType = "application/json";
                 context.Response.StatusCode = StatusCodes.Status422UnprocessableEntity;

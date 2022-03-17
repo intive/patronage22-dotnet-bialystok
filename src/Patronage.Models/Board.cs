@@ -1,10 +1,4 @@
 ﻿using Patronage.Api;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Patronage.Models
 {
@@ -20,7 +14,7 @@ namespace Patronage.Models
 
         public int ProjectId { get; set; }
 
-        public  bool IsActive { get; set; }
+        public bool IsActive { get; set; }
 
         public DateTime CreatedOn { get; set; }
 
@@ -28,6 +22,5 @@ namespace Patronage.Models
 
         public virtual ICollection<Issue>? Issues { get; set; }
         public virtual ICollection<BoardStatus>? BoardStatuses { get; set; }
-
     }
 }

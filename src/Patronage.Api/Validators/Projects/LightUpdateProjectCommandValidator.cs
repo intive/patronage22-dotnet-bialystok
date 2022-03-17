@@ -1,5 +1,4 @@
 ﻿using FluentValidation;
-using FluentValidation.Results;
 using Patronage.Api.MediatR.Projects.Commands;
 using Patronage.Models;
 
@@ -45,7 +44,6 @@ namespace Patronage.Api.Validators.Projects
             {
                 RuleFor(p => p.dto.IsActive!.Data)
                     .NotNull().WithMessage("Field IsActive can not be null");
-
             });
         }
     }

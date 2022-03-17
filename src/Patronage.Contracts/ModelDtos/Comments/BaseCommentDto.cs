@@ -18,10 +18,10 @@ namespace Patronage.Contracts.ModelDtos.Comments
         }
 
 #pragma warning disable CS8618
+
         public BaseCommentDto()
 #pragma warning restore CS8618
         {
-
         }
     }
 }

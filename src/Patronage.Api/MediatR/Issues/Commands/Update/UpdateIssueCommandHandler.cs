@@ -1,6 +1,4 @@
-﻿using AutoMapper;
-using MediatR;
-using Patronage.Api.Exceptions;
+﻿using MediatR;
 using Patronage.Contracts.Interfaces;
 
 namespace Patronage.Api.MediatR.Issues.Commands

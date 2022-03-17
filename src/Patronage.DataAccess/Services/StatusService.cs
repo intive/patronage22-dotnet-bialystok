@@ -13,6 +13,7 @@ namespace Patronage.DataAccess.Services
         {
             _dbContext = dbContext;
         }
+
         public async Task<IEnumerable<StatusDto>> GetAll()
         {
             var statuses = await _dbContext.Statuses
@@ -24,6 +25,7 @@ namespace Patronage.DataAccess.Services
                           .ToListAsync();
             return statuses;
         }
+
         public async Task<StatusDto?> GetById(int id)
         {
             var status = await _dbContext
@@ -43,6 +45,7 @@ namespace Patronage.DataAccess.Services
                 return null;
             }
         }
+
         public async Task<int> Create(string statusCode)
         {
             var status = new Status
@@ -52,23 +55,21 @@ namespace Patronage.DataAccess.Services
             await _dbContext.Statuses.AddAsync(status);
             await _dbContext.SaveChangesAsync();
             return status.Id;
-
-
         }
+
         public async Task<bool> Delete(int statusId)
         {
-
             var status = await _dbContext.Statuses
                         .FirstOrDefaultAsync(b => b.Id == statusId);
             if (status is not null)
             {
-            _dbContext.Statuses.Remove(status);
-            await _dbContext.SaveChangesAsync();
-            return true;
+                _dbContext.Statuses.Remove(status);
+                await _dbContext.SaveChangesAsync();
+                return true;
             }
             return false;
-
         }
+
         public async Task<bool> Update(int statusId, string statusCode)
         {
             var status = await _dbContext
