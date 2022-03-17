@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using Patronage.Models;
 using Patronage.Contracts.ModelDtos.Board;
+using Patronage.Models;
 
 namespace Patronage.DataAccess.Mappings
 {

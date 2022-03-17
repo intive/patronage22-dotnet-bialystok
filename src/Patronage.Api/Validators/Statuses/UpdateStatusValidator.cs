@@ -1,11 +1,6 @@
 ﻿using FluentValidation;
 using Patronage.Api.MediatR.Status.Commands;
 using Patronage.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Patronage.Api.Validators.Statuses
 {
@@ -27,6 +22,5 @@ namespace Patronage.Api.Validators.Statuses
                                 });
             RuleFor(s => s.Id).NotEmpty().WithMessage("Please, specify id");
         }
-
     }
 }

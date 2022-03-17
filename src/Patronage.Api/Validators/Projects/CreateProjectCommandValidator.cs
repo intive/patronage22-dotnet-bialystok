@@ -1,6 +1,5 @@
 ﻿using FluentValidation;
 using Patronage.Api.MediatR.Projects.Commands;
-using Patronage.Contracts.ModelDtos.Projects;
 using Patronage.Models;
 
 namespace Patronage.Api.Validators.Projects
@@ -21,7 +20,6 @@ namespace Patronage.Api.Validators.Projects
                         context.AddFailure("Alias", "This project's alias has been already taken");
                     }
                 });
-
 
             RuleFor(p => p.dto.Name)
                 .NotEmpty().WithMessage("Field Name can not be empty")

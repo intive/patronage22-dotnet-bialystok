@@ -15,7 +15,6 @@ namespace Patronage.Contracts.ModelDtos.Comments
 
         public CommentDto()
         {
-
         }
     }
 }

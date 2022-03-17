@@ -6,7 +6,6 @@ using Patronage.Api.MediatR.Projects.Queries;
 using Patronage.Contracts.Interfaces;
 using Patronage.Contracts.ModelDtos.Projects;
 using Patronage.DataAccess;
-using Swashbuckle.AspNetCore.Annotations;
 
 namespace Patronage.Api.Controllers
 {
@@ -22,7 +21,7 @@ namespace Patronage.Api.Controllers
         }
 
         /// <summary>
-        /// Returns all Projects. When you give "searchedPhrase" in Query you will receive only projects 
+        /// Returns all Projects. When you give "searchedPhrase" in Query you will receive only projects
         /// in which name, alias or description contains this phrase.
         /// </summary>
         /// <param name="searchedPhrase" example="string">The phrase that project's name/alias/description have to contain.</param>
@@ -93,7 +92,7 @@ namespace Patronage.Api.Controllers
         {
             var id = await _mediator.Send(new CreateProjectCommand(projectDto));
 
-            return Created($"/api/project/{id}", 
+            return Created($"/api/project/{id}",
                 new BaseResponse<int>
                 {
                     ResponseCode = StatusCodes.Status201Created,
@@ -134,7 +133,7 @@ namespace Patronage.Api.Controllers
                     Message = "Project with this id doesn't exist"
                 });
             }
-            
+
             return Ok(new BaseResponse<ProjectDto>
             {
                 ResponseCode = StatusCodes.Status200OK,

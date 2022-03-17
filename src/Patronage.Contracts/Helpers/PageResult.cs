@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Patronage.Contracts.Helpers
+﻿namespace Patronage.Contracts.Helpers
 {
     public class PageResult<T>
     {

@@ -13,12 +13,10 @@ namespace Patronage.Api.Validators.Comments
                 .NotEmpty()
                 .MaximumLength(500);
 
-
             RuleFor(x => x.IssueId)
                 .NotNull()
                 .NotEmpty()
                 .GreaterThanOrEqualTo(1);
-
 
             RuleFor(x => x.ApplicationUserId)
                 .NotNull()

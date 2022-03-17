@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Patronage.Contracts.Helpers;
 using Patronage.Contracts.Interfaces;
 using Patronage.Contracts.ModelDtos.Issues;
