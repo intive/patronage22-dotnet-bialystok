@@ -11,6 +11,10 @@ using Patronage.DataAccess;
 
 namespace Patronage.Api.Controllers
 {
+    /// <summary>
+    /// For information on how to use the various controllers, go to:
+    /// https://github.com/intive/patronage22-dotnet-bialystok/wiki/Authentication
+    /// </summary>
     [Route("api/user")]
     [ApiController]
     public class UserController : Controller
