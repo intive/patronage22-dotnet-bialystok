@@ -1,16 +1,9 @@
 ﻿using MediatR;
-using Patronage.Api.MediatR.BoardStatus.Commands;
 using Patronage.Contracts.Interfaces;
-using Patronage.Contracts.ModelDtos;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Patronage.Api.MediatR.BoardStatus.Commands.Handlers
 {
-    public class DeleteBoardStatusHandler :IRequestHandler<DeleteBoardStatusCommand, bool>
+    public class DeleteBoardStatusHandler : IRequestHandler<DeleteBoardStatusCommand, bool>
     {
         private readonly IBoardStatusService _boardStatusService;
 

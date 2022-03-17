@@ -1,11 +1,6 @@
 ﻿using MediatR;
 using Patronage.Contracts.Interfaces;
 using Patronage.Contracts.ResponseModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Patronage.Api.MediatR.User.Commands.RefreshToken
 {

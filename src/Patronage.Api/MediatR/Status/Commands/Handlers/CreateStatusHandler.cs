@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using Patronage.Contracts.Interfaces;
-using Patronage.Contracts.ModelDtos;
 
 namespace Patronage.Api.MediatR.Status.Commands.Handlers
 {
@@ -18,5 +17,4 @@ namespace Patronage.Api.MediatR.Status.Commands.Handlers
             return await _statusService.Create(request.Code);
         }
     }
-    
 }

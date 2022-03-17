@@ -1,12 +1,6 @@
 ﻿using MediatR;
-using Patronage.Api.MediatR.BoardStatus.Queries;
 using Patronage.Contracts.Interfaces;
 using Patronage.Contracts.ModelDtos;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Patronage.Api.MediatR.BoardStatus.Queries.Handlers
 {
@@ -21,7 +15,7 @@ namespace Patronage.Api.MediatR.BoardStatus.Queries.Handlers
 
         public Task<IEnumerable<BoardStatusDto>> Handle(GetByIdBoardStatusQuery request, CancellationToken cancellationToken)
         {
-            return Task.FromResult(_boardStatusService.GetById(request.BoardId,request.StatusId));
+            return Task.FromResult(_boardStatusService.GetById(request.BoardId, request.StatusId));
         }
     }
 }

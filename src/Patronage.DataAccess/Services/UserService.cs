@@ -1,17 +1,12 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Microsoft.IdentityModel.Tokens;
 using NETCore.MailKit.Core;
-using Patronage.Contracts.Helpers;
 using Patronage.Contracts.Interfaces;
 using Patronage.Contracts.ModelDtos.User;
 using Patronage.Contracts.ResponseModels;
 using Patronage.Models;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Security.Cryptography;
-using System.Text;
 using System.Web;
 
 namespace Patronage.DataAccess.Services

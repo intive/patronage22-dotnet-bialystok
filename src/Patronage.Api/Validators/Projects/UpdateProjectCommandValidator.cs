@@ -21,7 +21,6 @@ namespace Patronage.Api.Validators.Projects
                     }
                 });
 
-
             RuleFor(p => p.dto.Name)
                 .NotEmpty().WithMessage("Field Name can not be empty")
                 .NotNull().WithMessage("Field Name can not be null")

@@ -1,3 +1,7 @@
+using FluentValidation;
+using MediatR;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.OpenApi.Models;
 using NLog;
 using NLog.Web;
 using Patronage.Models;
@@ -84,6 +88,7 @@ try
     builder.Services.AddScoped<IUserService, UserService>();
     builder.Services.AddTransient<ITokenService, TokenService>();
     builder.Services.AddScoped<IStatusService, StatusService>();
+    builder.Services.AddScoped<ICommentService, CommentService>();
 
     builder.Services.AddScoped<ErrorHandlingMiddleware>();
 

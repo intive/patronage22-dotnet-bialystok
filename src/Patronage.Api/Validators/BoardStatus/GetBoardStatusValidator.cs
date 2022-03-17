@@ -1,8 +1,5 @@
 ﻿using FluentValidation;
-using Patronage.Api.MediatR.BoardStatus;
-using Patronage.Api.MediatR.BoardStatus.Commands;
 using Patronage.Api.MediatR.BoardStatus.Queries;
-using Patronage.Contracts.ModelDtos;
 using Patronage.Models;
 
 namespace Patronage.Api.Validators.BoardStatus
@@ -30,6 +27,7 @@ namespace Patronage.Api.Validators.BoardStatus
             }
             else { return false; }
         }
+
         private bool ExistsStatusId(int statusId)
         {
             var _statusId = _context
@@ -44,6 +42,7 @@ namespace Patronage.Api.Validators.BoardStatus
                 return false;
             }
         }
+
         private bool NotLessThan(int id)
         {
             if (id > 0)

@@ -13,6 +13,5 @@
         public DateTime CreatedOn { get; set; }
         public DateTime ModifiedOn { get; set; }
         public List<BoardStatusDto>? Board_Status { get; set; }
-
     }
 }

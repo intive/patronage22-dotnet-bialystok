@@ -17,5 +17,4 @@ namespace Patronage.Api.MediatR.Status.Commands.Handlers
             return await _statusService.Delete(request.StatusId);
         }
     }
-
 }
