@@ -30,6 +30,15 @@ public class TableContext : IdentityDbContext<
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        var cascadeFKs = modelBuilder.Model.GetEntityTypes()
+                                     .SelectMany(t => t.GetForeignKeys())
+                                     .Where(fk => fk.DeleteBehavior == DeleteBehavior.Cascade);
+
+        foreach (var fk in cascadeFKs)
+        {
+            fk.DeleteBehavior = DeleteBehavior.Restrict;
+        }
+
         // I had to add it to fix problems with identity
         base.OnModelCreating(modelBuilder);
         //Very important!!!
