@@ -29,11 +29,11 @@ try
                            .Build();
     builder.Configuration.AddConfiguration(envSettings);
 
-    builder.Services.AddControllers();
     builder.Services.AddControllers(options =>
     {
         options.SuppressAsyncSuffixInActionNames = false;
     });
+    builder.Services.AddMvc();
     // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen(c =>
