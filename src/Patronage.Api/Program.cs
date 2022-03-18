@@ -29,7 +29,8 @@ try
     builder.Services.AddCors(config =>
     {
         config.AddPolicy("PatronageCorsPolicy", policy => policy.AllowAnyOrigin()
-            .AllowAnyHeader());
+            .AllowAnyHeader()
+            .AllowAnyMethod());
     });
     builder.Services.AddControllers();
     builder.Services.AddControllers(options =>
