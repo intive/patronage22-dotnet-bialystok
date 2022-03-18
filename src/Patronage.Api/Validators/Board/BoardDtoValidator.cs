@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using Patronage.Contracts.ModelDtos.Board;
+using Patronage.Contracts.ModelDtos.Boards;
 using Patronage.Models;
 
 namespace Patronage.Api.Validators.Board

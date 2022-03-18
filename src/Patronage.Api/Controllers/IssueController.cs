@@ -27,7 +27,7 @@ namespace Patronage.Api.Controllers
         /// <response code="200">Searched issues.</response>
         /// <response code="404">Issues not found.</response>
         [HttpGet]
-        public async Task<ActionResult<PageResult<IssueDto>>> GetAllIssues([FromQuery] FilterIssueDto filter)
+        public async Task<ActionResult<BaseResponse<PageResult<IssueDto>>>> GetAllIssues([FromQuery] FilterIssueDto filter)
         {
             var result = await _mediator.Send(new GetIssuesListQuery(filter));
             if (result is null)
@@ -52,7 +52,7 @@ namespace Patronage.Api.Controllers
         /// <response code="200">Searched issue.</response>
         /// <response code="404">Issue not found.</response>
         [HttpGet("{issueId}")]
-        public async Task<ActionResult<IssueDto>> GetIssueById([FromRoute] int issueId)
+        public async Task<ActionResult<BaseResponse<IssueDto>>> GetIssueById([FromRoute] int issueId)
         {
             var result = await _mediator.Send(new GetSingleIssueQuery(issueId));
             if (result is null)

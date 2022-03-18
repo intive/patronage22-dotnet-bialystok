@@ -1,7 +1,8 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Patronage.Contracts.Helpers;
 using Patronage.Contracts.Interfaces;
-using Patronage.Contracts.ModelDtos.Board;
+using Patronage.Contracts.ModelDtos.Boards;
 using Patronage.Models;
 
 namespace Patronage.DataAccess.Services
@@ -63,25 +64,32 @@ namespace Patronage.DataAccess.Services
             return _mapper.Map<BoardDto>(board);
         }
 
-        public async Task<IEnumerable<BoardDto>?> GetBoardsAsync(FilterBoardDto? filter = null)
+        public async Task<PageResult<BoardDto>?> GetBoardsAsync(FilterBoardDto? filter)
         {
-            var query = _tableContext.Boards.AsQueryable();
-            if (filter is null)
+            var baseQuery = _tableContext
+                .Boards
+                .Where(x => x.IsActive == true)
+                .AsQueryable();
+
+            if (!baseQuery.Any())
             {
-                if (!query.Any())
-                    return null;
-
-                return _mapper
-                    .Map<IEnumerable<BoardDto>>(await query.ToArrayAsync());
+                return null;
             }
-            var boards = await query
-                .Where(x =>
-                    x.Alias.Equals(filter.Alias ?? x.Alias) &&
-                    x.Name.Equals(filter.Name ?? x.Name) &&
-                    x.Description != null && x.Description.Equals(filter.Description ?? x.Description))
-                .ToArrayAsync();
 
-            return _mapper.Map<IEnumerable<BoardDto>>(boards);
+            if (filter is not null)
+            {
+                baseQuery = baseQuery
+                    .FilterBy(filter);
+            }
+            var totalItemCount = baseQuery.Count();
+
+            var boards = baseQuery
+                .Skip(filter!.PageSize * (filter.PageNumber - 1))
+                .Take(filter.PageSize);
+
+            var items = await boards.Select(x => new BoardDto(x)).ToListAsync();
+
+            return new PageResult<BoardDto>(items, totalItemCount, filter.PageSize, filter.PageNumber);
         }
 
         public async Task<Board?> GetByIdAsync(int id)
