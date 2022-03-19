@@ -8,7 +8,7 @@ namespace Patronage.Contracts.Interfaces
     {
         Task<PageResult<BoardDto>?> GetBoardsAsync(FilterBoardDto? filter = null);
 
-        Task<BoardDto?> CreateBoardAsync(BoardDto request);
+        Task<BoardDto?> CreateBoardAsync(BaseBoardDto request);
 
         Task<BoardDto?> GetBoardByIdAsync(int id);
 

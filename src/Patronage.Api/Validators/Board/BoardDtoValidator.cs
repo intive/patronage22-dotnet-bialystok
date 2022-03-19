@@ -4,7 +4,7 @@ using Patronage.Models;
 
 namespace Patronage.Api.Validators.Board
 {
-    public class BoardDtoValidator : AbstractValidator<BoardDto>
+    public class BoardDtoValidator : AbstractValidator<BaseBoardDto>
     {
         public BoardDtoValidator(TableContext tableContext)
         {
@@ -32,16 +32,9 @@ namespace Patronage.Api.Validators.Board
                     {
                         context.AddFailure("Name", "This board's name has been already taken");
                     }
-                }); ;
-
-            RuleFor(x => x.Description)
-                .NotNull()
-                .NotEmpty();
+                });
 
             RuleFor(x => x.ProjectId)
-                .NotNull();
-
-            RuleFor(x => x.IsActive)
                 .NotNull();
         }
     }

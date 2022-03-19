@@ -18,15 +18,24 @@ namespace Patronage.DataAccess.Services
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-        public async Task<BoardDto?> CreateBoardAsync(BoardDto request)
+        public async Task<BoardDto?> CreateBoardAsync(BaseBoardDto request)
         {
-            var board = _mapper.Map<Board>(request);
+            var board = new Board
+            {
+                Alias = request.Alias,
+                Name = request.Name,
+                Description = request?.Description ?? null,
+                ProjectId = request!.ProjectId,
+                StatusId = request!.StatusId,
+                IsActive = true
+            };
+
             _tableContext.Boards.Add(board);
 
             if (await _tableContext.SaveChangesAsync() > 0)
             {
-                request.Id = board.Id;
-                return request;
+                var boardDto = new BoardDto(board);
+                return boardDto;
             }
 
             throw new DbUpdateException($"Could not save changes to database at: {nameof(CreateBoardAsync)}");
@@ -37,7 +46,9 @@ namespace Patronage.DataAccess.Services
             var board = await GetByIdAsync(id);
 
             if (board is null)
+            {
                 return false;
+            }
 
             if (!board.IsActive)
             {
@@ -59,7 +70,9 @@ namespace Patronage.DataAccess.Services
             var board = await GetByIdAsync(id);
 
             if (board is null)
+            {
                 return null;
+            }
 
             return _mapper.Map<BoardDto>(board);
         }
@@ -102,7 +115,9 @@ namespace Patronage.DataAccess.Services
             var board = await GetByIdAsync(id);
 
             if (board is null)
+            {
                 return false;
+            }
 
             _mapper.Map(request, board);
 
@@ -119,7 +134,9 @@ namespace Patronage.DataAccess.Services
             var board = await GetByIdAsync(id);
 
             if (board is null)
+            {
                 return false;
+            }
 
             _mapper.Map(request, board);
 

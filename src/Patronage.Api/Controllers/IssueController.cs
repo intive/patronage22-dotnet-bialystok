@@ -88,7 +88,7 @@ namespace Patronage.Api.Controllers
                 });
             }
 
-            return Ok(new BaseResponse<IssueDto>
+            return CreatedAtAction(nameof(Create), new BaseResponse<IssueDto>
             {
                 Message = "Issue was created successfully",
                 ResponseCode = StatusCodes.Status201Created,
