@@ -1,12 +1,11 @@
-﻿using Patronage.Contracts.ModelDtos;
+﻿using Patronage.Contracts.Helpers;
+using Patronage.Contracts.ModelDtos.BoardsStatus;
 
 namespace Patronage.Contracts.Interfaces
 {
     public interface IBoardStatusService
     {
-        IEnumerable<BoardStatusDto> GetAll();
-
-        IEnumerable<BoardStatusDto> GetById(int boardId, int statusId);
+        PageResult<BoardStatusDto> GetAll(FilterBoardStatusDto filter);
 
         public bool Create(BoardStatusDto dto);
 

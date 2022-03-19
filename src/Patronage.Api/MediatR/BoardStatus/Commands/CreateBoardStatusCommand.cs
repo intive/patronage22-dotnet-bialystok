@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using Patronage.Contracts.ModelDtos;
+using Patronage.Contracts.ModelDtos.BoardsStatus;
 
 namespace Patronage.Api.MediatR.BoardStatus.Commands
 {

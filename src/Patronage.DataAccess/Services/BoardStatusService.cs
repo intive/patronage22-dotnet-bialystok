@@ -1,5 +1,6 @@
-﻿using Patronage.Contracts.Interfaces;
-using Patronage.Contracts.ModelDtos;
+﻿using Patronage.Contracts.Helpers;
+using Patronage.Contracts.Interfaces;
+using Patronage.Contracts.ModelDtos.BoardsStatus;
 using Patronage.Models;
 
 namespace Patronage.DataAccess.Services
@@ -13,72 +14,28 @@ namespace Patronage.DataAccess.Services
             _dbContext = dbContext;
         }
 
-        public IEnumerable<BoardStatusDto> GetAll()
+        public PageResult<BoardStatusDto>? GetAll(FilterBoardStatusDto filter)
         {
-            var boardSat = _dbContext
+            var baseQuery = _dbContext
                 .BoardsStatus
-                .ToList();
+                .AsQueryable();
 
-            var boardStatuses = new List<BoardStatusDto>();
-            foreach (var board in boardSat)
+            if (!baseQuery.Any())
             {
-                boardStatuses.Add(new BoardStatusDto
-                {
-                    BoardId = board.BoardId,
-                    StatusId = board.StatusId
-                });
+                return null;
             }
-            return boardStatuses;
-        }
 
-        public IEnumerable<BoardStatusDto> GetById(int boardId, int statusId)
-        {
-            var boardsStatus = _dbContext
-                    .BoardsStatus
-                    .AsQueryable();
+            baseQuery = baseQuery
+                .FilterBy(filter);
+            var totalItemCount = baseQuery.Count();
 
-            var boardsStatusDto = new List<BoardStatusDto>();
-            if (boardId != 0 && statusId == 0)
-            {
-                var res = boardsStatus.Where(b => b.BoardId.Equals(boardId))
-                            .ToList();
-                foreach (var bs in res)
-                {
-                    boardsStatusDto.Add(new BoardStatusDto
-                    {
-                        BoardId = bs.BoardId,
-                        StatusId = bs.StatusId
-                    });
-                }
-            }
-            else if (boardId == 0 && statusId != 0)
-            {
-                var res = boardsStatus.Where(b => b.StatusId.Equals(statusId))
-                                      .ToList();
-                foreach (var bs in res)
-                {
-                    boardsStatusDto.Add(new BoardStatusDto
-                    {
-                        BoardId = bs.BoardId,
-                        StatusId = bs.StatusId
-                    });
-                }
-            }
-            else
-            {
-                var res = boardsStatus.Where(b => b.StatusId.Equals(statusId))
-                            .Where(b => b.BoardId.Equals(boardId))
-                            .FirstOrDefault();
-                if (res != null)
-                {
-                    boardsStatusDto.Add(new BoardStatusDto()
-                    {
-                        BoardId = res.BoardId,
-                        StatusId = res.StatusId
-                    });
-                }
-            }
-            return boardsStatusDto;
+            var boardStatuses = baseQuery
+                .Skip(filter.PageSize * (filter.PageNumber - 1))
+                .Take(filter.PageSize);
+
+            var items = boardStatuses.Select(x => new BoardStatusDto(x)).ToList();
+
+            return new PageResult<BoardStatusDto>(items, totalItemCount, filter.PageSize, filter.PageNumber);
         }
 
         public bool Create(BoardStatusDto dto)

@@ -1,4 +1,5 @@
-﻿using Patronage.Models;
+﻿using Patronage.Contracts.ModelDtos.BoardsStatus;
+using Patronage.Models;
 
 namespace Patronage.Contracts.ModelDtos.Boards
 {

@@ -22,7 +22,6 @@ namespace Patronage.Api.Controllers
         /// <summary>
         /// Returns all Issues. When you give "SearchPhrase" in Query you will receive only issue
         /// in which name, alias or description contains this phrase.
-        /// You need to add the PageSize and PageNumber.
         /// </summary>
         /// <response code="200">Searched issues.</response>
         /// <response code="404">Issues not found.</response>
