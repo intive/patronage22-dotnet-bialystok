@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Patronage.Api.MediatR.User.Commands.ConfirmationEmail;
 using Patronage.Api.MediatR.User.Commands.Create;
@@ -7,6 +8,7 @@ using Patronage.Api.MediatR.User.Commands.SignIn;
 using Patronage.Api.MediatR.User.Commands.SignOut;
 using Patronage.Contracts.Interfaces;
 using Patronage.Contracts.ModelDtos.User;
+using Patronage.Contracts.ResponseModels;
 using Patronage.DataAccess;
 
 namespace Patronage.Api.Controllers
@@ -234,26 +236,27 @@ namespace Patronage.Api.Controllers
         /// <response code="200">Successfully signed in</response>
         /// <response code="400">Username or password is not valid</response>
         /// <response code="500">Sorry. Try it later</response>
-        [HttpPost("login")]
-        public async Task<ActionResult> Login([FromBody] SignInDto dto)
+        [AllowAnonymous]
+        [HttpPost("signin")]
+        public async Task<ActionResult> SignInUserAsync([FromBody] SignInDto dto)
         {
             var response = await _mediator.Send(new SignInCommand(dto));
 
-            if (response is not null)
+            if (response is null)
             {
-                return Ok(new BaseResponse<object>
+                return BadRequest(new BaseResponse<object>
                 {
-                    ResponseCode = StatusCodes.Status200OK,
-                    Data = response,
-                    Message = "You have been signed in successfully"
+                    ResponseCode = StatusCodes.Status400BadRequest,
+                    Data = null,
+                    Message = "Username or password is not valid"
                 });
             }
 
-            return BadRequest(new BaseResponse<object>
+            return Ok(new BaseResponse<RefreshTokenResponse>
             {
-                ResponseCode = StatusCodes.Status400BadRequest,
-                Data = null,
-                Message = "Username or password is not valid"
+                ResponseCode = StatusCodes.Status200OK,
+                Data = response,
+                Message = "You have been signed in successfully"
             });
         }
 
@@ -262,19 +265,11 @@ namespace Patronage.Api.Controllers
         /// </summary>
         /// <response code="200">Successfully signed in</response>
         /// <response code="500">Sorry. Try it later</response>
-        [HttpPost("logoff")]
-        public async Task<ActionResult> Logoff([FromBody] string accessToken)
+        [HttpPost("signout")]
+        public async Task<ActionResult> SignOutUserAsync()
         {
-            var isSucceded = await _mediator.Send(new SignOutCommand(accessToken));
-
-            if (!isSucceded)
-            {
-                return Unauthorized(new BaseResponse<bool>
-                {
-                    ResponseCode = StatusCodes.Status401Unauthorized,
-                    Message = "Your access token is inactive"
-                });
-            }
+            HttpContext.Request.Headers.TryGetValue("Authorization", out var accessToken);
+            await _mediator.Send(new SignOutCommand(accessToken.ToString().Split(' ').Last()));
 
             return Ok(new BaseResponse<bool>
             {
@@ -306,9 +301,10 @@ namespace Patronage.Api.Controllers
         }
 
         [HttpPost("refreshtoken")]
-        public async Task<ActionResult> RefreshToken([FromHeader(Name = "RefreshToken")] string refreshToken, [FromHeader(Name = "Bearer")] string accessToken)
+        public async Task<ActionResult> RefreshTokenAsync([FromBody] RefreshTokenDto refreshToken)
         {
-            var response = await _userService.RefreshTokenAsync(refreshToken, accessToken);
+            HttpContext.Request.Headers.TryGetValue("Authorization", out var accessToken);
+            var response = await _userService.RefreshTokenAsync(refreshToken.RefreshToken, accessToken.ToString().Split(' ').Last());
             return Ok(response);
         }
     }
