@@ -90,21 +90,9 @@ namespace Patronage.Api
                 {
                     OnChallenge = async context =>
                     {
-                        if (string.IsNullOrEmpty(context.Error))
-                        {
-                            context.Error = "Invalid JWT access token.";
-                        }
-                        if (string.IsNullOrEmpty(context.ErrorDescription))
-                        {
-                            context.ErrorDescription = "This request requires a valid JWT access token to be provided";
-                        }
+                        context.Error = "Invalid JWT access token.";
 
-                        if (context.AuthenticateFailure != null && context.AuthenticateFailure.GetType() == typeof(SecurityTokenExpiredException))
-                        {
-                            var authenticationException = context.AuthenticateFailure as SecurityTokenExpiredException;
-                            context.Error = authenticationException?.Message;
-                            context.ErrorDescription = $"The token expired on {authenticationException?.Expires.ToString("o")}";
-                        }
+                        context.ErrorDescription = "This request requires a valid JWT access token to be provided";
 
                         var response = new BaseResponse<BaseResponseError>
                         {
