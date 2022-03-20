@@ -4,12 +4,18 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.OpenApi.Models;
 using NLog;
 using NLog.Web;
-using Patronage.Api;
-using Patronage.Api.Controllers;
-using Patronage.Api.Middleware;
+using Patronage.Models;
+using Microsoft.OpenApi.Models;
+using MediatR;
 using Patronage.Contracts.Interfaces;
 using Patronage.DataAccess.Services;
-using Patronage.Models;
+using FluentValidation;
+using Patronage.Api;
+using Patronage.Api.Middleware;
+using Microsoft.AspNetCore.Identity;
+using Patronage.Api.Controllers;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 
 var logger = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
 logger.Info("Starting");
@@ -32,7 +38,7 @@ try
             .AllowAnyHeader()
             .AllowAnyMethod());
     });
-    builder.Services.AddControllers();
+
     builder.Services.AddControllers(options =>
     {
         options.SuppressAsyncSuffixInActionNames = false;
@@ -96,12 +102,21 @@ try
     builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
     builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
-    .AddEntityFrameworkStores<TableContext>()
-    .AddDefaultTokenProviders();
+            .AddEntityFrameworkStores<TableContext>()
+            .AddDefaultTokenProviders();
 
     builder.Services.AddEmailService(builder.Configuration);
 
     builder.Services.AddAuthenticationConfiguration(builder.Configuration);
+
+    builder.Services.AddAuthorization(options =>
+    {
+        var defaultPolicyBuilder = new AuthorizationPolicyBuilder(JwtBearerDefaults.AuthenticationScheme);
+
+        defaultPolicyBuilder = defaultPolicyBuilder.RequireAuthenticatedUser();
+
+        options.DefaultPolicy = defaultPolicyBuilder.Build();
+    });
 
     var app = builder.Build();
 
@@ -116,6 +131,7 @@ try
             c.SwaggerEndpoint("/swagger/v1/swagger.json", "Patronage 2022 API v1");
         });
     }
+    app.UseRouting();
 
     app.UseMiddleware<ErrorHandlingMiddleware>();
 
@@ -129,7 +145,7 @@ try
     // ErrorHandlingMiddleware does not work if UseDeveloperExceptionPage is enabled so I commented it
     //app.UseDeveloperExceptionPage();
 
-    app.MapControllers();
+    app.MapControllers().RequireAuthorization();
 
     logger.Info("Initializing complete!");
     string? port = Environment.GetEnvironmentVariable("PORT") ?? "80";

@@ -30,6 +30,8 @@ public class TableContext : IdentityDbContext<
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(TableContext).Assembly);
+
         var cascadeFKs = modelBuilder.Model.GetEntityTypes()
                                      .SelectMany(t => t.GetForeignKeys())
                                      .Where(fk => fk.DeleteBehavior == DeleteBehavior.Cascade);
@@ -43,8 +45,6 @@ public class TableContext : IdentityDbContext<
         base.OnModelCreating(modelBuilder);
         //Very important!!!
         //Do not use .HasColumnType("datetime"); it breaks postgre
-
-        modelBuilder.ApplyConfigurationsFromAssembly(typeof(TableContext).Assembly);
 
         TestDataSeed(modelBuilder);
     }

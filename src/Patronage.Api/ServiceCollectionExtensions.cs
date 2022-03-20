@@ -2,6 +2,8 @@
 using Microsoft.IdentityModel.Tokens;
 using NETCore.MailKit.Extensions;
 using NETCore.MailKit.Infrastructure.Internal;
+using System.Text.Json;
+using Patronage.DataAccess;
 using System.Text;
 
 namespace Patronage.Api
@@ -72,6 +74,43 @@ namespace Patronage.Api
             {
                 config.SaveToken = true;
                 config.RequireHttpsMetadata = false;
+                config.Events = new JwtBearerEvents()
+                {
+                    OnMessageReceived = context =>
+                    {
+                        if (context.Request.Query.ContainsKey("accessToken"))
+                        {
+                            context.Token = context.Request.Query["accessToken"];
+                        }
+                        return Task.CompletedTask;
+                    }
+                };
+
+                config.Events = new JwtBearerEvents()
+                {
+                    OnChallenge = async context =>
+                    {
+                        context.Error = "Invalid JWT access token.";
+
+                        context.ErrorDescription = "This request requires a valid JWT access token to be provided";
+
+                        var response = new BaseResponse<BaseResponseError>
+                        {
+                            ResponseCode = StatusCodes.Status401Unauthorized,
+                            Message = "Authorization failed.",
+                            BaseResponseError = new List<BaseResponseError>{ new BaseResponseError(
+                                propertyName: context.Request.Path,
+                                message: context.ErrorDescription,
+                                code: context.Error)
+                            }
+                        };
+                        context.Response.ContentType = "application/json";
+                        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                        await context.Response.WriteAsync(JsonSerializer.Serialize(response));
+                        await context.Response.CompleteAsync();
+                    }
+                };
+
                 config.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidIssuer = configuration["Authentication:Issuer"],
