@@ -26,7 +26,6 @@ namespace Patronage.DataAccess.Services
                 Name = request.Name,
                 Description = request?.Description ?? null,
                 ProjectId = request!.ProjectId,
-                StatusId = request!.StatusId,
                 IsActive = true
             };
 

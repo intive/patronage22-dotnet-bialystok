@@ -8,7 +8,6 @@ namespace Patronage.Contracts.ModelDtos.Boards
         public string Name { get; set; } = null!;
         public string? Description { get; set; }
         public int ProjectId { get; set; }
-        public int StatusId { get; set; }
         public DateTime CreatedOn { get; set; }
 
         public BaseBoardDto(Board board)
@@ -17,7 +16,6 @@ namespace Patronage.Contracts.ModelDtos.Boards
             Name = board.Name;
             Description = board.Description;
             ProjectId = board.ProjectId;
-            StatusId = board.StatusId;
             CreatedOn = board.CreatedOn;
         }
 
