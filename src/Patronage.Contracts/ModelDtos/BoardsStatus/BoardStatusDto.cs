@@ -12,5 +12,9 @@ namespace Patronage.Contracts.ModelDtos.BoardsStatus
             BoardId = boardStatus.BoardId;
             StatusId = boardStatus.StatusId;
         }
+
+        public BoardStatusDto()
+        {
+        }
     }
 }

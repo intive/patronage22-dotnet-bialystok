@@ -50,9 +50,9 @@ namespace Patronage.Api.Controllers
 
         /// <summary>
         /// Create BoardStatuse.
-        /// Based on statusboardDto passed as parameter in request body.
+        /// Based on BoardStatusDto passed as parameter in request body.
         /// </summary>
-        /// <response code="201">Issue correctly created.</response>
+        /// <response code="201">BoardStatus correctly created.</response>
         /// <response code="400">Error creating BoardStatus.</response>
         [HttpPost]
         public async Task<ActionResult<bool>> Create([FromBody] BoardStatusDto dto)
