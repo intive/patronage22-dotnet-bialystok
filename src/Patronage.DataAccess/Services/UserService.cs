@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using NETCore.MailKit.Core;
 using Patronage.Contracts.Interfaces;
@@ -172,24 +173,6 @@ namespace Patronage.DataAccess.Services
             return true;
         }
 
-        public async Task<bool> RegisterUserTest(CreateUserDto createUser)
-        {
-            var user = new ApplicationUser
-            {
-                UserName = createUser.UserName,
-                Email = createUser.Email,
-            };
-
-            var result = await _userManager.CreateAsync(user, createUser.Password);
-
-            if (result.Succeeded)
-            {
-                return true;
-            }
-
-            return false;
-        }
-
         public async Task<RefreshTokenResponse?> SignInUserAsync(SignInDto signInDto)
         {
             var user = await _userManager.FindByNameAsync(signInDto.Username);
@@ -260,7 +243,7 @@ namespace Patronage.DataAccess.Services
             await _tableContext.SaveChangesAsync();
         }
 
-        public async Task<RefreshTokenResponse> RefreshTokenAsync(
+        public async Task<RefreshTokenResponse?> RefreshTokenAsync(
             string refreshToken,
             string accessToken)
         {
@@ -271,18 +254,18 @@ namespace Patronage.DataAccess.Services
             if (userRefreshTokenRecord == null)
             {
                 _logger.LogDebug($"This Refresh token {refreshToken} does not exist");
-                throw new UnauthorizedAccessException();
+                return null;
             }
             var user = _tableContext.Users.FirstOrDefault(u => u.Id == userRefreshTokenRecord.UserId);
             if (user == null)
             {
                 _logger.LogDebug($"There is no user with this refresh token");
-                throw new UnauthorizedAccessException();
+                return null;
             }
             if (!userRefreshTokenRecord.IsActive)
             {
                 _logger.LogDebug("Refresh Token has expired");
-                throw new UnauthorizedAccessException();
+                return null;
             }
             var newAccessToken = _tokenService.GenerateAccessToken(principal.Claims);
             var newRefreshToken = _tokenService.GenerateRefreshToken();
@@ -299,6 +282,31 @@ namespace Patronage.DataAccess.Services
             };
 
             return response;
+        }
+
+        public async Task<IEnumerable<UserDto>> GetAllUsersAsync(string? searchedPhrase)
+        {
+            var usersQueryable = _tableContext
+                .Users
+                .AsQueryable();
+
+            if (searchedPhrase is not null)
+            {
+                usersQueryable = usersQueryable.Where(u => (u.FirstName != null && u.FirstName.Contains(searchedPhrase)) ||
+                                                           (u.SecondName != null && u.SecondName.Contains(searchedPhrase)) ||
+                                                           u.UserName.Contains(searchedPhrase) ||
+                                                           u.Email.Contains(searchedPhrase));
+            }
+
+            var users = await usersQueryable.Select(user => new UserDto
+            {
+                Id = user.Id,
+                UserName = user.UserName,
+                Email = user.Email,
+            })
+                .ToListAsync();
+
+            return users;
         }
     }
 }

@@ -19,8 +19,8 @@ namespace Patronage.Contracts.Interfaces
 
         Task SignOutUserAsync(string accessToken);
 
-        Task<bool> RegisterUserTest(CreateUserDto createUser);
+        Task<RefreshTokenResponse?> RefreshTokenAsync(string refreshToken, string accessToken);
 
-        Task<RefreshTokenResponse> RefreshTokenAsync(string refreshToken, string accessToken);
+        Task<IEnumerable<UserDto>> GetAllUsersAsync(string? searchedPhrase);
     }
 }
