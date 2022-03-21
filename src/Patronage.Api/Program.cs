@@ -1,21 +1,17 @@
 using FluentValidation;
 using MediatR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.OpenApi.Models;
 using NLog;
 using NLog.Web;
-using Patronage.Models;
-using Microsoft.OpenApi.Models;
-using MediatR;
+using Patronage.Api;
+using Patronage.Api.Controllers;
+using Patronage.Api.Middleware;
 using Patronage.Contracts.Interfaces;
 using Patronage.DataAccess.Services;
-using FluentValidation;
-using Patronage.Api;
-using Patronage.Api.Middleware;
-using Microsoft.AspNetCore.Identity;
-using Patronage.Api.Controllers;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
+using Patronage.Models;
 
 var logger = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
 logger.Info("Starting");
@@ -34,7 +30,7 @@ try
     // TODO: P2022-1704
     builder.Services.AddCors(config =>
     {
-        config.AddPolicy("PatronageCorsPolicy", policy => policy.AllowAnyOrigin()
+        config.AddPolicy("PatronageCorsPolicy", policy => policy.WithOrigins("http://patronage22-bialystok-js.herokuapp.com/", "http://localhost")
             .AllowAnyHeader()
             .AllowAnyMethod());
     });
