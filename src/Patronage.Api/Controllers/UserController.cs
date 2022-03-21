@@ -36,6 +36,7 @@ namespace Patronage.Api.Controllers
         /// <param name="createUser">JSON object with properties defining a user to create</param>
         /// <response code="201">User was created successfully and confirmation email was sent.</response>
         /// <response code="500">Confirmation link could not be created.</response>
+        [AllowAnonymous]
         [HttpPost("create")]
         public async Task<ActionResult<UserDto>> RegisterUserAsync([FromBody] CreateUserDto createUser)
         {
@@ -68,6 +69,7 @@ namespace Patronage.Api.Controllers
         /// <param name="token">User's token</param>
         /// <response code="200">Email was confirmed.</response>
         /// <response code="404">There's no user with this Id.</response>
+        [AllowAnonymous]
         [HttpGet("confirm")]
         public async Task<ActionResult<bool>> VerifyEmailAsync([FromQuery] string id, string token)
         {
@@ -102,6 +104,7 @@ namespace Patronage.Api.Controllers
         /// <response code="200">Email was resent successfully.</response>
         /// <response code="404">There's no user registered with this email address. Check spelling and try again.</response>
         /// <response code="500">Link could not be created.</response>
+        [AllowAnonymous]
         [HttpPost("resend/{email}")]
         public async Task<ActionResult<bool>> ResendConfirmationEmailAsync(string email)
         {
@@ -143,6 +146,7 @@ namespace Patronage.Api.Controllers
         /// <response code="200">Email was sent successfully.</response>
         /// <response code="404">There's no user with this email or username.</response>
         /// <response code="500">Link could not be created.</response>
+        [AllowAnonymous]
         [HttpPost("recover")]
         public async Task<ActionResult<bool>> SendRecoveryPasswordEmailAsync([FromBody] RecoverPasswordDto sendRecoverEmail)
         {
@@ -183,6 +187,7 @@ namespace Patronage.Api.Controllers
         /// <param name="id">User's id</param>
         /// <param name="token">User's token</param>
         /// <response code="200">User id and token was fetched successfully.</response>
+        [AllowAnonymous]
         [HttpGet("reset")]
         public ActionResult<bool> ResetPasswordCredentials([FromQuery] string id, string token)
         {
@@ -204,6 +209,7 @@ namespace Patronage.Api.Controllers
         /// <param name="newUserPassword">JSON object containing user id, token and new password</param>
         /// <response code="200">Password was changed successfully.</response>
         /// <response code="404">There's no user with this Id.</response>
+        [AllowAnonymous]
         [HttpPost("reset")]
         public async Task<ActionResult<bool>> ResetPasswordAsync([FromBody] NewUserPasswordDto newUserPassword)
         {
