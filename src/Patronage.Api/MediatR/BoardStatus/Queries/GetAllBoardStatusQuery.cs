@@ -4,7 +4,7 @@ using Patronage.Contracts.ModelDtos.BoardsStatus;
 
 namespace Patronage.Api.MediatR.BoardStatus.Queries
 {
-    public class GetAllBoardStatusQuery : IRequest<PageResult<BoardStatusDto>>
+    public class GetAllBoardStatusQuery : IRequest<PageResult<BoardStatusDto>?>
     {
         public FilterBoardStatusDto filter;
 

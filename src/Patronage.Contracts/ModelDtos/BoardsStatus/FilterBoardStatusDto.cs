@@ -1,10 +1,12 @@
-﻿namespace Patronage.Contracts.ModelDtos.BoardsStatus
+﻿using Patronage.Contracts.Helpers;
+
+namespace Patronage.Contracts.ModelDtos.BoardsStatus
 {
     public class FilterBoardStatusDto
     {
         public int? BoardId { get; set; }
         public int? StatusId { get; set; }
         public int PageNumber { get; set; } = 1;
-        public int PageSize { get; set; } = 5;
+        public int PageSize { get; set; } = PropertyForQuery.AllowedPageSizes[0];
     }
 }

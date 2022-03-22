@@ -6,7 +6,7 @@ namespace Patronage.Contracts.Interfaces
 {
     public interface IBoardService : IEntityService<Board>
     {
-        Task<PageResult<BoardDto>?> GetBoardsAsync(FilterBoardDto? filter = null);
+        Task<PageResult<BoardDto>?> GetBoardsAsync(FilterBoardDto filter);
 
         Task<BoardDto?> CreateBoardAsync(BaseBoardDto request);
 

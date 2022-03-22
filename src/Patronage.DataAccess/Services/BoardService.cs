@@ -76,7 +76,7 @@ namespace Patronage.DataAccess.Services
             return _mapper.Map<BoardDto>(board);
         }
 
-        public async Task<PageResult<BoardDto>?> GetBoardsAsync(FilterBoardDto? filter)
+        public async Task<PageResult<BoardDto>?> GetBoardsAsync(FilterBoardDto filter)
         {
             var baseQuery = _tableContext
                 .Boards
@@ -88,15 +88,12 @@ namespace Patronage.DataAccess.Services
                 return null;
             }
 
-            if (filter is not null)
-            {
-                baseQuery = baseQuery
-                    .FilterBy(filter);
-            }
+            baseQuery = baseQuery
+                .FilterBy(filter);
             var totalItemCount = baseQuery.Count();
 
             var boards = baseQuery
-                .Skip(filter!.PageSize * (filter.PageNumber - 1))
+                .Skip(filter.PageSize * (filter.PageNumber - 1))
                 .Take(filter.PageSize);
 
             var items = await boards.Select(x => new BoardDto(x)).ToListAsync();

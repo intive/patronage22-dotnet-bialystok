@@ -12,9 +12,9 @@ namespace Patronage.Api.MediatR.BoardStatus.Commands.Handlers
             _boardStatusService = boardStatusService;
         }
 
-        public Task<bool> Handle(CreateBoardStatusCommand request, CancellationToken cancellationToken)
+        public async Task<bool> Handle(CreateBoardStatusCommand request, CancellationToken cancellationToken)
         {
-            return Task.FromResult(_boardStatusService.Create(request.Dto));
+            return await _boardStatusService.Create(request.Dto);
         }
     }
 }

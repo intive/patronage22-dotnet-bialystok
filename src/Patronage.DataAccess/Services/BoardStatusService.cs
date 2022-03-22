@@ -1,4 +1,5 @@
-﻿using Patronage.Contracts.Helpers;
+﻿using Microsoft.EntityFrameworkCore;
+using Patronage.Contracts.Helpers;
 using Patronage.Contracts.Interfaces;
 using Patronage.Contracts.ModelDtos.BoardsStatus;
 using Patronage.Models;
@@ -14,7 +15,7 @@ namespace Patronage.DataAccess.Services
             _dbContext = dbContext;
         }
 
-        public PageResult<BoardStatusDto>? GetAll(FilterBoardStatusDto filter)
+        public async Task<PageResult<BoardStatusDto>?> GetAll(FilterBoardStatusDto filter)
         {
             var baseQuery = _dbContext
                 .BoardsStatus
@@ -33,12 +34,12 @@ namespace Patronage.DataAccess.Services
                 .Skip(filter.PageSize * (filter.PageNumber - 1))
                 .Take(filter.PageSize);
 
-            var items = boardStatuses.Select(x => new BoardStatusDto(x)).ToList();
+            var items = await boardStatuses.Select(x => new BoardStatusDto(x)).ToListAsync();
 
             return new PageResult<BoardStatusDto>(items, totalItemCount, filter.PageSize, filter.PageNumber);
         }
 
-        public bool Create(BoardStatusDto dto)
+        public async Task<bool> Create(BoardStatusDto dto)
         {
             try
             {
@@ -49,7 +50,7 @@ namespace Patronage.DataAccess.Services
                 };
 
                 _dbContext.BoardsStatus.Add(boardStatus);
-                _dbContext.SaveChanges();
+                await _dbContext.SaveChangesAsync();
                 return true;
             }
             catch (Exception ex) when (ex is Microsoft.EntityFrameworkCore.DbUpdateException)
@@ -59,7 +60,7 @@ namespace Patronage.DataAccess.Services
             }
         }
 
-        public bool Delete(int boardId, int statusId)
+        public async Task<bool> Delete(int boardId, int statusId)
         {
             if (boardId != 0 && statusId != 0)
             {
@@ -77,7 +78,7 @@ namespace Patronage.DataAccess.Services
                 try
                 {
                     _dbContext.BoardsStatus.Remove(boardStatus);
-                    _dbContext.SaveChanges();
+                    await _dbContext.SaveChangesAsync();
                 }
                 catch (Exception)
                 {
