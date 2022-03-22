@@ -36,13 +36,20 @@ namespace Patronage.Models.EntityConfiguration
                  .IsRequired();
 
             builder
-                .HasOne(p => p.User)
-                .WithMany(b => b.Issues)
-                .HasForeignKey(p => p.AssignUserId);
-
-            builder
                  .Property(r => r.AssignUserId)
                  .IsRequired(false);
+
+            builder
+                .HasOne(p => p.User)
+                .WithMany(b => b.Issues)
+                .HasForeignKey(p => p.AssignUserId)
+                .IsRequired(false);
+
+            builder
+                .HasOne(b => b.Board)
+                .WithMany(b => b.Issues)
+                .HasForeignKey(b => b.BoardId)
+                .IsRequired(false);
         }
     }
 }
