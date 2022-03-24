@@ -241,7 +241,7 @@ namespace Patronage.Api.Controllers
         /// <param name="dto">JSON object with username, password and confirmed password</param>
         /// <response code="200">Successfully signed in</response>
         /// <response code="400">Username or password is not valid</response>
-        /// <response code="500">Sorry. Try it later</response>
+        /// <response code="500">Internal server error</response>
         [AllowAnonymous]
         [HttpPost("signin")]
         public async Task<ActionResult> SignInUserAsync([FromBody] SignInDto dto)
@@ -270,7 +270,7 @@ namespace Patronage.Api.Controllers
         /// Action to sign out the user. The user's refresh token is beeing deleted from database.
         /// </summary>
         /// <response code="200">Successfully signed out</response>
-        /// <response code="500">Sorry. Try it later</response>
+        /// <response code="500">Internal server error</response>
         [HttpPost("signout")]
         public async Task<ActionResult> SignOutUserAsync()
         {
@@ -292,7 +292,7 @@ namespace Patronage.Api.Controllers
         /// <param name="refreshToken">A refresh token given afler signing in (and refreshing access token)</param>
         /// <response code="200">New access token and refresh token</response>
         /// <response code="401">Something wrong with given tokens propably</response>
-        /// <response code="500">Sorry. Try it later</response>
+        /// <response code="500">Internal server error</response>
         [HttpPost("refreshtoken")]
         public async Task<ActionResult> RefreshTokenAsync([FromBody] RefreshTokenDto refreshToken)
         {
