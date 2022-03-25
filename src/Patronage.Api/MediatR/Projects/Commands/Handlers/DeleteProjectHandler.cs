@@ -12,8 +12,6 @@ namespace Patronage.Api.MediatR.Projects.Commands.Handlers
             _projectService = projectService;
         }
 
-
-
         public async Task<bool> Handle(DeleteProjectCommand request, CancellationToken cancellationToken)
         {
             var isExistingRecord = await _projectService.Delete(request.id);

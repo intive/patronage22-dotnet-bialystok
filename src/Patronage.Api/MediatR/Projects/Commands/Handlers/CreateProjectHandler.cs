@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using Patronage.Contracts.Interfaces;
-using Patronage.DataAccess;
 
 namespace Patronage.Api.MediatR.Projects.Commands.Handlers
 {
@@ -12,9 +11,6 @@ namespace Patronage.Api.MediatR.Projects.Commands.Handlers
         {
             _projectService = projectService;
         }
-
-
-        
 
         public async Task<int> Handle(CreateProjectCommand request, CancellationToken cancellationToken)
         {

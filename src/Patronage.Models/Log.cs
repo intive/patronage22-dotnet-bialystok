@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Patronage.Models
+﻿namespace Patronage.Models
 {
     public class Log
-    {   
+    {
         public int Id { get; set; }
         public string MachineName { get; set; } = null!;
         public DateTime Logged { get; set; }
@@ -16,6 +10,5 @@ namespace Patronage.Models
         public string? Logger { get; set; }
         public string? Callsite { get; set; }
         public string? Exception { get; set; }
-        
     }
 }

@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Patronage.Api.MediatR.User.Commands.ConfirmationEmail;
 using Patronage.Api.MediatR.User.Commands.Create;
@@ -11,16 +12,20 @@ using Patronage.DataAccess;
 
 namespace Patronage.Api.Controllers
 {
+    /// <summary>
+    /// For information on how to use the various controllers, go to:
+    /// https://github.com/intive/patronage22-dotnet-bialystok/wiki/Authentication
+    /// </summary>
     [Route("api/user")]
     [ApiController]
     public class UserController : Controller
     {
-        private readonly IMediator mediator;
+        private readonly IMediator _mediator;
         private readonly IUserService _userService;
 
         public UserController(IMediator mediator, IUserService userService)
         {
-            this.mediator = mediator;
+            _mediator = mediator;
             _userService = userService;
         }
 
@@ -30,17 +35,18 @@ namespace Patronage.Api.Controllers
         /// <param name="createUser">JSON object with properties defining a user to create</param>
         /// <response code="201">User was created successfully and confirmation email was sent.</response>
         /// <response code="500">Confirmation link could not be created.</response>
+        [AllowAnonymous]
         [HttpPost("create")]
         public async Task<ActionResult<UserDto>> RegisterUserAsync([FromBody] CreateUserDto createUser)
         {
             var link = Url.Action(nameof(VerifyEmailAsync), "User", null, Request.Scheme, Request.Host.ToString());
 
-            if (link == null)
+            if (link is null)
             {
                 throw new Exception("Link could not be created.");
             }
 
-            var result = await mediator
+            var result = await _mediator
                 .Send(new CreateUserCommand
                 {
                     CreateUserDto = createUser,
@@ -62,10 +68,11 @@ namespace Patronage.Api.Controllers
         /// <param name="token">User's token</param>
         /// <response code="200">Email was confirmed.</response>
         /// <response code="404">There's no user with this Id.</response>
+        [AllowAnonymous]
         [HttpGet("confirm")]
         public async Task<ActionResult<bool>> VerifyEmailAsync([FromQuery] string id, string token)
         {
-            var result = await mediator
+            var result = await _mediator
                 .Send(new ConfirmEmailCommand
                 {
                     Id = id,
@@ -96,6 +103,7 @@ namespace Patronage.Api.Controllers
         /// <response code="200">Email was resent successfully.</response>
         /// <response code="404">There's no user registered with this email address. Check spelling and try again.</response>
         /// <response code="500">Link could not be created.</response>
+        [AllowAnonymous]
         [HttpPost("resend/{email}")]
         public async Task<ActionResult<bool>> ResendConfirmationEmailAsync(string email)
         {
@@ -106,7 +114,7 @@ namespace Patronage.Api.Controllers
                 throw new Exception("Link could not be created.");
             }
 
-            var result = await mediator
+            var result = await _mediator
                 .Send(new ResendEmailCommand
                 {
                     Email = email,
@@ -137,17 +145,18 @@ namespace Patronage.Api.Controllers
         /// <response code="200">Email was sent successfully.</response>
         /// <response code="404">There's no user with this email or username.</response>
         /// <response code="500">Link could not be created.</response>
+        [AllowAnonymous]
         [HttpPost("recover")]
         public async Task<ActionResult<bool>> SendRecoveryPasswordEmailAsync([FromBody] RecoverPasswordDto sendRecoverEmail)
         {
             var link = Url.Action(nameof(ResetPasswordCredentials), "User", null, Request.Scheme, Request.Host.ToString());
 
-            if (link == null)
+            if (link is null)
             {
                 throw new Exception("Link could not be created.");
             }
 
-            var result = await mediator.Send(new SendRecoverEmailPasswordCommand
+            var result = await _mediator.Send(new SendRecoverEmailPasswordCommand
             {
                 recoverPasswordDto = sendRecoverEmail,
                 Link = link
@@ -177,6 +186,7 @@ namespace Patronage.Api.Controllers
         /// <param name="id">User's id</param>
         /// <param name="token">User's token</param>
         /// <response code="200">User id and token was fetched successfully.</response>
+        [AllowAnonymous]
         [HttpGet("reset")]
         public ActionResult<bool> ResetPasswordCredentials([FromQuery] string id, string token)
         {
@@ -198,10 +208,11 @@ namespace Patronage.Api.Controllers
         /// <param name="newUserPassword">JSON object containing user id, token and new password</param>
         /// <response code="200">Password was changed successfully.</response>
         /// <response code="404">There's no user with this Id.</response>
+        [AllowAnonymous]
         [HttpPost("reset")]
         public async Task<ActionResult<bool>> ResetPasswordAsync([FromBody] NewUserPasswordDto newUserPassword)
         {
-            var result = await mediator.Send(new RecoverPasswordCommand
+            var result = await _mediator.Send(new RecoverPasswordCommand
             {
                 NewUserPassword = newUserPassword
             });
@@ -230,12 +241,13 @@ namespace Patronage.Api.Controllers
         /// <response code="200">Successfully signed in</response>
         /// <response code="400">Username or password is not valid</response>
         /// <response code="500">Sorry. Try it later</response>
+        [AllowAnonymous]
         [HttpPost("login")]
-        public async Task<ActionResult> Login([FromBody]SignInDto dto)
+        public async Task<ActionResult> Login([FromBody] SignInDto dto)
         {
-            var response = await mediator.Send(new SignInCommand(dto));
+            var response = await _mediator.Send(new SignInCommand(dto));
 
-            if (response is not null) 
+            if (response is not null)
             {
                 return Ok(new BaseResponse<object>
                 {
@@ -261,8 +273,8 @@ namespace Patronage.Api.Controllers
         [HttpPost("logoff")]
         public async Task<ActionResult> Logoff([FromBody] string accessToken)
         {
-            var isSucceded = await mediator.Send(new SignOutCommand(accessToken));
-            
+            var isSucceded = await _mediator.Send(new SignOutCommand(accessToken));
+
             if (!isSucceded)
             {
                 return Unauthorized(new BaseResponse<bool>
@@ -279,6 +291,7 @@ namespace Patronage.Api.Controllers
             });
         }
 
+        [AllowAnonymous]
         [HttpPost("registerTest")]
         public async Task<ActionResult> RegisterTest([FromBody] CreateUserDto createUser)
         {
@@ -301,11 +314,11 @@ namespace Patronage.Api.Controllers
             });
         }
 
+        [AllowAnonymous]
         [HttpPost("refreshtoken")]
-        public async Task<ActionResult> RefreshToken([FromHeader(Name ="RefreshToken")] string refreshToken, [FromHeader(Name = "Bearer")] string accessToken)
+        public async Task<ActionResult> RefreshToken([FromHeader(Name = "RefreshToken")] string refreshToken, [FromHeader(Name = "Bearer")] string accessToken)
         {
-            
-            var response = await _userService.RefreshTokenAsync(refreshToken, accessToken);          
+            var response = await _userService.RefreshTokenAsync(refreshToken, accessToken);
             return Ok(response);
         }
     }

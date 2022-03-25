@@ -211,7 +211,7 @@ namespace Patronage.Migrations.Migrations
                         {
                             Id = "679381f2-06a1-4e22-beda-179e8e9e3236",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "c93346d2-9d8e-40fe-9895-908d71d72833",
+                            ConcurrencyStamp = "bc3b611e-ef93-408c-be14-6bd5007c963d",
                             Email = "test1@mail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
@@ -219,7 +219,7 @@ namespace Patronage.Migrations.Migrations
                             NormalizedUserName = "TESTUSER1",
                             PasswordHash = "AQAAAAEAACcQAAAAEIR44hzbnj/pCIqsHG4vIPm/ARO5F+qPlxQp9Wjhn+EBi/q73B+RlmXZNV+yUOvgPQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "86200e79-87cb-43ae-b99e-c27037fa547b",
+                            SecurityStamp = "fe6d5b26-6966-402b-b028-3e5e4797f0d4",
                             TwoFactorEnabled = false,
                             UserName = "TestUser1"
                         });
@@ -315,6 +315,41 @@ namespace Patronage.Migrations.Migrations
                             BoardId = 2,
                             StatusId = 3
                         });
+                });
+
+            modelBuilder.Entity("Patronage.Models.Comment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("ApplicationUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("IssueId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId");
+
+                    b.HasIndex("IssueId");
+
+                    b.ToTable("Comment");
                 });
 
             modelBuilder.Entity("Patronage.Models.Issue", b =>
@@ -605,18 +640,33 @@ namespace Patronage.Migrations.Migrations
                     b.HasOne("Patronage.Models.Board", "Board")
                         .WithMany("BoardStatuses")
                         .HasForeignKey("BoardId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("Patronage.Models.Status", "Status")
                         .WithMany("BoardStatuses")
                         .HasForeignKey("StatusId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Board");
 
                     b.Navigation("Status");
+                });
+
+            modelBuilder.Entity("Patronage.Models.Comment", b =>
+                {
+                    b.HasOne("Patronage.Models.ApplicationUser", null)
+                        .WithMany("Comment")
+                        .HasForeignKey("ApplicationUserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Patronage.Models.Issue", null)
+                        .WithMany("Comment")
+                        .HasForeignKey("IssueId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Patronage.Models.Issue", b =>
@@ -632,7 +682,7 @@ namespace Patronage.Migrations.Migrations
                     b.HasOne("Patronage.Models.Project", null)
                         .WithMany("Issues")
                         .HasForeignKey("ProjectId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("User");
@@ -649,6 +699,8 @@ namespace Patronage.Migrations.Migrations
 
             modelBuilder.Entity("Patronage.Models.ApplicationUser", b =>
                 {
+                    b.Navigation("Comment");
+
                     b.Navigation("Issues");
                 });
 
@@ -657,6 +709,11 @@ namespace Patronage.Migrations.Migrations
                     b.Navigation("BoardStatuses");
 
                     b.Navigation("Issues");
+                });
+
+            modelBuilder.Entity("Patronage.Models.Issue", b =>
+                {
+                    b.Navigation("Comment");
                 });
 
             modelBuilder.Entity("Patronage.Models.Project", b =>

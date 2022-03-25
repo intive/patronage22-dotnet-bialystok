@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Patronage.DataAccess
+﻿namespace Patronage.DataAccess
 {
     public class BaseResponse<T>
     {
@@ -12,7 +6,5 @@ namespace Patronage.DataAccess
         public List<BaseResponseError>? BaseResponseError { get; set; }
         public string? Message { get; set; }
         public T? Data { get; set; }
-
-       
     }
 }

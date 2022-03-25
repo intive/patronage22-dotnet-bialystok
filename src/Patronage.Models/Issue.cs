@@ -1,10 +1,4 @@
 ﻿using Patronage.Api;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Patronage.Models
 {
@@ -22,6 +16,7 @@ namespace Patronage.Models
         public DateTime CreatedOn { get; set; }
         public DateTime? ModifiedOn { get; set; }
 
-        public ApplicationUser? User { get; set; }
+        public virtual ApplicationUser? User { get; set; }
+        public virtual List<Comment>? Comment { get; set; }
     }
 }

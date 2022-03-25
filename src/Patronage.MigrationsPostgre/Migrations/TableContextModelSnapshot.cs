@@ -209,7 +209,7 @@ namespace Patronage.MigrationsPostgre.Migrations
                         {
                             Id = "679381f2-06a1-4e22-beda-179e8e9e3236",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "b8d468b2-3685-4504-97ed-27f27ef55a8e",
+                            ConcurrencyStamp = "62c6117c-688e-430d-a50c-4934c95b496c",
                             Email = "test1@mail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
@@ -217,7 +217,7 @@ namespace Patronage.MigrationsPostgre.Migrations
                             NormalizedUserName = "TESTUSER1",
                             PasswordHash = "AQAAAAEAACcQAAAAEIR44hzbnj/pCIqsHG4vIPm/ARO5F+qPlxQp9Wjhn+EBi/q73B+RlmXZNV+yUOvgPQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "137bcb77-6213-4d4f-a11e-cf813583ab22",
+                            SecurityStamp = "417ba7f5-b8c2-4004-824f-6873732e5174",
                             TwoFactorEnabled = false,
                             UserName = "TestUser1"
                         });
@@ -313,6 +313,41 @@ namespace Patronage.MigrationsPostgre.Migrations
                             BoardId = 2,
                             StatusId = 3
                         });
+                });
+
+            modelBuilder.Entity("Patronage.Models.Comment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ApplicationUserId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("IssueId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId");
+
+                    b.HasIndex("IssueId");
+
+                    b.ToTable("Comment");
                 });
 
             modelBuilder.Entity("Patronage.Models.Issue", b =>
@@ -603,18 +638,33 @@ namespace Patronage.MigrationsPostgre.Migrations
                     b.HasOne("Patronage.Models.Board", "Board")
                         .WithMany("BoardStatuses")
                         .HasForeignKey("BoardId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("Patronage.Models.Status", "Status")
                         .WithMany("BoardStatuses")
                         .HasForeignKey("StatusId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Board");
 
                     b.Navigation("Status");
+                });
+
+            modelBuilder.Entity("Patronage.Models.Comment", b =>
+                {
+                    b.HasOne("Patronage.Models.ApplicationUser", null)
+                        .WithMany("Comment")
+                        .HasForeignKey("ApplicationUserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Patronage.Models.Issue", null)
+                        .WithMany("Comment")
+                        .HasForeignKey("IssueId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Patronage.Models.Issue", b =>
@@ -630,7 +680,7 @@ namespace Patronage.MigrationsPostgre.Migrations
                     b.HasOne("Patronage.Models.Project", null)
                         .WithMany("Issues")
                         .HasForeignKey("ProjectId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("User");
@@ -647,6 +697,8 @@ namespace Patronage.MigrationsPostgre.Migrations
 
             modelBuilder.Entity("Patronage.Models.ApplicationUser", b =>
                 {
+                    b.Navigation("Comment");
+
                     b.Navigation("Issues");
                 });
 
@@ -655,6 +707,11 @@ namespace Patronage.MigrationsPostgre.Migrations
                     b.Navigation("BoardStatuses");
 
                     b.Navigation("Issues");
+                });
+
+            modelBuilder.Entity("Patronage.Models.Issue", b =>
+                {
+                    b.Navigation("Comment");
                 });
 
             modelBuilder.Entity("Patronage.Models.Project", b =>

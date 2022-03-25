@@ -1,18 +1,21 @@
+using FluentValidation;
+using MediatR;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.OpenApi.Models;
 using NLog;
 using NLog.Web;
 using Patronage.Models;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using MediatR;
 using Patronage.Contracts.Interfaces;
 using Patronage.DataAccess.Services;
-using Patronage.DataAccess;
 using FluentValidation;
 using Patronage.Api;
 using Patronage.Api.Middleware;
-using Npgsql;
 using Microsoft.AspNetCore.Identity;
 using Patronage.Api.Controllers;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Azure.Storage.Blobs;
 
 var logger = NLogBuilder.ConfigureNLog(Environment.GetEnvironmentVariable("IS_HEROKU2") == "true" ? "Nlog.Azure.config" : "Nlog.config").GetCurrentClassLogger();
@@ -28,6 +31,13 @@ try
                            .AddEnvironmentVariables()
                            .Build();
     builder.Configuration.AddConfiguration(envSettings);
+    // TODO: P2022-1704
+    builder.Services.AddCors(config =>
+    {
+        config.AddPolicy("PatronageCorsPolicy", policy => policy.AllowAnyOrigin()
+            .AllowAnyHeader()
+            .AllowAnyMethod());
+    });
 
     builder.Services.AddControllers(options =>
     {
@@ -80,6 +90,8 @@ try
     builder.Services.AddScoped<IUserService, UserService>();
     builder.Services.AddTransient<ITokenService, TokenService>();
     builder.Services.AddScoped<IStatusService, StatusService>();
+    builder.Services.AddScoped<ICommentService, CommentService>();
+
     builder.Services.AddSingleton(a => new BlobServiceClient(builder.Configuration.GetValue<string>("AzureBlob:ConnectionString")));
     builder.Services.AddSingleton<IBlobService, BlobService>();
     builder.Services.AddScoped<ErrorHandlingMiddleware>();
@@ -92,19 +104,22 @@ try
 
     builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
-    builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
-    {
-        options.Password.RequireUppercase = false;
-        options.Password.RequireLowercase = false;
-        options.Password.RequireNonAlphanumeric = false;
-        options.Password.RequiredLength = 1;
-    })
-    .AddEntityFrameworkStores<TableContext>()
-    .AddDefaultTokenProviders();
+    builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+            .AddEntityFrameworkStores<TableContext>()
+            .AddDefaultTokenProviders();
 
     builder.Services.AddEmailService(builder.Configuration);
 
     builder.Services.AddAuthenticationConfiguration(builder.Configuration);
+
+    builder.Services.AddAuthorization(options =>
+    {
+        var defaultPolicyBuilder = new AuthorizationPolicyBuilder(JwtBearerDefaults.AuthenticationScheme);
+
+        defaultPolicyBuilder = defaultPolicyBuilder.RequireAuthenticatedUser();
+
+        options.DefaultPolicy = defaultPolicyBuilder.Build();
+    });
 
     var app = builder.Build();
 
@@ -119,10 +134,13 @@ try
             c.SwaggerEndpoint("/swagger/v1/swagger.json", "Patronage 2022 API v1");
         });
     }
+    app.UseRouting();
 
     app.UseMiddleware<ErrorHandlingMiddleware>();
 
     app.UseHttpsRedirection();
+
+    app.UseCors("PatronageCorsPolicy");
 
     app.UseAuthentication();
 
@@ -130,11 +148,12 @@ try
     // ErrorHandlingMiddleware does not work if UseDeveloperExceptionPage is enabled so I commented it
     //app.UseDeveloperExceptionPage();
 
-    app.MapControllers();
+    app.MapControllers().RequireAuthorization();
 
     logger.Info("Initializing complete!");
     string? port = Environment.GetEnvironmentVariable("PORT") ?? "80";
     logger.Info("App listening on port:" + port);
+
     app.Run();
 }
 catch (Exception exception)

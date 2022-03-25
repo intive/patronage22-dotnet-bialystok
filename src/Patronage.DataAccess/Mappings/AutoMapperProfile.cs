@@ -1,9 +1,6 @@
 ﻿using AutoMapper;
-using Patronage.Contracts;
-using Patronage.Contracts.ModelDtos.Projects;
-using Patronage.Contracts.ModelDtos.Issues;
+using Patronage.Contracts.ModelDtos.Board;
 using Patronage.Models;
-using Patronage.Contracts.ModelDtos;
 
 namespace Patronage.DataAccess.Mappings
 {
@@ -19,6 +16,8 @@ namespace Patronage.DataAccess.Mappings
                 .ForMember(x => x.Description, y => { y.Condition(src => src.Description != null); y.MapFrom(z => z.Description!.Data); })
                 .ForMember(x => x.ProjectId, y => { y.Condition(src => src.ProjectId != null); y.MapFrom(z => z.ProjectId!.Data); })
                 .ForMember(x => x.IsActive, y => { y.Condition(src => src.IsActive != null); y.MapFrom(z => z.IsActive!.Data); });
+
+            CreateMap<UpdateBoardDto, Board>();
         }
     }
 }

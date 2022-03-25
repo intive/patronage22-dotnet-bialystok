@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using Patronage.Contracts.ModelDtos;
+using Patronage.Contracts.ModelDtos.Board;
 
 namespace Patronage.Api.MediatR.Board.Queries.GetAll
 {

@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using NLog;
 using Npgsql;
 using Patronage.Models;
-using NLog;
 
 namespace Patronage.Api.Controllers
 {
@@ -28,7 +28,7 @@ namespace Patronage.Api.Controllers
             else
             {
                 _logger.Info("Using MsSQL provider");
-                 ConnectToMsSQL();
+                ConnectToMsSQL();
             }
         }
 

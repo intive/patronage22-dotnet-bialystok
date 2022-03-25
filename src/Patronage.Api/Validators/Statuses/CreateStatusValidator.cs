@@ -1,6 +1,5 @@
 ﻿using FluentValidation;
 using Patronage.Api.MediatR.Status.Commands;
-using Patronage.Contracts.ModelDtos;
 using Patronage.Models;
 
 namespace Patronage.Api.Validators.Statuses

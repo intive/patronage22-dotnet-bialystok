@@ -29,7 +29,7 @@ namespace Patronage.DataAccess.Services
                 issuer: _configuration["Authentication:Issuer"],
                 claims: claims,
                 notBefore: DateTime.UtcNow,
-                expires: DateTime.UtcNow.AddSeconds(20),
+                expires: DateTime.UtcNow.AddMinutes(5),
                 signingCredentials: credentials
             );
 
@@ -65,12 +65,12 @@ namespace Patronage.DataAccess.Services
 
             var jwtSecurityToken = securityToken as JwtSecurityToken;
 
-            if (jwtSecurityToken == null || 
+            if (jwtSecurityToken == null ||
                 !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
             {
                 throw new SecurityTokenException("Invalid token");
             }
-                
+
             return principal;
         }
     }

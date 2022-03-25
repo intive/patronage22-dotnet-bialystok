@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using Patronage.Contracts.ModelDtos;
+using Patronage.Contracts.ModelDtos.Board;
 using Patronage.Models;
 
 namespace Patronage.Api.Validators.Board
@@ -9,9 +9,9 @@ namespace Patronage.Api.Validators.Board
         public PartialBoardValidator(TableContext tableContext)
         {
             RuleFor(x => x.Alias!.Data)
-                .NotNull().WithMessage("Can not be null.")
-                .NotEmpty().WithMessage("Can not be empty.")
-                .MaximumLength(256).WithMessage("Can not exceed 256 characters.")
+                .NotNull()
+                .NotEmpty()
+                .MaximumLength(256)
                 .Custom((value, context) =>
                 {
                     var isAliasAlreadyTaken = tableContext.Boards.Any(p => p.Alias == value);
@@ -23,9 +23,9 @@ namespace Patronage.Api.Validators.Board
                 .When(y => y.Alias != null);
 
             RuleFor(x => x.Name!.Data)
-                .NotNull().WithMessage("Can not be null.")
-                .NotEmpty().WithMessage("Can not be empty.")
-                .MaximumLength(1024).WithMessage("Can not exceed 1024 characters.")
+                .NotNull()
+                .NotEmpty()
+                .MaximumLength(1024)
                 .Custom((value, context) =>
                 {
                     var isNameAlreadyTaken = tableContext.Boards.Any(p => p.Name == value);
@@ -37,12 +37,12 @@ namespace Patronage.Api.Validators.Board
                 .When(y => y.Name != null);
 
             RuleFor(x => x.Description!.Data)
-                .NotNull().WithMessage("Can not be null.")
-                .NotEmpty().WithMessage("Can not be empty.")
+                .NotNull()
+                .NotEmpty()
                 .When(y => y.Description != null);
 
             RuleFor(x => x.ProjectId!.Data)
-                .NotNull().WithMessage("Can not be null.")
+                .NotNull()
                 .When(y => y.ProjectId != null);
         }
     }
