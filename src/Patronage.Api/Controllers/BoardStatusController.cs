@@ -36,7 +36,7 @@ namespace Patronage.Api.Controllers
                 return NotFound(new BaseResponse<PageResult<BoardStatusDto>>
                 {
                     ResponseCode = StatusCodes.Status404NotFound,
-                    Message = $"There's no board status"
+                    Message = "BoardStatus not found."
                 });
             }
 
