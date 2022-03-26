@@ -5,10 +5,10 @@ namespace Patronage.Contracts.Interfaces
 {
     public interface IBoardStatusService
     {
-        Task<PageResult<BoardStatusDto>?> GetAll(FilterBoardStatusDto filter);
+        Task<PageResult<BoardStatusDto>?> GetAllAsync(FilterBoardStatusDto filter);
 
-        Task<bool> Create(BoardStatusDto dto);
+        Task<bool> CreateAsync(BoardStatusDto dto);
 
-        Task<bool> Delete(int boardId, int statusId);
+        Task<bool> DeleteAsync(int boardId, int statusId);
     }
 }

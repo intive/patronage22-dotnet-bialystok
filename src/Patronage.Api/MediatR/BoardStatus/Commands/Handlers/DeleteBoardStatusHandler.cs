@@ -14,7 +14,7 @@ namespace Patronage.Api.MediatR.BoardStatus.Commands.Handlers
 
         public async Task<bool> Handle(DeleteBoardStatusCommand request, CancellationToken cancellationToken)
         {
-            return await _boardStatusService.Delete(request.boardId, request.statusId);
+            return await _boardStatusService.DeleteAsync(request.boardId, request.statusId);
         }
     }
 }

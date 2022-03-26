@@ -25,7 +25,7 @@ namespace Patronage.Api.Controllers
         /// You can add BoardId, StatusId or both.
         /// </summary>
         /// <response code="200">Returning all records or all records matching from BoardStatus table.</response>
-        /// <response code="404">No BoardStatus found in the database.</response>
+        /// <response code="404">No BoardStatuses were found in the database.</response>
         [HttpGet]
         public async Task<ActionResult<PageResult<BoardStatusDto>>> GetAll([FromQuery] FilterBoardStatusDto filter)
         {

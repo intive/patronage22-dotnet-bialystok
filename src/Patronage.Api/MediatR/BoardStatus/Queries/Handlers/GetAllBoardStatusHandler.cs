@@ -16,7 +16,7 @@ namespace Patronage.Api.MediatR.BoardStatus.Queries.Handlers
 
         public async Task<PageResult<BoardStatusDto>?> Handle(GetAllBoardStatusQuery request, CancellationToken cancellationToken)
         {
-            return await _boardStatusService.GetAll(request.filter);
+            return await _boardStatusService.GetAllAsync(request.filter);
         }
     }
 }

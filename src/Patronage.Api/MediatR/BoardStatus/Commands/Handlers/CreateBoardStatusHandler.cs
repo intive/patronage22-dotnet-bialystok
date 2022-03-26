@@ -14,7 +14,7 @@ namespace Patronage.Api.MediatR.BoardStatus.Commands.Handlers
 
         public async Task<bool> Handle(CreateBoardStatusCommand request, CancellationToken cancellationToken)
         {
-            return await _boardStatusService.Create(request.Dto);
+            return await _boardStatusService.CreateAsync(request.Dto);
         }
     }
 }
