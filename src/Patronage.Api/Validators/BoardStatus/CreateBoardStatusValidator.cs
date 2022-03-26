@@ -11,13 +11,23 @@ namespace Patronage.Api.Validators.BoardStatus
         public CreateBoardStatusValidator(TableContext dbContext)
         {
             _context = dbContext;
-            this.CascadeMode = CascadeMode.Stop;
-            RuleFor(s => s.Dto.BoardId).Must(NotLessThan).WithMessage("BoardId must be greater than 0").Must(ExistsBoardId).WithMessage("BoardId does not exist"); ;
-            RuleFor(s => s.Dto.StatusId).Must(NotLessThan).WithMessage("StatusId must be greater than 0").Must(ExistsStatusId).WithMessage("StatusId does not exist");
+
+            RuleFor(s => s.Dto.BoardId)
+                .NotNull()
+                .NotEmpty()
+                .GreaterThanOrEqualTo(1)
+                .Must(ExistsBoardId).WithMessage("BoardId does not exist.");
+
+            RuleFor(s => s.Dto.StatusId)
+                .NotNull()
+                .NotEmpty()
+                .GreaterThanOrEqualTo(1)
+                .Must(ExistsStatusId).WithMessage("StatusId does not exist.");
+
 
             RuleFor(x => new { x.Dto.BoardId, x.Dto.StatusId })
                 .Must(m => ExistsBoardStatus(m.BoardId, m.StatusId))
-                .WithMessage($"BoardStatus with specified boardId and statusId already exists");
+                .WithMessage("BoardStatus with specified boardId and statusId already exists.");
         }
 
         public bool ExistsBoardStatus(int boardId, int statusId)
@@ -54,18 +64,6 @@ namespace Patronage.Api.Validators.BoardStatus
                 .Statuses
                 .Where(b => b.Id.Equals(statusId));
             if (_statusId.Any())
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        private bool NotLessThan(int id)
-        {
-            if (id > 0)
             {
                 return true;
             }

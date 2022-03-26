@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Patronage.Api.MediatR.Status.Commands;
 using Patronage.Api.MediatR.Status.Queries;
-using Patronage.Contracts.ModelDtos;
+using Patronage.Contracts.ModelDtos.Statuses;
 using Patronage.DataAccess;
 using Swashbuckle.AspNetCore.Annotations;
 

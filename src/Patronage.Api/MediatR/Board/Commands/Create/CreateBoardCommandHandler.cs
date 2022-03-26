@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using Patronage.Contracts.Interfaces;
-using Patronage.Contracts.ModelDtos.Board;
+using Patronage.Contracts.ModelDtos.Boards;
 
 namespace Patronage.Api.MediatR.Board.Commands.Create
 {

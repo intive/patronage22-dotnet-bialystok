@@ -7,7 +7,8 @@ using Patronage.Api.MediatR.Board.Commands.Update;
 using Patronage.Api.MediatR.Board.Commands.UpdateLight;
 using Patronage.Api.MediatR.Board.Queries.GetAll;
 using Patronage.Api.MediatR.Board.Queries.GetSingle;
-using Patronage.Contracts.ModelDtos.Board;
+using Patronage.Contracts.Helpers;
+using Patronage.Contracts.ModelDtos.Boards;
 using Patronage.DataAccess;
 
 namespace Patronage.Api.Controllers
@@ -51,7 +52,7 @@ namespace Patronage.Api.Controllers
         /// <response code="404">There's no boards.</response>
         /// <returns>Return all boards.</returns>
         [HttpGet("list")]
-        public async Task<ActionResult<BaseResponse<IEnumerable<BoardDto>>>> GetBoards([FromQuery] FilterBoardDto filter)
+        public async Task<ActionResult<BaseResponse<PageResult<BoardDto>>>> GetBoards([FromQuery] FilterBoardDto filter)
         {
             var query = new GetBoardsQuery(filter);
 
@@ -59,14 +60,14 @@ namespace Patronage.Api.Controllers
 
             if (result is null)
             {
-                return NotFound(new BaseResponse<IEnumerable<BoardDto>>
+                return NotFound(new BaseResponse<PageResult<BoardDto>>
                 {
                     ResponseCode = StatusCodes.Status404NotFound,
                     Message = "There's no boards."
                 });
             }
 
-            return Ok(new BaseResponse<IEnumerable<BoardDto>>
+            return Ok(new BaseResponse<PageResult<BoardDto>>
             {
                 ResponseCode = StatusCodes.Status200OK,
                 Message = "Boards was fetched successfully.",

@@ -1,4 +1,6 @@
-﻿namespace Patronage.Contracts.ModelDtos
+﻿using Patronage.Contracts.ModelDtos.BoardsStatus;
+
+namespace Patronage.Contracts.ModelDtos.Statuses
 {
     public class StatusDto
     {
