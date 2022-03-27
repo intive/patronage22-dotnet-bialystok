@@ -59,7 +59,7 @@ namespace Patronage.DataAccess.Services
 
         public async Task<bool> DeleteAsync(int boardId, int statusId)
         {
-            if (boardId != 0 || statusId != 0)
+            if (boardId == 0 || statusId == 0)
             {
                 return false;
             }
