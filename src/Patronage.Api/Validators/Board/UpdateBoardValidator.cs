@@ -40,9 +40,6 @@ namespace Patronage.Api.Validators.Board
 
             RuleFor(x => x.ProjectId)
                 .NotNull();
-
-            RuleFor(x => x.StatusId)
-                .NotNull();
         }
     }
 }

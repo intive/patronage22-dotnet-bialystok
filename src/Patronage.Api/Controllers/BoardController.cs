@@ -30,7 +30,7 @@ namespace Patronage.Api.Controllers
         /// <param name="boardDto">JSON object with properties defining a board to create</param>
         /// <response code="201">Board was created successfully.</response>
         /// <returns>Created board or null if board could not be created.</returns>
-        [HttpPost("create")]
+        [HttpPost]
         public async Task<ActionResult<BaseResponse<BoardDto>>> CreateBoard([FromBody] CreateBoardCommand boardDto)
         {
             var result = await _mediator.Send(boardDto);
@@ -51,7 +51,7 @@ namespace Patronage.Api.Controllers
         /// <response code="200">Boards were fetched successfully.</response>
         /// <response code="404">There's no boards.</response>
         /// <returns>Return all boards.</returns>
-        [HttpGet("list")]
+        [HttpGet]
         public async Task<ActionResult<BaseResponse<PageResult<BoardDto>>>> GetBoards([FromQuery] FilterBoardDto filter)
         {
             var query = new GetBoardsQuery(filter);
@@ -114,7 +114,7 @@ namespace Patronage.Api.Controllers
         /// <response code="200">Board was updated successfully.</response>
         /// <response code="404">There's no board with requested Id.</response>
         /// <returns>True if board was updated successfully.</returns>
-        [HttpPut("update/{id:int}")]
+        [HttpPut("{id:int}")]
         public async Task<ActionResult<BaseResponse<bool>>> UpdateBoard([FromBody] UpdateBoardDto boardDto, [FromRoute] int id)
         {
             var result = await _mediator.Send(new UpdateBoardCommand
@@ -149,7 +149,7 @@ namespace Patronage.Api.Controllers
         /// <response code="200">Board was updated successfully.</response>
         /// <response code="404">There's no board with requested Id.</response>
         /// <returns>True if board was updated successfully.</returns>
-        [HttpPatch("updateLight/{id:int}")]
+        [HttpPatch("{id:int}")]
         public async Task<ActionResult<BaseResponse<bool>>> UpdateBoardLight([FromBody] PartialBoardDto boardDto, [FromRoute] int id)
         {
             var result = await _mediator.Send(new UpdateBoardLightCommand
@@ -183,7 +183,7 @@ namespace Patronage.Api.Controllers
         /// <response code="200">Board was deleted successfully.</response>
         /// <response code="404">There's no board with requested Id.</response>
         /// <returns>True if Board was deleted successfully.</returns>
-        [HttpDelete("delete/{id:int}")]
+        [HttpDelete("{id:int}")]
         public async Task<ActionResult<BaseResponse<bool>>> DeleteBoard(int id)
         {
             var result = await _mediator.Send(new DeleteBoardCommand { Id = id });
