@@ -189,7 +189,7 @@ namespace Patronage.Api.Controllers
         /// <response code="404">Project with this id doesn't exist</response>
         /// <response code="500">Sorry. Try it later</response>
         [HttpDelete("{id}")]
-        public async Task<ActionResult<ProjectDto>> DeleteProject([FromRoute] int id)
+        public async Task<ActionResult> DeleteProject([FromRoute] int id)
         {
             var isDeleted = await _mediator.Send(new DeleteProjectCommand(id));
 
