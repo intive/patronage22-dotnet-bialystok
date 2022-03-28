@@ -23,16 +23,7 @@ namespace Patronage.Api.Middleware
             }
             catch (ValidationException validationException)
             {
-                //var logId = CreateLogWithId(validationException);
-                var logId = Guid.NewGuid().ToString();
-                var logContent = "LogId: " + logId + Environment.NewLine +
-                                 " Source: " + validationException.Source + Environment.NewLine +
-                                 " Message: " + validationException.Message + Environment.NewLine +
-                                 " InnerException: " + validationException.InnerException + Environment.NewLine +
-                                 " Data: " + validationException.Data + Environment.NewLine +
-                                 " StackTrace: " + validationException.StackTrace;
-
-                _logger.LogError(logContent);
+                var logId = CreateLogWithId(validationException);
 
                 var response = new BaseResponse<IEnumerable<ValidationFailure>>
                 {
@@ -45,18 +36,9 @@ namespace Patronage.Api.Middleware
                 context.Response.StatusCode = StatusCodes.Status422UnprocessableEntity;
                 await context.Response.WriteAsync(JsonSerializer.Serialize(response));
             }
-            catch (NotFoundException e)
+            catch (NotFoundException notFoundException)
             {
-                //var logId = CreateLogWithId(notFoundException);
-                var logId = Guid.NewGuid().ToString();
-                var logContent = "LogId: " + logId + Environment.NewLine +
-                                 " Source: " + e.Source + Environment.NewLine +
-                                 " Message: " + e.Message + Environment.NewLine +
-                                 " InnerException: " + e.InnerException + Environment.NewLine +
-                                 " Data: " + e.Data + Environment.NewLine +
-                                 " StackTrace: " + e.StackTrace;
-
-                _logger.LogError(logContent);
+                var logId = CreateLogWithId(notFoundException);
 
                 var response = new BaseResponse<IEnumerable<string>>
                 {
@@ -69,16 +51,7 @@ namespace Patronage.Api.Middleware
             }
             catch (Exception e)
             {
-                //var logId = CreateLogWithId(e);
-                var logId = Guid.NewGuid().ToString();
-                var logContent = "LogId: " + logId + Environment.NewLine +
-                                 " Source: " + e.Source + Environment.NewLine +
-                                 " Message: " + e.Message + Environment.NewLine +
-                                 " InnerException: " + e.InnerException + Environment.NewLine +
-                                 " Data: " + e.Data + Environment.NewLine +
-                                 " StackTrace: " + e.StackTrace;
-
-                _logger.LogError(logContent);
+                var logId = CreateLogWithId(e);
 
                 var response = new BaseResponse<string>
                 {
