@@ -28,7 +28,7 @@ namespace Patronage.Api.Middleware
                 var response = new BaseResponse<IEnumerable<ValidationFailure>>
                 {
                     ResponseCode = StatusCodes.Status422UnprocessableEntity,
-                    Message = $"One or more validation errors has occured. Error cede: {logId}",
+                    Message = $"One or more validation errors has occured. To get to know the details, turn to administrator giving him code: {logId}",
                     BaseResponseError = validationException.Errors
                         .Select(x => new BaseResponseError(x.PropertyName, x.ErrorCode, x.ErrorMessage)).ToList()
                 };
@@ -43,7 +43,7 @@ namespace Patronage.Api.Middleware
                 var response = new BaseResponse<IEnumerable<string>>
                 {
                     ResponseCode = StatusCodes.Status404NotFound,
-                    Message = $" Error cede: {logId}"
+                    Message = $"Some server error has occured. To get to know the details, turn to administrator giving him code: {logId}"
                 };
                 context.Response.ContentType = "application/json";
                 context.Response.StatusCode = StatusCodes.Status404NotFound;
