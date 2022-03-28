@@ -55,13 +55,14 @@ namespace Patronage.Tests
         public async Task CanGetProjects()
         {
             //Arrange
-            CreateProjectDto project = new()
+            Project project = new()
             {
                 Alias = "Project one",
                 Name = "Project name",
-                Description = "description"
+                Description = "description",
             };
-            _projectService.Create(project).Wait();
+            _context.Projects.Add(project);
+            _context.SaveChanges();
 
             //Act
             var response = await _projectService.GetAll(null);
@@ -76,13 +77,14 @@ namespace Patronage.Tests
         public async Task CanSearchProjectsByName()
         {
             //Arrange
-            CreateProjectDto project = new()
+            Project project = new()
             {
                 Alias = "No alias",
                 Name = "This name is unique",
                 Description = "Unique"
             };
-            _projectService.Create(project).Wait();
+            _context.Projects.Add(project);
+            _context.SaveChanges();
 
             //Act
             var response = await _projectService.GetAll("This name is unique");
@@ -101,13 +103,14 @@ namespace Patronage.Tests
         public async Task CanSearchProjectsByAlias()
         {
             //Arrange
-            CreateProjectDto project = new()
+            Project project = new()
             {
                 Alias = "This alias is unique",
                 Name = "No name",
                 Description = "No description"
             };
-            _projectService.Create(project).Wait();
+            _context.Projects.Add(project);
+            _context.SaveChanges();
 
             //Act
             var response = await _projectService.GetAll("This alias is unique");
@@ -126,13 +129,14 @@ namespace Patronage.Tests
         public async Task CanSearchProjectsByDescription()
         {
             //Arrange
-            CreateProjectDto project = new()
+            Project project = new()
             {
                 Alias = "No alias",
                 Name = "No description",
                 Description = "This description is unique"
             };
-            _projectService.Create(project).Wait();
+            _context.Projects.Add(project);
+            _context.SaveChanges();
 
             //Act
             var response = await _projectService.GetAll("This description is unique");
@@ -151,13 +155,15 @@ namespace Patronage.Tests
         public async Task CanUpdateProject()
         {
             //Arrange
-            CreateProjectDto project = new()
+            Project project = new()
             {
+                Id = 10002,
                 Alias = "Not updated alias",
                 Name = "Not updated name",
                 Description = "Not updated description"
             };
-            var projectId = await _projectService.Create(project);
+            _context.Projects.Add(project);
+            _context.SaveChanges();
             UpdateProjectDto updatedProject = new()
             {
                 Alias = "Updated alias",
@@ -166,8 +172,8 @@ namespace Patronage.Tests
             };
 
             //Act
-            var response = await _projectService.Update(projectId, updatedProject);
-            var projectResponse= await _projectService.GetById(projectId);
+            var response = await _projectService.Update(10002, updatedProject);
+            var projectResponse= await _projectService.GetById(10002);
 
             //Assert
             Assert.True(response, "Could not update project.");
@@ -177,18 +183,19 @@ namespace Patronage.Tests
             Assert.True(projectResponse!.Alias == "Updated alias", "Project alias was not updated.");
         }
 
-        //unit test for light update project
         [Fact]
         public async Task CanLightUpdateProject()
         {
             //Arrange
-            CreateProjectDto project = new()
+            Project project = new()
             {
+                Id = 10000,
                 Alias = "Base alias",
                 Name = "Base name",
                 Description = "Base description"
             };
-            var projectId = await _projectService.Create(project);
+            _context.Projects.Add(project);
+            _context.SaveChanges();
             PartialProjectDto updatedProject = new()
             {
                 Alias = new PropInfo<string> { Data = "Updated alias" },
@@ -197,8 +204,8 @@ namespace Patronage.Tests
             };
 
             //Act
-            var response = await _projectService.LightUpdate(projectId, updatedProject);
-            var projectResponse = await _projectService.GetById(projectId);
+            var response = await _projectService.LightUpdate(10000, updatedProject);
+            var projectResponse = await _projectService.GetById(10000);
             
             //Assert
             Assert.True(response, "Could not light update project.");
@@ -213,22 +220,26 @@ namespace Patronage.Tests
         public async Task CanDeleteProject()
         {
             //Arrange
-            CreateProjectDto project = new()
+            Project project = new()
             {
+                Id = 10001,
                 Alias = "Not deleted alias",
                 Name = "Not deleted name",
                 Description = "Not deleted description"
             };
-            var projectId = await _projectService.Create(project);
+            _context.Projects.Add(project);
+            _context.SaveChanges();
 
             //Act
-            var response = await _projectService.Delete(projectId);
-            var projectResponse = await _projectService.GetById(projectId);
+            var response = await _projectService.Delete(10001);
+            var responseAll = await _projectService.GetAll(null);
+            var projectResponse = await _projectService.GetById(10001);
 
             //Assert
             Assert.True(response, "Could not delete project.");
             Assert.NotNull(projectResponse);
             Assert.True(projectResponse!.IsActive == false, "Project was not deleted.");
+            Assert.True(responseAll!.Any(x => x.Id == 10001) || responseAll!.Any(x => x.IsActive == false), "Get all returned deleted project.");
         }
     }
 }
