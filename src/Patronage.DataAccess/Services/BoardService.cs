@@ -1,7 +1,8 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Patronage.Contracts.Helpers;
 using Patronage.Contracts.Interfaces;
-using Patronage.Contracts.ModelDtos.Board;
+using Patronage.Contracts.ModelDtos.Boards;
 using Patronage.Models;
 
 namespace Patronage.DataAccess.Services
@@ -17,15 +18,23 @@ namespace Patronage.DataAccess.Services
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-        public async Task<BoardDto?> CreateBoardAsync(BoardDto request)
+        public async Task<BoardDto?> CreateBoardAsync(BaseBoardDto request)
         {
-            var board = _mapper.Map<Board>(request);
+            var board = new Board
+            {
+                Alias = request.Alias,
+                Name = request.Name,
+                Description = request?.Description ?? null,
+                ProjectId = request!.ProjectId,
+                IsActive = true
+            };
+
             _tableContext.Boards.Add(board);
 
             if (await _tableContext.SaveChangesAsync() > 0)
             {
-                request.Id = board.Id;
-                return request;
+                var boardDto = new BoardDto(board);
+                return boardDto;
             }
 
             throw new DbUpdateException($"Could not save changes to database at: {nameof(CreateBoardAsync)}");
@@ -36,7 +45,9 @@ namespace Patronage.DataAccess.Services
             var board = await GetByIdAsync(id);
 
             if (board is null)
+            {
                 return false;
+            }
 
             if (!board.IsActive)
             {
@@ -58,30 +69,36 @@ namespace Patronage.DataAccess.Services
             var board = await GetByIdAsync(id);
 
             if (board is null)
+            {
                 return null;
+            }
 
             return _mapper.Map<BoardDto>(board);
         }
 
-        public async Task<IEnumerable<BoardDto>?> GetBoardsAsync(FilterBoardDto? filter = null)
+        public async Task<PageResult<BoardDto>?> GetBoardsAsync(FilterBoardDto filter)
         {
-            var query = _tableContext.Boards.AsQueryable();
-            if (filter is null)
+            var baseQuery = _tableContext
+                .Boards
+                .Where(x => x.IsActive == true)
+                .AsQueryable();
+
+            if (!baseQuery.Any())
             {
-                if (!query.Any())
-                    return null;
-
-                return _mapper
-                    .Map<IEnumerable<BoardDto>>(await query.ToArrayAsync());
+                return null;
             }
-            var boards = await query
-                .Where(x =>
-                    x.Alias.Equals(filter.Alias ?? x.Alias) &&
-                    x.Name.Equals(filter.Name ?? x.Name) &&
-                    x.Description != null && x.Description.Equals(filter.Description ?? x.Description))
-                .ToArrayAsync();
 
-            return _mapper.Map<IEnumerable<BoardDto>>(boards);
+            baseQuery = baseQuery
+                .FilterBy(filter);
+            var totalItemCount = baseQuery.Count();
+
+            var boards = baseQuery
+                .Skip(filter.PageSize * (filter.PageNumber - 1))
+                .Take(filter.PageSize);
+
+            var items = await boards.Select(x => new BoardDto(x)).ToListAsync();
+
+            return new PageResult<BoardDto>(items, totalItemCount, filter.PageSize, filter.PageNumber);
         }
 
         public async Task<Board?> GetByIdAsync(int id)
@@ -94,7 +111,9 @@ namespace Patronage.DataAccess.Services
             var board = await GetByIdAsync(id);
 
             if (board is null)
+            {
                 return false;
+            }
 
             _mapper.Map(request, board);
 
@@ -111,7 +130,9 @@ namespace Patronage.DataAccess.Services
             var board = await GetByIdAsync(id);
 
             if (board is null)
+            {
                 return false;
+            }
 
             _mapper.Map(request, board);
 

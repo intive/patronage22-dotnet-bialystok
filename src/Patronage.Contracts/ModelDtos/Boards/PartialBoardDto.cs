@@ -1,4 +1,4 @@
-﻿namespace Patronage.Contracts.ModelDtos.Board
+﻿namespace Patronage.Contracts.ModelDtos.Boards
 {
     public class PartialBoardDto
     {

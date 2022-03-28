@@ -1,10 +1,10 @@
 ﻿using Patronage.Contracts.Helpers;
 
-namespace Patronage.Contracts.ModelDtos.Issues
+namespace Patronage.Contracts.ModelDtos.Boards
 {
-    public class FilterIssueDto
+    public class FilterBoardDto
     {
-        public int? BoardId { get; set; }
+        public int? ProjectId { get; set; }
         public string? SearchPhrase { get; set; }
         public int PageNumber { get; set; } = 1;
         public int PageSize { get; set; } = PropertyForQuery.AllowedPageSizes[0];

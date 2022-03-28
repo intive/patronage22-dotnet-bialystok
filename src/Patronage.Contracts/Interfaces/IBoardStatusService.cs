@@ -1,15 +1,14 @@
-﻿using Patronage.Contracts.ModelDtos;
+﻿using Patronage.Contracts.Helpers;
+using Patronage.Contracts.ModelDtos.BoardsStatus;
 
 namespace Patronage.Contracts.Interfaces
 {
     public interface IBoardStatusService
     {
-        IEnumerable<BoardStatusDto> GetAll();
+        Task<PageResult<BoardStatusDto>?> GetAllAsync(FilterBoardStatusDto filter);
 
-        IEnumerable<BoardStatusDto> GetById(int boardId, int statusId);
+        Task<bool> CreateAsync(BoardStatusDto dto);
 
-        public bool Create(BoardStatusDto dto);
-
-        public bool Delete(int boardId, int statusId);
+        Task<bool> DeleteAsync(int boardId, int statusId);
     }
 }

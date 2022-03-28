@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Patronage.Contracts.Interfaces;
-using Patronage.Contracts.ModelDtos;
+using Patronage.Contracts.ModelDtos.Statuses;
 using Patronage.Models;
 
 namespace Patronage.DataAccess.Services

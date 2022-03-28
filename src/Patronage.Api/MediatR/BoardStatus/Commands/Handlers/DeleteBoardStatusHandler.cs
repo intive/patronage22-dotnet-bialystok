@@ -12,9 +12,9 @@ namespace Patronage.Api.MediatR.BoardStatus.Commands.Handlers
             _boardStatusService = boardStatusService;
         }
 
-        public Task<bool> Handle(DeleteBoardStatusCommand request, CancellationToken cancellationToken)
+        public async Task<bool> Handle(DeleteBoardStatusCommand request, CancellationToken cancellationToken)
         {
-            return Task.FromResult(_boardStatusService.Delete(request.boardId, request.statusId));
+            return await _boardStatusService.DeleteAsync(request.boardId, request.statusId);
         }
     }
 }
