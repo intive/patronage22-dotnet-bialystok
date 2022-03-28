@@ -1,13 +1,6 @@
 ﻿using Azure.Storage.Blobs;
-using Azure.Storage.Blobs.Models;
 using Microsoft.Extensions.Logging;
-using Microsoft.WindowsAzure.Storage.Blob;
 using Patronage.Contracts.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Patronage.DataAccess.Services
 {
@@ -47,6 +40,21 @@ namespace Patronage.DataAccess.Services
             {
                 _logger.LogError($"Error trying to download {blobContainerName} from Azure Blob Storage", ex);
             }
+        }
+
+        public async Task UploadBlobsAsync(string containerName, string directory)
+        {
+            var containerClient = _blobServiceClient.GetBlobContainerClient(containerName);
+            await containerClient.CreateIfNotExistsAsync();
+            string[] fileEntries = Directory.GetFiles($@"./{directory}");
+            List<Task> tasks = new List<Task>();
+            foreach (string fileEntry in fileEntries)
+            {
+                _logger.LogInformation("uploading " + $@"{fileEntry}");
+                tasks.Add(Task.Run(() => containerClient.GetBlobClient(fileEntry).UploadAsync(fileEntry)));
+            };
+            await Task.WhenAll(tasks);
+            _logger.LogInformation("Upload completed");
         }
     }
 }

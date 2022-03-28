@@ -1,14 +1,8 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.Extensions;
+﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Patronage.Contracts.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Patronage.Api.MediatR.AzureBlobs.Commands;
 
 namespace Patronage.Api.Controllers
 {
@@ -17,17 +11,17 @@ namespace Patronage.Api.Controllers
     [AllowAnonymous]
     public class LogsController : Controller
     {
-        private readonly IBlobService _blobService;
+        private readonly IMediator _mediator;
 
-        public LogsController(IBlobService blobService)
+        public LogsController(IMediator mediator)
         {
-            _blobService = blobService;
+            _mediator = mediator;
         }
 
         [HttpGet]
         public async Task<IActionResult> LogsAsync(string? username, string? file)
         {
-            await _blobService.GetBlobAsync("herokulogs", "logs/archive");
+            await _mediator.Send(new DownloadBlobsCommand("herokulogs", "logs/archive"));
             string[] fileEntries = Directory.GetFiles(@"./logs/archive");
 
             List<SelectListItem> LogDate = new List<SelectListItem>();
