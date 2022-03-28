@@ -8,11 +8,11 @@ namespace Patronage.Api.Middleware
 {
     public class ErrorHandlingMiddleware : IMiddleware
     {
-        private readonly ILoggerFactory logger;
+        private readonly ILogger<ErrorHandlingMiddleware> _logger;
 
-        public ErrorHandlingMiddleware(ILoggerFactory logger)
+        public ErrorHandlingMiddleware(ILogger<ErrorHandlingMiddleware> logger)
         {
-            this.logger = logger;
+            _logger = logger;
         }
 
         public async Task InvokeAsync(HttpContext context, RequestDelegate next)
@@ -23,10 +23,21 @@ namespace Patronage.Api.Middleware
             }
             catch (ValidationException validationException)
             {
+                //var logId = CreateLogWithId(validationException);
+                var logId = Guid.NewGuid().ToString();
+                var logContent = "LogId: " + logId + Environment.NewLine +
+                                 " Source: " + validationException.Source + Environment.NewLine +
+                                 " Message: " + validationException.Message + Environment.NewLine +
+                                 " InnerException: " + validationException.InnerException + Environment.NewLine +
+                                 " Data: " + validationException.Data + Environment.NewLine +
+                                 " StackTrace: " + validationException.StackTrace;
+
+                _logger.LogError(logContent);
+
                 var response = new BaseResponse<IEnumerable<ValidationFailure>>
                 {
                     ResponseCode = StatusCodes.Status422UnprocessableEntity,
-                    Message = "One or more validation errors has occured.",
+                    Message = $"One or more validation errors has occured. Error cede: {logId}",
                     BaseResponseError = validationException.Errors
                         .Select(x => new BaseResponseError(x.PropertyName, x.ErrorCode, x.ErrorMessage)).ToList()
                 };
@@ -34,12 +45,23 @@ namespace Patronage.Api.Middleware
                 context.Response.StatusCode = StatusCodes.Status422UnprocessableEntity;
                 await context.Response.WriteAsync(JsonSerializer.Serialize(response));
             }
-            catch (NotFoundException notFoundException)
+            catch (NotFoundException e)
             {
+                //var logId = CreateLogWithId(notFoundException);
+                var logId = Guid.NewGuid().ToString();
+                var logContent = "LogId: " + logId + Environment.NewLine +
+                                 " Source: " + e.Source + Environment.NewLine +
+                                 " Message: " + e.Message + Environment.NewLine +
+                                 " InnerException: " + e.InnerException + Environment.NewLine +
+                                 " Data: " + e.Data + Environment.NewLine +
+                                 " StackTrace: " + e.StackTrace;
+
+                _logger.LogError(logContent);
+
                 var response = new BaseResponse<IEnumerable<string>>
                 {
                     ResponseCode = StatusCodes.Status404NotFound,
-                    Message = notFoundException.Message
+                    Message = $" Error cede: {logId}"
                 };
                 context.Response.ContentType = "application/json";
                 context.Response.StatusCode = StatusCodes.Status404NotFound;
@@ -47,15 +69,41 @@ namespace Patronage.Api.Middleware
             }
             catch (Exception e)
             {
-                var response = new BaseResponse<IEnumerable<string>>
+                //var logId = CreateLogWithId(e);
+                var logId = Guid.NewGuid().ToString();
+                var logContent = "LogId: " + logId + Environment.NewLine +
+                                 " Source: " + e.Source + Environment.NewLine +
+                                 " Message: " + e.Message + Environment.NewLine +
+                                 " InnerException: " + e.InnerException + Environment.NewLine +
+                                 " Data: " + e.Data + Environment.NewLine +
+                                 " StackTrace: " + e.StackTrace;
+
+                _logger.LogError(logContent);
+
+                var response = new BaseResponse<string>
                 {
                     ResponseCode = StatusCodes.Status500InternalServerError,
-                    Message = e.Message
+                    Message = $"Some server error has occured. To get to know the details, turn to administrator giving him code: {logId}"
                 };
                 context.Response.ContentType = "application/json";
                 context.Response.StatusCode = StatusCodes.Status500InternalServerError;
                 await context.Response.WriteAsync(JsonSerializer.Serialize(response));
             }
+        }
+
+        private string CreateLogWithId(Exception e)
+        {
+            var logId = Guid.NewGuid().ToString();
+            var logContent = "LogId: " + logId + Environment.NewLine +
+                             " Source: " + e.Source + Environment.NewLine +
+                             " Message: " + e.Message + Environment.NewLine +
+                             " InnerException: " + e.InnerException + Environment.NewLine +
+                             " Data: " + e.Data + Environment.NewLine +
+                             " StackTrace: " + e.StackTrace;
+
+            _logger.LogError(logContent);
+
+            return logId;
         }
     }
 }
