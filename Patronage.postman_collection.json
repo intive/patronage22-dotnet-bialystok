@@ -72,7 +72,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"data\": {\r\n    \"alias\": \"s32tring1\",\r\n    \"name\": \"s32tring1\",\r\n    \"projectId\": 1,\r\n    \"statusId\": 1,\r\n    \"createdOn\": \"2022-02-25T14:30:47.259Z\",\r\n    \"modifiedOn\": \"2022-02-25T14:30:47.259Z\",\r\n    \"isActive\": true\r\n  }\r\n}",
+							"raw": "{\r\n  \"data\": {\r\n    \"alias\": \"s32trdsfssfing1\",\r\n    \"name\": \"s32tsdfdsfsring1\",\r\n    \"projectId\": 1,\r\n    \"statusId\": 10,\r\n    \"assignUserId\": \"679381f2-06a1-4e22-beda-179e8e9e3236\",\r\n    \"createdOn\": \"2022-02-25T14:30:47.259Z\",\r\n    \"isActive\": true\r\n  }\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -176,6 +176,25 @@
 								"api",
 								"user",
 								"signin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetList",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{basurl}}/api/user/list",
+							"host": [
+								"{{basurl}}"
+							],
+							"path": [
+								"api",
+								"user",
+								"list"
 							]
 						}
 					},
@@ -854,7 +873,7 @@
 		"bearer": [
 			{
 				"key": "token",
-				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NzkzODFmMi0wNmExLTRlMjItYmVkYS0xNzllOGU5ZTMyMzYiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiVGVzdFVzZXIxIiwibmJmIjoxNjQ4NTU4Mzc5LCJleHAiOjE2NDg1NTg2NzksImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjcwMDkvIiwiYXVkIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6NzAwOS8ifQ.HqmL1QwJsOm2FyoHog-CNyY-LKrLLI9H0LrLle6SsLU",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NzkzODFmMi0wNmExLTRlMjItYmVkYS0xNzllOGU5ZTMyMzYiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiVGVzdFVzZXIxIiwibmJmIjoxNjQ4NTY2MDEyLCJleHAiOjE2NDg1NjYzMTIsImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjcwMDkvIiwiYXVkIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6NzAwOS8ifQ.O9Ccrwdav8hSufknWlIwuHrXf56kz0AeHhJBpv0MClk",
 				"type": "string"
 			}
 		]
