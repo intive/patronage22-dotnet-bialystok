@@ -1,0 +1,10 @@
+﻿@using System.Collections
+@model string
+
+@using (Html.BeginForm("LogsDate", "Logs", FormMethod.Post))
+{
+    <fieldset>
+    @Html.DropDownList("LogDate", (IEnumerable<SelectListItem>)ViewBag.CategoryList)
+    <input type="submit" value="Submit" />
+    </fieldset>
+}

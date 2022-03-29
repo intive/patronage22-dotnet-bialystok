@@ -1,12 +1,16 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Patronage.Api.MediatR.User.Commands.ConfirmationEmail;
 using Patronage.Api.MediatR.User.Commands.Create;
 using Patronage.Api.MediatR.User.Commands.Password;
+using Patronage.Api.MediatR.User.Commands.RefreshToken;
 using Patronage.Api.MediatR.User.Commands.SignIn;
 using Patronage.Api.MediatR.User.Commands.SignOut;
+using Patronage.Api.MediatR.User.Queries;
 using Patronage.Contracts.Interfaces;
 using Patronage.Contracts.ModelDtos.User;
+using Patronage.Contracts.ResponseModels;
 using Patronage.DataAccess;
 
 namespace Patronage.Api.Controllers
@@ -20,12 +24,10 @@ namespace Patronage.Api.Controllers
     public class UserController : Controller
     {
         private readonly IMediator _mediator;
-        private readonly IUserService _userService;
 
-        public UserController(IMediator mediator, IUserService userService)
+        public UserController(IMediator mediator)
         {
             _mediator = mediator;
-            _userService = userService;
         }
 
         /// <summary>
@@ -34,6 +36,7 @@ namespace Patronage.Api.Controllers
         /// <param name="createUser">JSON object with properties defining a user to create</param>
         /// <response code="201">User was created successfully and confirmation email was sent.</response>
         /// <response code="500">Confirmation link could not be created.</response>
+        [AllowAnonymous]
         [HttpPost("create")]
         public async Task<ActionResult<UserDto>> RegisterUserAsync([FromBody] CreateUserDto createUser)
         {
@@ -66,6 +69,7 @@ namespace Patronage.Api.Controllers
         /// <param name="token">User's token</param>
         /// <response code="200">Email was confirmed.</response>
         /// <response code="404">There's no user with this Id.</response>
+        [AllowAnonymous]
         [HttpGet("confirm")]
         public async Task<ActionResult<bool>> VerifyEmailAsync([FromQuery] string id, string token)
         {
@@ -100,6 +104,7 @@ namespace Patronage.Api.Controllers
         /// <response code="200">Email was resent successfully.</response>
         /// <response code="404">There's no user registered with this email address. Check spelling and try again.</response>
         /// <response code="500">Link could not be created.</response>
+        [AllowAnonymous]
         [HttpPost("resend/{email}")]
         public async Task<ActionResult<bool>> ResendConfirmationEmailAsync(string email)
         {
@@ -141,6 +146,7 @@ namespace Patronage.Api.Controllers
         /// <response code="200">Email was sent successfully.</response>
         /// <response code="404">There's no user with this email or username.</response>
         /// <response code="500">Link could not be created.</response>
+        [AllowAnonymous]
         [HttpPost("recover")]
         public async Task<ActionResult<bool>> SendRecoveryPasswordEmailAsync([FromBody] RecoverPasswordDto sendRecoverEmail)
         {
@@ -181,6 +187,7 @@ namespace Patronage.Api.Controllers
         /// <param name="id">User's id</param>
         /// <param name="token">User's token</param>
         /// <response code="200">User id and token was fetched successfully.</response>
+        [AllowAnonymous]
         [HttpGet("reset")]
         public ActionResult<bool> ResetPasswordCredentials([FromQuery] string id, string token)
         {
@@ -202,6 +209,7 @@ namespace Patronage.Api.Controllers
         /// <param name="newUserPassword">JSON object containing user id, token and new password</param>
         /// <response code="200">Password was changed successfully.</response>
         /// <response code="404">There's no user with this Id.</response>
+        [AllowAnonymous]
         [HttpPost("reset")]
         public async Task<ActionResult<bool>> ResetPasswordAsync([FromBody] NewUserPasswordDto newUserPassword)
         {
@@ -233,48 +241,41 @@ namespace Patronage.Api.Controllers
         /// <param name="dto">JSON object with username, password and confirmed password</param>
         /// <response code="200">Successfully signed in</response>
         /// <response code="400">Username or password is not valid</response>
-        /// <response code="500">Sorry. Try it later</response>
-        [HttpPost("login")]
-        public async Task<ActionResult> Login([FromBody] SignInDto dto)
+        /// <response code="500">Internal server error</response>
+        [AllowAnonymous]
+        [HttpPost("signin")]
+        public async Task<ActionResult> SignInUserAsync([FromBody] SignInDto dto)
         {
             var response = await _mediator.Send(new SignInCommand(dto));
 
-            if (response is not null)
+            if (response is null)
             {
-                return Ok(new BaseResponse<object>
+                return BadRequest(new BaseResponse<object>
                 {
-                    ResponseCode = StatusCodes.Status200OK,
-                    Data = response,
-                    Message = "You have been signed in successfully"
+                    ResponseCode = StatusCodes.Status400BadRequest,
+                    Data = null,
+                    Message = "Username or password is not valid"
                 });
             }
 
-            return BadRequest(new BaseResponse<object>
+            return Ok(new BaseResponse<RefreshTokenResponse>
             {
-                ResponseCode = StatusCodes.Status400BadRequest,
-                Data = null,
-                Message = "Username or password is not valid"
+                ResponseCode = StatusCodes.Status200OK,
+                Data = response,
+                Message = "You have been signed in successfully"
             });
         }
 
         /// <summary>
-        /// Action to sign out the user
+        /// Action to sign out the user. The user's refresh token is beeing deleted from database.
         /// </summary>
-        /// <response code="200">Successfully signed in</response>
-        /// <response code="500">Sorry. Try it later</response>
-        [HttpPost("logoff")]
-        public async Task<ActionResult> Logoff([FromBody] string accessToken)
+        /// <response code="200">Successfully signed out</response>
+        /// <response code="500">Internal server error</response>
+        [HttpPost("signout")]
+        public async Task<ActionResult> SignOutUserAsync()
         {
-            var isSucceded = await _mediator.Send(new SignOutCommand(accessToken));
-
-            if (!isSucceded)
-            {
-                return Unauthorized(new BaseResponse<bool>
-                {
-                    ResponseCode = StatusCodes.Status401Unauthorized,
-                    Message = "Your access token is inactive"
-                });
-            }
+            HttpContext.Request.Headers.TryGetValue("Authorization", out var accessToken);
+            await _mediator.Send(new SignOutCommand(accessToken.ToString().Split(' ').Last()));
 
             return Ok(new BaseResponse<bool>
             {
@@ -283,33 +284,70 @@ namespace Patronage.Api.Controllers
             });
         }
 
-        [HttpPost("registerTest")]
-        public async Task<ActionResult> RegisterTest([FromBody] CreateUserDto createUser)
+        /// <summary>
+        /// Generates a new acccess token (JWT). It is necessary to give an old access token in header 
+        /// (the same way as when authorizing to protected resorces)
+        /// and active refresh token in body
+        /// </summary>
+        /// <param name="refreshToken">A refresh token given afler signing in (and refreshing access token)</param>
+        /// <response code="200">New access token and refresh token</response>
+        /// <response code="401">Something wrong with given tokens propably</response>
+        /// <response code="500">Internal server error</response>
+        [HttpPost("refreshtoken")]
+        public async Task<ActionResult> RefreshTokenAsync([FromBody] RefreshTokenDto refreshToken)
         {
-            var isSucceded = await _userService.RegisterUserTest(createUser);
-
-            if (isSucceded)
+            var isAccessTokenGiven = HttpContext.Request.Headers.TryGetValue("Authorization", out var accessToken);
+            
+            if (!isAccessTokenGiven)
             {
-                return Ok(new BaseResponse<object>
+                return Unauthorized(new BaseResponse<object>
                 {
-                    ResponseCode = StatusCodes.Status200OK,
-                    Message = "You have been registered successfully"
+                    ResponseCode = StatusCodes.Status401Unauthorized,
+                    Data = null,
+                    Message = "Failed to generate new token"
                 });
             }
 
-            return BadRequest(new BaseResponse<object>
+            var response = await _mediator.Send(new RefreshTokenCommand(refreshToken.RefreshToken, 
+                                                                        accessToken.ToString().Split(' ')[1]));
+
+            if (response is null)
             {
-                ResponseCode = StatusCodes.Status400BadRequest,
-                Data = null,
-                Message = "You have not been registered"
+                return Unauthorized(new BaseResponse<object>
+                {
+                    ResponseCode = StatusCodes.Status401Unauthorized,
+                    Data = null,
+                    Message = "Failed to generate new token"
+                });
+
+            }
+
+            return Ok(new BaseResponse<object>
+            {
+                ResponseCode = StatusCodes.Status401Unauthorized,
+                Data = response,
+                Message = "Here is your new access token and refresh token"
             });
         }
 
-        [HttpPost("refreshtoken")]
-        public async Task<ActionResult> RefreshToken([FromHeader(Name = "RefreshToken")] string refreshToken, [FromHeader(Name = "Bearer")] string accessToken)
+        /// <summary>
+        /// Returns list of users. When you give "searchedPhrase" in Query you will receive only users
+        /// in which username, email, first name or surename contains this phrase.
+        /// </summary>
+        /// <param name="searchedPhrase">The phrase that username/email/first name/surename has to contain.</param>
+        /// <response code="200">Searched users</response>
+        /// <response code="500">Sorry. Try it later</response>
+        [HttpGet("list")]
+        public async Task<ActionResult<IEnumerable<UserDto>>> GetAllUsersAsync([FromQuery] string? searchedPhrase)
         {
-            var response = await _userService.RefreshTokenAsync(refreshToken, accessToken);
-            return Ok(response);
+            var users = await _mediator.Send(new GetAllUsersQuery(searchedPhrase));
+
+            return Ok(new BaseResponse<IEnumerable<UserDto>>
+            {
+                ResponseCode = StatusCodes.Status200OK,
+                Message = "There are users, you have searched",
+                Data = users
+            });
         }
     }
 }

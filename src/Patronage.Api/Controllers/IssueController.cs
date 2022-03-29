@@ -22,12 +22,11 @@ namespace Patronage.Api.Controllers
         /// <summary>
         /// Returns all Issues. When you give "SearchPhrase" in Query you will receive only issue
         /// in which name, alias or description contains this phrase.
-        /// You need to add the PageSize and PageNumber.
         /// </summary>
         /// <response code="200">Searched issues.</response>
         /// <response code="404">Issues not found.</response>
         [HttpGet]
-        public async Task<ActionResult<PageResult<IssueDto>>> GetAllIssues([FromQuery] FilterIssueDto filter)
+        public async Task<ActionResult<BaseResponse<PageResult<IssueDto>>>> GetAllIssues([FromQuery] FilterIssueDto filter)
         {
             var result = await _mediator.Send(new GetIssuesListQuery(filter));
             if (result is null)
@@ -52,7 +51,7 @@ namespace Patronage.Api.Controllers
         /// <response code="200">Searched issue.</response>
         /// <response code="404">Issue not found.</response>
         [HttpGet("{issueId}")]
-        public async Task<ActionResult<IssueDto>> GetIssueById([FromRoute] int issueId)
+        public async Task<ActionResult<BaseResponse<IssueDto>>> GetIssueById([FromRoute] int issueId)
         {
             var result = await _mediator.Send(new GetSingleIssueQuery(issueId));
             if (result is null)
@@ -88,7 +87,7 @@ namespace Patronage.Api.Controllers
                 });
             }
 
-            return Ok(new BaseResponse<IssueDto>
+            return CreatedAtAction(nameof(Create), new BaseResponse<IssueDto>
             {
                 Message = "Issue was created successfully",
                 ResponseCode = StatusCodes.Status201Created,
