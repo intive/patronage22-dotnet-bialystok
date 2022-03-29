@@ -17,29 +17,23 @@ namespace Patronage.DataAccess.Services
 
         public async Task GetBlobAsync(string blobContainerName, string localDirectory)
         {
-            try
+            _logger.LogDebug($"Downloading {blobContainerName} from Azure Blob Storage");
+            var containerClient = _blobServiceClient.GetBlobContainerClient("herokulogs");
+            if (!Directory.Exists(localDirectory))
             {
-                _logger.LogDebug($"Downloading {blobContainerName} from Azure Blob Storage");
-                var containerClient = _blobServiceClient.GetBlobContainerClient("herokulogs");
-                if (Directory.Exists(localDirectory))
-                {
-                    Directory.CreateDirectory($"{localDirectory}");
-                }
-                var path = $@"./{localDirectory}";
-                List<Task> tasks = new List<Task>();
-                var blobs = containerClient.GetBlobs();
-                foreach (var blob in blobs)
-                {
-                    var blobpath = Path.Combine(path, blob.Name);
+                Directory.CreateDirectory($@"{localDirectory}");
+                _logger.LogDebug($"Creating directory: {localDirectory}");
+            }
+            var path = $@"./{localDirectory}";
+            List<Task> tasks = new List<Task>();
+            var blobs = containerClient.GetBlobs();
+            foreach (var blob in blobs)
+            {
+                var blobpath = Path.Combine(path, blob.Name);
 
-                    tasks.Add(Task.Run(() => containerClient.GetBlobClient(blob.Name).DownloadToAsync(blobpath)));
-                }
-                await Task.WhenAll(tasks);
+                tasks.Add(Task.Run(() => containerClient.GetBlobClient(blob.Name).DownloadToAsync(blobpath)));
             }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Error trying to download {blobContainerName} from Azure Blob Storage", ex);
-            }
+            await Task.WhenAll(tasks);
         }
 
         public async Task UploadBlobsAsync(string containerName, string directory)

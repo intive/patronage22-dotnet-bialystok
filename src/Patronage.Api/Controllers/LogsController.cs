@@ -19,7 +19,7 @@ namespace Patronage.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> LogsAsync(string? username, string? file)
+        public async Task<IActionResult> LogsAsync()
         {
             await _mediator.Send(new DownloadBlobsCommand("herokulogs", "logs/archive"));
             string[] fileEntries = Directory.GetFiles(@"./logs/archive");
@@ -43,7 +43,7 @@ namespace Patronage.Api.Controllers
         }
 
         [HttpGet("{file}")]
-        public string? ReadResource(string file)
+        public string? ReadResource([FromRoute] string file)
         {
             string fileName = $@"./logs/archive/{file}";
             try

@@ -14,7 +14,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Azure.Storage.Blobs;
 
-var logger = NLogBuilder.ConfigureNLog(Environment.GetEnvironmentVariable("IS_HEROKU2") == "true" ? "Nlog.Azure.config" : "Nlog.config").GetCurrentClassLogger();
+var logger = NLogBuilder.ConfigureNLog(Environment.GetEnvironmentVariable("IS_HEROKU2") == "true" ? "NLog.Azure.config" : "NLog.config").GetCurrentClassLogger();
 logger.Info("Starting");
 
 try

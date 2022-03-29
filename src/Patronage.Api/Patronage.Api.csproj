@@ -13,10 +13,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="Nlog.Azure.config" />
     <Content Remove="NLog.config" />
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="NLog.Azure.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="NLog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
