@@ -1,8 +1,9 @@
-﻿using Patronage.Models;
+﻿using Patronage.Common;
+using Patronage.Models;
 
 namespace Patronage.Contracts.ModelDtos.Issues
 {
-    public class BaseIssueDto
+    public class BaseIssueDto : IEntity
     {
         public string Alias { get; set; } = null!;
         public string Name { get; set; } = null!;

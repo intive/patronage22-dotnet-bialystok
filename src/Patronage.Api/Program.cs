@@ -86,6 +86,7 @@ try
     builder.Services.AddTransient<ITokenService, TokenService>();
     builder.Services.AddScoped<IStatusService, StatusService>();
     builder.Services.AddScoped<ICommentService, CommentService>();
+    builder.Services.AddScoped<ILuceneService, LuceneService>();
 
     builder.Services.AddScoped<ErrorHandlingMiddleware>();
 
@@ -141,7 +142,7 @@ try
     // ErrorHandlingMiddleware does not work if UseDeveloperExceptionPage is enabled so I commented it
     //app.UseDeveloperExceptionPage();
 
-    app.MapControllers().RequireAuthorization();
+    app.MapControllers();//.RequireAuthorization();
 
     logger.Info("Initializing complete!");
     string? port = Environment.GetEnvironmentVariable("PORT") ?? "80";

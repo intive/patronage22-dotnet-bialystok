@@ -1,6 +1,8 @@
-﻿namespace Patronage.Contracts.ModelDtos.Projects
+﻿using Patronage.Common;
+
+namespace Patronage.Contracts.ModelDtos.Projects
 {
-    public class CreateProjectDto
+    public class CreateProjectDto : IEntity
     {
         public string Alias { get; set; } = null!;
         public string Name { get; set; } = null!;
