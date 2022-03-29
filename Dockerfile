@@ -1,5 +1,5 @@
 FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
-WORKDIR /src #/app
+WORKDIR /src
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
@@ -21,7 +21,7 @@ FROM build AS publish
 RUN dotnet publish "Patronage.Api.csproj" -c Release -o /app/publish
 
 FROM base AS final
-WORKDIR /src #/app
+WORKDIR /src
 COPY --from=publish /app/publish .
 #ENTRYPOINT ["dotnet", "Patronage.Api.dll"]
 CMD ASPNETCORE_URLS=http://*:$PORT dotnet Patronage.Api.dll
