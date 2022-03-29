@@ -129,7 +129,14 @@ try
     // ErrorHandlingMiddleware does not work if UseDeveloperExceptionPage is enabled so I commented it
     //app.UseDeveloperExceptionPage();
 
-    app.MapControllers();
+    if (EnvironmentVarHandler.IsAuthEnabled())
+    {
+        app.MapControllers().RequireAuthorization();
+    }
+    else
+    {
+        app.MapControllers();
+    }
 
     logger.Info("Initializing complete!");
     string? port = Environment.GetEnvironmentVariable("PORT") ?? "80";
