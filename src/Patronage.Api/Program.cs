@@ -13,8 +13,6 @@ using Patronage.Api.Controllers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Azure.Storage.Blobs;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Authorization;
 
 var logger = NLogBuilder.ConfigureNLog(Environment.GetEnvironmentVariable("IS_HEROKU2") == "true" ? "NLog.Azure.config" : "NLog.config").GetCurrentClassLogger();
 logger.Info("Starting");
@@ -32,7 +30,7 @@ try
     // TODO: P2022-1704
     builder.Services.AddCors(config =>
     {
-        config.AddPolicy("PatronageCorsPolicy", policy => policy.WithOrigins("http://patronage22-bialystok-js.herokuapp.com/", "http://localhost")
+        config.AddPolicy("PatronageCorsPolicy", policy => policy.WithOrigins("http://patronage22-bialystok-js.herokuapp.com", "http://localhost")
             .AllowAnyHeader()
             .AllowAnyMethod());
     });
