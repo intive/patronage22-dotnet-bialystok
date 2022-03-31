@@ -8,7 +8,6 @@ using Patronage.Api.MediatR.User.Commands.RefreshToken;
 using Patronage.Api.MediatR.User.Commands.SignIn;
 using Patronage.Api.MediatR.User.Commands.SignOut;
 using Patronage.Api.MediatR.User.Queries;
-using Patronage.Contracts.Interfaces;
 using Patronage.Contracts.ModelDtos.User;
 using Patronage.Contracts.ResponseModels;
 using Patronage.DataAccess;
@@ -336,7 +335,7 @@ namespace Patronage.Api.Controllers
         /// </summary>
         /// <param name="searchedPhrase">The phrase that username/email/first name/surename has to contain.</param>
         /// <response code="200">Searched users</response>
-        /// <response code="500">Sorry. Try it later</response>
+        /// <response code="500">Internal server error</response>
         [HttpGet("list")]
         public async Task<ActionResult<IEnumerable<UserDto>>> GetAllUsersAsync([FromQuery] string? searchedPhrase)
         {

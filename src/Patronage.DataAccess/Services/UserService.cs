@@ -292,8 +292,8 @@ namespace Patronage.DataAccess.Services
 
             if (searchedPhrase is not null)
             {
-                usersQueryable = usersQueryable.Where(u => (u.FirstName != null && u.FirstName.Contains(searchedPhrase)) ||
-                                                           (u.SecondName != null && u.SecondName.Contains(searchedPhrase)) ||
+                usersQueryable = usersQueryable.Where(u => (u.FirstName!.Contains(searchedPhrase)) ||
+                                                           (u.SecondName!.Contains(searchedPhrase)) ||
                                                            u.UserName.Contains(searchedPhrase) ||
                                                            u.Email.Contains(searchedPhrase));
             }
