@@ -30,7 +30,7 @@ try
     // TODO: P2022-1704
     builder.Services.AddCors(config =>
     {
-        config.AddPolicy("PatronageCorsPolicy", policy => policy.WithOrigins("http://patronage22-bialystok-js.herokuapp.com", "http://localhost", "https://localhost")
+        config.AddPolicy("PatronageCorsPolicy", policy => policy.AllowAnyOrigin()
             .AllowAnyHeader()
             .AllowAnyMethod());
     });
