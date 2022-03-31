@@ -1,25 +1,27 @@
 using FluentValidation;
 using MediatR;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.OpenApi.Models;
 using NLog;
 using NLog.Web;
-using Patronage.Api;
-using Patronage.Api.Controllers;
-using Patronage.Api.Middleware;
+using Patronage.Models;
 using Patronage.Contracts.Interfaces;
 using Patronage.DataAccess.Services;
-using Patronage.Models;
+using Patronage.Api;
+using Patronage.Api.Middleware;
+using Patronage.Api.Controllers;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Azure.Storage.Blobs;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 
-var logger = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
+var logger = NLogBuilder.ConfigureNLog(Environment.GetEnvironmentVariable("IS_HEROKU2") == "true" ? "NLog.Azure.config" : "NLog.config").GetCurrentClassLogger();
 logger.Info("Starting");
 
 try
 {
     var builder = WebApplication.CreateBuilder(args);
-
     var envConfig = new ConfigurationBuilder();
     var envSettings = envConfig.AddJsonFile("appsettings.Development.json",
                            optional: false,
@@ -39,6 +41,7 @@ try
     {
         options.SuppressAsyncSuffixInActionNames = false;
     });
+    builder.Services.AddMvc();
     // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen(c =>
@@ -87,6 +90,8 @@ try
     builder.Services.AddScoped<IStatusService, StatusService>();
     builder.Services.AddScoped<ICommentService, CommentService>();
 
+    builder.Services.AddSingleton(a => new BlobServiceClient(builder.Configuration.GetValue<string>("AzureBlob:ConnectionString")));
+    builder.Services.AddSingleton<IBlobService, BlobService>();
     builder.Services.AddScoped<ErrorHandlingMiddleware>();
 
     builder.Services.AddMediatR(typeof(Program));
@@ -141,7 +146,14 @@ try
     // ErrorHandlingMiddleware does not work if UseDeveloperExceptionPage is enabled so I commented it
     //app.UseDeveloperExceptionPage();
 
-    app.MapControllers().RequireAuthorization();
+    if (EnvironmentVarHandler.IsAuthEnabled())
+    {
+        app.MapControllers().RequireAuthorization();
+    }
+    else
+    {
+        app.MapControllers();
+    }
 
     logger.Info("Initializing complete!");
     string? port = Environment.GetEnvironmentVariable("PORT") ?? "80";

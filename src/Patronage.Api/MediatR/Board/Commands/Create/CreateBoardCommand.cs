@@ -1,10 +1,10 @@
 ﻿using MediatR;
-using Patronage.Contracts.ModelDtos.Board;
+using Patronage.Contracts.ModelDtos.Boards;
 
 namespace Patronage.Api.MediatR.Board.Commands.Create
 {
     public class CreateBoardCommand : IRequest<BoardDto>
     {
-        public BoardDto Data { get; set; } = null!;
+        public BaseBoardDto Data { get; set; } = null!;
     }
 }

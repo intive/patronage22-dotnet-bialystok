@@ -12,7 +12,7 @@ namespace Patronage.DataAccess.Services
 
         public IssueService(TableContext dbContext)
         {
-            _dbContext = dbContext;
+            _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
         public async Task<PageResult<IssueDto>?> GetAllIssuesAsync(FilterIssueDto filter)
@@ -66,7 +66,8 @@ namespace Patronage.DataAccess.Services
                 var issueDto = new IssueDto(issue);
                 return issueDto;
             }
-            return null;
+
+            throw new DbUpdateException($"Could not save changes to database at: {nameof(CreateAsync)}");
         }
 
         public async Task<bool> UpdateAsync(int issueId, BaseIssueDto dto)
@@ -90,7 +91,7 @@ namespace Patronage.DataAccess.Services
                 return true;
             }
 
-            return false;
+            throw new DbUpdateException($"Could not save changes to database at: {nameof(UpdateAsync)}");
         }
 
         public async Task<bool> UpdateLightAsync(int issueId, PartialIssueDto dto)
@@ -139,7 +140,7 @@ namespace Patronage.DataAccess.Services
                 return true;
             }
 
-            return false;
+            throw new DbUpdateException($"Could not save changes to database at: {nameof(UpdateLightAsync)}");
         }
 
         public async Task<bool> DeleteAsync(int issueId)
@@ -157,7 +158,7 @@ namespace Patronage.DataAccess.Services
                 return true;
             }
 
-            return false;
+            throw new DbUpdateException($"Could not save changes to database at: {nameof(DeleteAsync)}");
         }
 
         public async Task<bool> AssignUserAsync(int issueId, string userId)
@@ -175,7 +176,7 @@ namespace Patronage.DataAccess.Services
                 return true;
             }
 
-            return false;
+            throw new DbUpdateException($"Could not save changes to database at: {nameof(AssignUserAsync)}");
         }
 
         public async Task<Issue?> GetByIdAsync(int issueId)

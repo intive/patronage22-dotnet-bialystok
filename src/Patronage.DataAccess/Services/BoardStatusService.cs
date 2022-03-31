@@ -1,5 +1,7 @@
-﻿using Patronage.Contracts.Interfaces;
-using Patronage.Contracts.ModelDtos;
+﻿using Microsoft.EntityFrameworkCore;
+using Patronage.Contracts.Helpers;
+using Patronage.Contracts.Interfaces;
+using Patronage.Contracts.ModelDtos.BoardsStatus;
 using Patronage.Models;
 
 namespace Patronage.DataAccess.Services
@@ -13,121 +15,74 @@ namespace Patronage.DataAccess.Services
             _dbContext = dbContext;
         }
 
-        public IEnumerable<BoardStatusDto> GetAll()
+        public async Task<PageResult<BoardStatusDto>?> GetAllAsync(FilterBoardStatusDto filter)
         {
-            var boardSat = _dbContext
+            var baseQuery = _dbContext
                 .BoardsStatus
-                .ToList();
+                .AsQueryable();
 
-            var boardStatuses = new List<BoardStatusDto>();
-            foreach (var board in boardSat)
+            if (!baseQuery.Any())
             {
-                boardStatuses.Add(new BoardStatusDto
-                {
-                    BoardId = board.BoardId,
-                    StatusId = board.StatusId
-                });
+                return null;
             }
-            return boardStatuses;
+
+            baseQuery = baseQuery
+                .FilterBy(filter);
+            var totalItemCount = baseQuery.Count();
+
+            var boardStatuses = baseQuery
+                .Skip(filter.PageSize * (filter.PageNumber - 1))
+                .Take(filter.PageSize);
+
+            var items = await boardStatuses.Select(x => new BoardStatusDto(x)).ToListAsync();
+
+            return new PageResult<BoardStatusDto>(items, totalItemCount, filter.PageSize, filter.PageNumber);
         }
 
-        public IEnumerable<BoardStatusDto> GetById(int boardId, int statusId)
+        public async Task<bool> CreateAsync(BoardStatusDto dto)
         {
-            var boardsStatus = _dbContext
-                    .BoardsStatus
-                    .AsQueryable();
+            var boardStatus = new BoardStatus
+            {
+                BoardId = dto.BoardId,
+                StatusId = dto.StatusId
+            };
 
-            var boardsStatusDto = new List<BoardStatusDto>();
-            if (boardId != 0 && statusId == 0)
-            {
-                var res = boardsStatus.Where(b => b.BoardId.Equals(boardId))
-                            .ToList();
-                foreach (var bs in res)
-                {
-                    boardsStatusDto.Add(new BoardStatusDto
-                    {
-                        BoardId = bs.BoardId,
-                        StatusId = bs.StatusId
-                    });
-                }
-            }
-            else if (boardId == 0 && statusId != 0)
-            {
-                var res = boardsStatus.Where(b => b.StatusId.Equals(statusId))
-                                      .ToList();
-                foreach (var bs in res)
-                {
-                    boardsStatusDto.Add(new BoardStatusDto
-                    {
-                        BoardId = bs.BoardId,
-                        StatusId = bs.StatusId
-                    });
-                }
-            }
-            else
-            {
-                var res = boardsStatus.Where(b => b.StatusId.Equals(statusId))
-                            .Where(b => b.BoardId.Equals(boardId))
-                            .FirstOrDefault();
-                if (res != null)
-                {
-                    boardsStatusDto.Add(new BoardStatusDto()
-                    {
-                        BoardId = res.BoardId,
-                        StatusId = res.StatusId
-                    });
-                }
-            }
-            return boardsStatusDto;
-        }
+            _dbContext.BoardsStatus.Add(boardStatus);
 
-        public bool Create(BoardStatusDto dto)
-        {
-            try
+            if ((await _dbContext.SaveChangesAsync()) > 0)
             {
-                var boardStatus = new BoardStatus
-                {
-                    BoardId = dto.BoardId,
-                    StatusId = dto.StatusId
-                };
-
-                _dbContext.BoardsStatus.Add(boardStatus);
-                _dbContext.SaveChanges();
                 return true;
             }
-            catch (Exception ex) when (ex is Microsoft.EntityFrameworkCore.DbUpdateException)
-            {
-                //TODO: Ask if it should also catch db savechanges exception
-                return false;
-            }
+
+            throw new DbUpdateException($"Could not save changes to database at: {nameof(CreateAsync)}");
         }
 
-        public bool Delete(int boardId, int statusId)
+        public async Task<bool> DeleteAsync(int boardId, int statusId)
         {
-            if (boardId != 0 && statusId != 0)
+            if (boardId == 0 || statusId == 0)
             {
-                var boardStatus = _dbContext
-                    .BoardsStatus
-                    .Where(b => b.BoardId.Equals(boardId))
-                    .Where(b => b.StatusId.Equals(statusId))
-                    .FirstOrDefault();
-
-                if (boardStatus == null)
-                {
-                    return false;
-                }
-
-                try
-                {
-                    _dbContext.BoardsStatus.Remove(boardStatus);
-                    _dbContext.SaveChanges();
-                }
-                catch (Exception)
-                {
-                    return false;
-                }
+                return false;
             }
-            return true;
+
+            var boardStatus = _dbContext
+                .BoardsStatus
+                .Where(b => b.BoardId.Equals(boardId))
+                .Where(b => b.StatusId.Equals(statusId))
+                .FirstOrDefault();
+
+            if (boardStatus == null)
+            {
+                return false;
+            }
+
+            _dbContext.BoardsStatus.Remove(boardStatus);
+
+            if ((await _dbContext.SaveChangesAsync()) > 0)
+            {
+                return true;
+            }
+
+            throw new DbUpdateException($"Could not save changes to database at: {nameof(DeleteAsync)}");
         }
     }
 }

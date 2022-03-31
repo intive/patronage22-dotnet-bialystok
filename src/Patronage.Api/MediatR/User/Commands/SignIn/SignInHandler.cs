@@ -15,7 +15,7 @@ namespace Patronage.Api.MediatR.User.Commands.SignIn
 
         public async Task<RefreshTokenResponse?> Handle(SignInCommand request, CancellationToken cancellationToken)
         {
-            return await _userService.LoginUserAsync(request.dto);
+            return await _userService.SignInUserAsync(request.dto);
         }
     }
 }

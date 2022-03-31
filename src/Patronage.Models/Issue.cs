@@ -16,6 +16,7 @@ namespace Patronage.Models
         public DateTime CreatedOn { get; set; }
         public DateTime? ModifiedOn { get; set; }
 
+        public virtual Board? Board { get; set; }
         public virtual ApplicationUser? User { get; set; }
         public virtual List<Comment>? Comment { get; set; }
     }
