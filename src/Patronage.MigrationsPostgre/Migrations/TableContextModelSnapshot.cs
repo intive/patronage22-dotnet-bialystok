@@ -209,7 +209,7 @@ namespace Patronage.MigrationsPostgre.Migrations
                         {
                             Id = "679381f2-06a1-4e22-beda-179e8e9e3236",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "60817d88-9d9a-4d15-92e8-ab06239721e3",
+                            ConcurrencyStamp = "62c6117c-688e-430d-a50c-4934c95b496c",
                             Email = "test1@mail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
@@ -217,7 +217,7 @@ namespace Patronage.MigrationsPostgre.Migrations
                             NormalizedUserName = "TESTUSER1",
                             PasswordHash = "AQAAAAEAACcQAAAAEIR44hzbnj/pCIqsHG4vIPm/ARO5F+qPlxQp9Wjhn+EBi/q73B+RlmXZNV+yUOvgPQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "3b0df98f-34f6-4c41-bdad-8fde3eef969e",
+                            SecurityStamp = "417ba7f5-b8c2-4004-824f-6873732e5174",
                             TwoFactorEnabled = false,
                             UserName = "TestUser1"
                         });
@@ -638,13 +638,13 @@ namespace Patronage.MigrationsPostgre.Migrations
                     b.HasOne("Patronage.Models.Board", "Board")
                         .WithMany("BoardStatuses")
                         .HasForeignKey("BoardId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("Patronage.Models.Status", "Status")
                         .WithMany("BoardStatuses")
                         .HasForeignKey("StatusId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Board");
@@ -654,21 +654,17 @@ namespace Patronage.MigrationsPostgre.Migrations
 
             modelBuilder.Entity("Patronage.Models.Comment", b =>
                 {
-                    b.HasOne("Patronage.Models.ApplicationUser", "User")
+                    b.HasOne("Patronage.Models.ApplicationUser", null)
                         .WithMany("Comment")
                         .HasForeignKey("ApplicationUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Patronage.Models.Issue", "Issue")
+                    b.HasOne("Patronage.Models.Issue", null)
                         .WithMany("Comment")
                         .HasForeignKey("IssueId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.Navigation("Issue");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Patronage.Models.Issue", b =>
@@ -684,7 +680,7 @@ namespace Patronage.MigrationsPostgre.Migrations
                     b.HasOne("Patronage.Models.Project", null)
                         .WithMany("Issues")
                         .HasForeignKey("ProjectId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("User");

@@ -1,13 +1,14 @@
-﻿using Patronage.Contracts.ModelDtos.Board;
+﻿using Patronage.Contracts.Helpers;
+using Patronage.Contracts.ModelDtos.Boards;
 using Patronage.Models;
 
 namespace Patronage.Contracts.Interfaces
 {
     public interface IBoardService : IEntityService<Board>
     {
-        Task<IEnumerable<BoardDto>?> GetBoardsAsync(FilterBoardDto? filter = null);
+        Task<PageResult<BoardDto>?> GetBoardsAsync(FilterBoardDto filter);
 
-        Task<BoardDto?> CreateBoardAsync(BoardDto request);
+        Task<BoardDto?> CreateBoardAsync(BaseBoardDto request);
 
         Task<BoardDto?> GetBoardByIdAsync(int id);
 

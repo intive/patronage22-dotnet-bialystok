@@ -1,10 +1,11 @@
 ﻿using MediatR;
+using Patronage.Contracts.Helpers;
 using Patronage.Contracts.Interfaces;
-using Patronage.Contracts.ModelDtos;
+using Patronage.Contracts.ModelDtos.BoardsStatus;
 
 namespace Patronage.Api.MediatR.BoardStatus.Queries.Handlers
 {
-    public class GetAllBoardStatusHandler : IRequestHandler<GetAllBoardStatusQuery, IEnumerable<BoardStatusDto>>
+    public class GetAllBoardStatusHandler : IRequestHandler<GetAllBoardStatusQuery, PageResult<BoardStatusDto>?>
     {
         private readonly IBoardStatusService _boardStatusService;
 
@@ -13,9 +14,9 @@ namespace Patronage.Api.MediatR.BoardStatus.Queries.Handlers
             _boardStatusService = boardStatusService;
         }
 
-        public Task<IEnumerable<BoardStatusDto>> Handle(GetAllBoardStatusQuery request, CancellationToken cancellationToken)
+        public async Task<PageResult<BoardStatusDto>?> Handle(GetAllBoardStatusQuery request, CancellationToken cancellationToken)
         {
-            return Task.FromResult(_boardStatusService.GetAll());
+            return await _boardStatusService.GetAllAsync(request.filter);
         }
     }
 }

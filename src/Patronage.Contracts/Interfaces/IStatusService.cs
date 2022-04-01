@@ -1,4 +1,4 @@
-﻿using Patronage.Contracts.ModelDtos;
+﻿using Patronage.Contracts.ModelDtos.Statuses;
 
 namespace Patronage.Contracts.Interfaces
 {

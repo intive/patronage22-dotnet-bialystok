@@ -211,7 +211,7 @@ namespace Patronage.Migrations.Migrations
                         {
                             Id = "679381f2-06a1-4e22-beda-179e8e9e3236",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "cd19ecb3-5cfc-4910-a31b-ad64868bc6e4",
+                            ConcurrencyStamp = "bc3b611e-ef93-408c-be14-6bd5007c963d",
                             Email = "test1@mail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
@@ -219,7 +219,7 @@ namespace Patronage.Migrations.Migrations
                             NormalizedUserName = "TESTUSER1",
                             PasswordHash = "AQAAAAEAACcQAAAAEIR44hzbnj/pCIqsHG4vIPm/ARO5F+qPlxQp9Wjhn+EBi/q73B+RlmXZNV+yUOvgPQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "8f785328-4088-49c1-b6e9-c0ac7e702458",
+                            SecurityStamp = "fe6d5b26-6966-402b-b028-3e5e4797f0d4",
                             TwoFactorEnabled = false,
                             UserName = "TestUser1"
                         });
@@ -640,13 +640,13 @@ namespace Patronage.Migrations.Migrations
                     b.HasOne("Patronage.Models.Board", "Board")
                         .WithMany("BoardStatuses")
                         .HasForeignKey("BoardId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("Patronage.Models.Status", "Status")
                         .WithMany("BoardStatuses")
                         .HasForeignKey("StatusId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Board");
@@ -656,21 +656,17 @@ namespace Patronage.Migrations.Migrations
 
             modelBuilder.Entity("Patronage.Models.Comment", b =>
                 {
-                    b.HasOne("Patronage.Models.ApplicationUser", "User")
+                    b.HasOne("Patronage.Models.ApplicationUser", null)
                         .WithMany("Comment")
                         .HasForeignKey("ApplicationUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Patronage.Models.Issue", "Issue")
+                    b.HasOne("Patronage.Models.Issue", null)
                         .WithMany("Comment")
                         .HasForeignKey("IssueId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.Navigation("Issue");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Patronage.Models.Issue", b =>
@@ -686,7 +682,7 @@ namespace Patronage.Migrations.Migrations
                     b.HasOne("Patronage.Models.Project", null)
                         .WithMany("Issues")
                         .HasForeignKey("ProjectId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("User");

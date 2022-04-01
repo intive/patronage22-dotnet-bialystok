@@ -1,7 +1,16 @@
 ﻿using MediatR;
-using Patronage.Contracts.ModelDtos;
+using Patronage.Contracts.Helpers;
+using Patronage.Contracts.ModelDtos.BoardsStatus;
 
 namespace Patronage.Api.MediatR.BoardStatus.Queries
 {
-    public record GetAllBoardStatusQuery() : IRequest<IEnumerable<BoardStatusDto>>;
+    public class GetAllBoardStatusQuery : IRequest<PageResult<BoardStatusDto>?>
+    {
+        public FilterBoardStatusDto filter;
+
+        public GetAllBoardStatusQuery(FilterBoardStatusDto filter)
+        {
+            this.filter = filter;
+        }
+    }
 }
