@@ -19,7 +19,7 @@ namespace Patronage.Tests
         }
 
         [Fact]
-        public async Task Iccue_GetAll_ReturnIssues()
+        public async Task GetAll_Issues_ReturnPageResult()
         {
             // arrange
             FilterIssueDto filter = new()
@@ -36,7 +36,7 @@ namespace Patronage.Tests
         }
 
         [Fact]
-        public void Iccue_GetById_ReturnIssue()
+        public void GetById_Issue_ReturnIssue()
         {
             // arrange
 
@@ -47,7 +47,7 @@ namespace Patronage.Tests
         }
 
         [Fact]
-        public async Task Iccue_Create_ReturnNewIssue()
+        public async Task Create_Issue_ReturnNewIssue()
         {
             // arrange
             BaseIssueDto issue = new()
@@ -67,7 +67,7 @@ namespace Patronage.Tests
         }
 
         [Fact]
-        public void Iccue_Update_ReturnMessageSuccessfully()
+        public void Update_Issue_ReturnTrue()
         {
             // arrange
 
@@ -78,7 +78,7 @@ namespace Patronage.Tests
         }
 
         [Fact]
-        public void Iccue_UpdateLight_ReturnTrue()
+        public void UpdateLight_Issue_ReturnTrue()
         {
             // arrange
 
@@ -89,7 +89,7 @@ namespace Patronage.Tests
         }
 
         [Fact]
-        public void Iccue_Delete_ReturnTrue()
+        public void Delete_Issue_ReturnTrue()
         {
             // arrange
 
@@ -100,7 +100,7 @@ namespace Patronage.Tests
         }
 
         [Fact]
-        public void Iccue_Assign_ReturnReturnTrue()
+        public void AssignUser_Issue_ReturnTrue()
         {
             // arrange
 
