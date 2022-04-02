@@ -16,6 +16,6 @@ namespace Patronage.Contracts.Interfaces
 
         Task<bool> DeleteAsync(int issueId);
 
-        Task<bool> AssignUserAsync(int issueId, string userId);
+        Task<bool> AssignUserAsync(int issueId, string? userId);
     }
 }

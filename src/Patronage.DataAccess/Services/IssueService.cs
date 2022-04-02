@@ -161,10 +161,10 @@ namespace Patronage.DataAccess.Services
             throw new DbUpdateException($"Could not save changes to database at: {nameof(DeleteAsync)}");
         }
 
-        public async Task<bool> AssignUserAsync(int issueId, string userId)
+        public async Task<bool> AssignUserAsync(int issueId, string? userId)
         {
             var issue = await GetByIdAsync(issueId);
-            if (issue == null || !issue.IsActive)
+            if ((issue == null || !issue.IsActive) || (issue.AssignUserId is null && userId is null))
             {
                 return false;
             }

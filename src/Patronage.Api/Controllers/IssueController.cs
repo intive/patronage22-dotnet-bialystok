@@ -180,8 +180,8 @@ namespace Patronage.Api.Controllers
         /// </summary>
         /// <response code="200">User has assigned correctly.</response>
         /// <response code="404">Issue or user not found.</response>
-        [HttpPut("{issueId}/assign/{userId}")]
-        public async Task<ActionResult<BaseResponse<bool>>> Assign([FromRoute] int issueId, [FromRoute] string userId)
+        [HttpPut("{issueId}/assign")]
+        public async Task<ActionResult<BaseResponse<bool>>> Assign([FromRoute] int issueId, [FromQuery] string? userId)
         {
             var result = await _mediator.Send(new AssignIssueCommand(issueId, userId));
             if (!result)
@@ -190,6 +190,15 @@ namespace Patronage.Api.Controllers
                 {
                     ResponseCode = StatusCodes.Status404NotFound,
                     Message = "Issue or user with given Id not found"
+                });
+            }
+
+            if (userId is null)
+            {
+                return Ok(new BaseResponse<bool>
+                {
+                    ResponseCode = StatusCodes.Status200OK,
+                    Message = "The issue has been unassigned from the user."
                 });
             }
 
