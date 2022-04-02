@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Patronage.Api.MediatR.Projects.Commands;
 using Patronage.Api.MediatR.Projects.Queries;
-using Patronage.Contracts.Interfaces;
 using Patronage.Contracts.ModelDtos.Projects;
 using Patronage.DataAccess;
 
@@ -15,7 +14,7 @@ namespace Patronage.Api.Controllers
     {
         private readonly IMediator _mediator;
 
-        public ProjectController(IMediator mediator, IProjectService projectService)
+        public ProjectController(IMediator mediator)
         {
             _mediator = mediator;
         }
@@ -26,7 +25,7 @@ namespace Patronage.Api.Controllers
         /// </summary>
         /// <param name="searchedPhrase" example="string">The phrase that project's name/alias/description have to contain.</param>
         /// <response code="200">Searched projects</response>
-        /// <response code="500">Sorry. Try it later</response>
+        /// <response code="500">Internal server error</response>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ProjectDto>>> GetAll([FromQuery] string? searchedPhrase)
         {
@@ -45,7 +44,7 @@ namespace Patronage.Api.Controllers
         /// <param name="id" example="10">The project's id</param>
         /// <response code="200">Searched project</response>
         /// <response code="404">Poroject not found</response>
-        /// <response code="500">Sorry. Try it later</response>
+        /// <response code="500">Internal server error</response>
         [Authorize]
         [HttpGet("{id}")]
         public async Task<ActionResult<ProjectDto>> GetById([FromRoute] int id)
@@ -86,7 +85,7 @@ namespace Patronage.Api.Controllers
         /// </remarks>
         /// <response code="201">Project correctly created</response>
         /// <response code="400">Pease insert correct JSON object with parameters</response>
-        /// <response code="500">Sorry. Try it later</response>
+        /// <response code="500">Internal server error</response>
         [HttpPost]
         public async Task<ActionResult> CreateProject([FromBody] CreateProjectDto projectDto)
         {
@@ -119,7 +118,7 @@ namespace Patronage.Api.Controllers
         /// </remarks>
         /// <response code="200">Project correctly updated</response>
         /// <response code="400">Pease insert correct JSON object with parameters</response>
-        /// <response code="500">Sorry. Try it later</response>
+        /// <response code="500">Internal server error</response>
         [HttpPut("{id}")]
         public async Task<ActionResult> UpdateProject([FromRoute] int id, [FromBody] UpdateProjectDto projectDto)
         {
@@ -158,7 +157,7 @@ namespace Patronage.Api.Controllers
         /// </remarks>
         /// <response code="200">Project correctly updated</response>
         /// <response code="400">Pease insert correct JSON object with parameters</response>
-        /// <response code="500">Sorry. Try it later</response>
+        /// <response code="500">Internal server error</response>
         [HttpPatch("{id}")]
         public async Task<ActionResult> LightUpdateProject([FromRoute] int id, [FromBody] PartialProjectDto projectDto)
         {
@@ -187,7 +186,7 @@ namespace Patronage.Api.Controllers
         /// <param name="id" example="10">The project's id</param>
         /// <response code="200">Project correctly deleted</response>
         /// <response code="404">Project with this id doesn't exist</response>
-        /// <response code="500">Sorry. Try it later</response>
+        /// <response code="500">Internal server error</response>
         [HttpDelete("{id}")]
         public async Task<ActionResult<ProjectDto>> DeleteProject([FromRoute] int id)
         {

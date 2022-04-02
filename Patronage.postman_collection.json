@@ -1,0 +1,911 @@
+{
+	"info": {
+		"_postman_id": "25f84576-0f8c-4795-8710-851ea07f991f",
+		"name": "Patronage",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Issue",
+			"item": [
+				{
+					"name": "GetAll issue",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{basurl}}/api/issue/",
+							"host": [
+								"{{basurl}}"
+							],
+							"path": [
+								"api",
+								"issue",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{basurl}}/api/issue/1",
+							"host": [
+								"{{basurl}}"
+							],
+							"path": [
+								"api",
+								"issue",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{basurl}}/api/issue/3",
+							"host": [
+								"{{basurl}}"
+							],
+							"path": [
+								"api",
+								"issue",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"data\": {\r\n    \"alias\": \"s32trdsfssfing1\",\r\n    \"name\": \"s32tsdfdsfsring1\",\r\n    \"projectId\": 1,\r\n    \"statusId\": 10,\r\n    \"assignUserId\": \"679381f2-06a1-4e22-beda-179e8e9e3236\",\r\n    \"createdOn\": \"2022-02-25T14:30:47.259Z\",\r\n    \"isActive\": true\r\n  }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{basurl}}/api/issue",
+							"host": [
+								"{{basurl}}"
+							],
+							"path": [
+								"api",
+								"issue"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"alias\": \"s33trin1g\",\r\n  \"name\": \"s33trin1g\",\r\n  \"description\": \"string\",\r\n  \"projectId\": 1,\r\n  \"boardId\": 1,\r\n  \"statusId\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{basurl}}/api/issue/1",
+							"host": [
+								"{{basurl}}"
+							],
+							"path": [
+								"api",
+								"issue",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "LightUpdate",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"description\": {\r\n        \"data\": \"striddng\"\r\n  }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{basurl}}/api/issue/1",
+							"host": [
+								"{{basurl}}"
+							],
+							"path": [
+								"api",
+								"issue",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"username\": \"testuser1\",\r\n  \"password\": \"Test_Password0\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{basurl}}/api/user/signin",
+							"host": [
+								"{{basurl}}"
+							],
+							"path": [
+								"api",
+								"user",
+								"signin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetList",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{basurl}}/api/user/list",
+							"host": [
+								"{{basurl}}"
+							],
+							"path": [
+								"api",
+								"user",
+								"list"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "IssuesComment",
+			"item": [
+				{
+					"name": "GetAll comments from issue id: 1",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{basurl}}/api/issue/comments/?issueId=1",
+							"host": [
+								"{{basurl}}"
+							],
+							"path": [
+								"api",
+								"issue",
+								"comments",
+								""
+							],
+							"query": [
+								{
+									"key": "issueId",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"data\": {\r\n    \"content\": \"string\",\r\n    \"issueId\": 1,\r\n    \"applicationUserId\": \"679381f2-06a1-4e22-beda-179e8e9e3236\",\r\n    \"createdOn\": \"2022-03-26T12:52:02.401Z\"\r\n  }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{basurl}}/api/issue/comments/",
+							"host": [
+								"{{basurl}}"
+							],
+							"path": [
+								"api",
+								"issue",
+								"comments",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"content\": {\r\n    \"data\": \"stdfgdfggring\"\r\n  }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{basurl}}/api/issue/comments/2",
+							"host": [
+								"{{basurl}}"
+							],
+							"path": [
+								"api",
+								"issue",
+								"comments",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{basurl}}/api/issue/comments/2",
+							"host": [
+								"{{basurl}}"
+							],
+							"path": [
+								"api",
+								"issue",
+								"comments",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Project",
+			"item": [
+				{
+					"name": "GetAll",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{basurl}}/api/project",
+							"host": [
+								"{{basurl}}"
+							],
+							"path": [
+								"api",
+								"project"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{basurl}}/api/project/1",
+							"host": [
+								"{{basurl}}"
+							],
+							"path": [
+								"api",
+								"project",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"alias\": \"string\",\r\n  \"name\": \"string\",\r\n  \"description\": \"string\",\r\n  \"isActive\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{basurl}}/api/project",
+							"host": [
+								"{{basurl}}"
+							],
+							"path": [
+								"api",
+								"project"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"alias\": \"strsdfsdfsing\",\r\n  \"name\": \"stsdfsdfsdfring\",\r\n  \"description\": \"string\",\r\n  \"isActive\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{basurl}}/api/project/1",
+							"host": [
+								"{{basurl}}"
+							],
+							"path": [
+								"api",
+								"project",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "LightUpdate",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"alias\": {\r\n    \"data\": \"strisdfsdfsdng\"\r\n  }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{basurl}}/api/project/1",
+							"host": [
+								"{{basurl}}"
+							],
+							"path": [
+								"api",
+								"project",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{basurl}}/api/project/1",
+							"host": [
+								"{{basurl}}"
+							],
+							"path": [
+								"api",
+								"project",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Status",
+			"item": [
+				{
+					"name": "GetAll",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{basurl}}/api/status",
+							"host": [
+								"{{basurl}}"
+							],
+							"path": [
+								"api",
+								"status"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{basurl}}/api/status?code=TOTEST",
+							"host": [
+								"{{basurl}}"
+							],
+							"path": [
+								"api",
+								"status"
+							],
+							"query": [
+								{
+									"key": "code",
+									"value": "TOTEST"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{basurl}}/api/status?id=1&code=costam",
+							"host": [
+								"{{basurl}}"
+							],
+							"path": [
+								"api",
+								"status"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "1"
+								},
+								{
+									"key": "code",
+									"value": "costam"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{basurl}}/api/status?id=1",
+							"host": [
+								"{{basurl}}"
+							],
+							"path": [
+								"api",
+								"status"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{basurl}}/api/status/id?id=2",
+							"host": [
+								"{{basurl}}"
+							],
+							"path": [
+								"api",
+								"status",
+								"id"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Board",
+			"item": [
+				{
+					"name": "GetAll",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{basurl}}/api/board",
+							"host": [
+								"{{basurl}}"
+							],
+							"path": [
+								"api",
+								"board"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{basurl}}/api/board/1",
+							"host": [
+								"{{basurl}}"
+							],
+							"path": [
+								"api",
+								"board",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"data\": {\r\n    \"alias\": \"strisdfsfddsffng\",\r\n    \"name\": \"strisdfsdfsdfsdfng\",\r\n    \"description\": \"strsdfsdfing\",\r\n    \"projectId\": 1,\r\n    \"createdOn\": \"2022-03-27T09:03:54.863Z\"\r\n  }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{basurl}}/api/board",
+							"host": [
+								"{{basurl}}"
+							],
+							"path": [
+								"api",
+								"board"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{basurl}}/api/board/1",
+							"host": [
+								"{{basurl}}"
+							],
+							"path": [
+								"api",
+								"board",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"alias\": \"strinsdfsdfsdfg\",\r\n  \"name\": \"strssdfsdfsfing\",\r\n  \"description\": \"strsdfsdfing\",\r\n  \"projectId\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{basurl}}/api/board/1",
+							"host": [
+								"{{basurl}}"
+							],
+							"path": [
+								"api",
+								"board",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "LightUpdate",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": {\r\n    \"data\": \"strisdfsasdadfsdfng\"\r\n  }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{basurl}}/api/board/1",
+							"host": [
+								"{{basurl}}"
+							],
+							"path": [
+								"api",
+								"board",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "BoardStatus",
+			"item": [
+				{
+					"name": "GetAll",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{basurl}}/api/boardStatus",
+							"host": [
+								"{{basurl}}"
+							],
+							"path": [
+								"api",
+								"boardStatus"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetByStatusId",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{basurl}}/api/boardStatus?statusId=1",
+							"host": [
+								"{{basurl}}"
+							],
+							"path": [
+								"api",
+								"boardStatus"
+							],
+							"query": [
+								{
+									"key": "statusId",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetByBoardId",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{basurl}}/api/boardStatus?boardId=1",
+							"host": [
+								"{{basurl}}"
+							],
+							"path": [
+								"api",
+								"boardStatus"
+							],
+							"query": [
+								{
+									"key": "boardId",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"boardId\": 1002,\r\n  \"statusId\": 3\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{basurl}}/api/boardStatus",
+							"host": [
+								"{{basurl}}"
+							],
+							"path": [
+								"api",
+								"boardStatus"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{basurl}}/api/boardStatus?boardId=1&statusId=1",
+							"host": [
+								"{{basurl}}"
+							],
+							"path": [
+								"api",
+								"boardStatus"
+							],
+							"query": [
+								{
+									"key": "boardId",
+									"value": "1"
+								},
+								{
+									"key": "statusId",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NzkzODFmMi0wNmExLTRlMjItYmVkYS0xNzllOGU5ZTMyMzYiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiVGVzdFVzZXIxIiwibmJmIjoxNjQ4NTY2MDEyLCJleHAiOjE2NDg1NjYzMTIsImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjcwMDkvIiwiYXVkIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6NzAwOS8ifQ.O9Ccrwdav8hSufknWlIwuHrXf56kz0AeHhJBpv0MClk",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "token",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NzkzODFmMi0wNmExLTRlMjItYmVkYS0xNzllOGU5ZTMyMzYiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiVGVzdFVzZXIxIiwibmJmIjoxNjQ4NDgxOTYyLCJleHAiOjE2NDg0ODIyNjIsImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjcwMDkvIiwiYXVkIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6NzAwOS8ifQ.IxZSiu3HcTooMQtuIEaPVdg2dqVHRBXaEUQLieNS8QQ"
+		},
+		{
+			"key": "basurl",
+			"value": "https://localhost:7009"
+		}
+	]
+}

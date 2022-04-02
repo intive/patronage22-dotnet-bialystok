@@ -5,40 +5,32 @@ using Lucene.Net.QueryParsers.Classic;
 using Lucene.Net.Search;
 using Lucene.Net.Store;
 using Lucene.Net.Util;
-using Microsoft.Extensions.DependencyInjection;
 using Patronage.Common;
+using Patronage.Contracts.Helpers;
 using Patronage.Contracts.Interfaces;
 using Patronage.Contracts.ModelDtos;
 using Patronage.Contracts.ModelDtos.Boards;
 using Patronage.Contracts.ModelDtos.Issues;
 using Patronage.Contracts.ModelDtos.Projects;
 using Patronage.Models;
+using System.Reflection;
+using System.Text;
 using LuceneDirectory = Lucene.Net.Store.Directory;
 
 namespace Patronage.DataAccess.Services
 {
     public class LuceneService : ILuceneService, IDisposable
     {
-        private static class FieldNames
-        {
-            public const string BoardName = "boardName";
-            public const string IssueName = "issueName";
-            public const string IssueDescription = "issueDescription";
-            public const string ProjectName = "projectName";
-        }
-
         private const LuceneVersion AppLuceneVersion = LuceneVersion.LUCENE_48;
         private readonly IndexWriter writer;
         private readonly LuceneDirectory dir;
-        private readonly IServiceScopeFactory _scopeFactory;
         private readonly TableContext _tableContext;
 
-        public LuceneService(IServiceScopeFactory scopeFactory, TableContext tableContext)
+        public LuceneService(TableContext tableContext)
         {
-            _scopeFactory = scopeFactory;
             _tableContext = tableContext;
 
-            string indexName = "index";
+            string indexName = LuceneFieldNames.IndexName;
             string indexPath = Path.Combine(Environment.CurrentDirectory, indexName);
 
             dir = FSDirectory.Open(indexPath);
@@ -54,74 +46,122 @@ namespace Patronage.DataAccess.Services
         {
             var doc = new Document();
 
-            var type = entity.GetType();
-            if (type.Name.Contains("Board"))
-            {
-                doc.Add(new TextField(FieldNames.BoardName, entity.Name, Field.Store.YES));
-                writer.AddDocument(doc);
-            }
-            if (type.Name.Contains("Project"))
-            {
-                doc.Add(new TextField(FieldNames.ProjectName, entity.Name, Field.Store.YES));
+            var list = entity.GetLuceneTextField().ToList();
 
-                writer.AddDocument(doc);
-            }
-            if (type.Name.Contains("Issue"))
+            doc.Add(list.First());
+
+            if (list.Count > 1)
             {
-                doc.Add(new TextField(FieldNames.IssueName, entity.Name, Field.Store.YES));
-
-                if (!String.IsNullOrEmpty(entity.Description))
-                {
-                    doc.Add(new TextField(FieldNames.IssueDescription, entity.Description, Field.Store.YES));
-                }
-
-                writer.AddDocument(doc);
+                doc.Add(list.Last());
             }
+
+            writer.AddDocument(doc);
 
             writer.Commit();
         }
 
-        public void DeleteDocument(IEntity entity)
+        public void UpdateDocument(IEntity entity, int id)
         {
-            throw new NotImplementedException();
+            var type = entity.GetType();
+
+            IEntity? oldEntity = null;
+
+            if (type.Name.Contains("Board"))
+            {
+                oldEntity = _tableContext.Boards
+                    .Where(x => x.Id == id)
+                    .Select(x => new BaseBoardDto(x))
+                    .FirstOrDefault();
+            }
+
+            if (type.Name.Contains("Project"))
+            {
+                oldEntity = _tableContext.Projects
+                    .Where(x => x.Id == id)
+                    .Select(x => new ProjectDto
+                    {
+                        Id = x!.Id,
+                        Name = x.Name,
+                        Alias = x.Alias,
+                        CreatedOn = x.CreatedOn,
+                        Description = x.Description,
+                        IsActive = x.IsActive,
+                        ModifiedOn = x.ModifiedOn
+                    }).FirstOrDefault();
+            }
+
+            if (type.Name.Contains("Issue"))
+            {
+                oldEntity = _tableContext.Issues
+                    .Where(x => x.Id == id)
+                    .Select(x => new BaseIssueDto(x))
+                    .FirstOrDefault();
+            }
+
+            var terms = oldEntity!.GetLuceneTerm();
+
+            if (!oldEntity.Name.Equals(entity.Name))
+            {
+                writer.DeleteDocuments(terms.First());
+            }
+
+            if (terms.ToList().Count > 1)
+            {
+                if (type.Name.Contains("Issue") && (entity.Description?.Equals(oldEntity.Description) ?? false))
+                {
+                    writer.DeleteDocuments(terms.Last());
+                }
+            }
+
+            AddDocument(entity);
         }
 
-        public FilteredEntities Search(string name, string description)
+        public FilteredEntities Search(string? name = null, string? description = null)
         {
-            var top = SearchDocuments(FieldNames.BoardName, name);
+            IEnumerable<BaseBoardDto>? boardsList = null;
+            IEnumerable<ProjectDto>? projectList = null;
+            IEnumerable<Issue?>? issueName = null;
+            IEnumerable<Issue?>? issueDescription = null;
 
-            var boardsList = CreateList(top, FieldNames.BoardName,
-                (x, resultName) => x.Boards.FirstOrDefault(z => z.Name.ToLower() == resultName.ToLower()))
-                .Select(x => new BaseBoardDto(x!));
+            if (name is not null)
+            {
+                var topDoc = SearchDocuments(LuceneFieldNames.BoardName, name);
 
-            top = SearchDocuments(FieldNames.ProjectName, name);
+                boardsList = CreateList(topDoc, LuceneFieldNames.BoardName,
+                    (x, resultName) => x.Boards.FirstOrDefault(z => z.Name.Equals(resultName)))
+                    .Select(x => new BaseBoardDto(x!));
 
-            var projectList = CreateList(top, FieldNames.ProjectName,
-                (x, resultName) => x.Projects.FirstOrDefault(z => z.Name.ToLower() == resultName.ToLower()))
-                .Select(x => new ProjectDto
-                {
-                    Id = x!.Id,
-                    Name = x.Name,
-                    Alias = x.Alias,
-                    CreatedOn = x.CreatedOn,
-                    Description = x.Description,
-                    IsActive = x.IsActive,
-                    ModifiedOn = x.ModifiedOn
-                });
+                topDoc = SearchDocuments(LuceneFieldNames.ProjectName, name);
 
-            top = SearchDocuments(FieldNames.IssueName, name);
+                projectList = CreateList(topDoc, LuceneFieldNames.ProjectName,
+                    (x, resultName) => x.Projects.FirstOrDefault(z => z.Name.Equals(resultName)))
+                    .Select(x => new ProjectDto
+                    {
+                        Id = x!.Id,
+                        Name = x.Name,
+                        Alias = x.Alias,
+                        CreatedOn = x.CreatedOn,
+                        Description = x.Description,
+                        IsActive = x.IsActive,
+                        ModifiedOn = x.ModifiedOn
+                    });
 
-            var issueName = CreateList(top, FieldNames.IssueName,
-                (x, resultName) => x.Issues.FirstOrDefault(z => z.Name.ToLower() == resultName.ToLower()));
+                topDoc = SearchDocuments(LuceneFieldNames.IssueName, name);
 
-            top = SearchDocuments(FieldNames.IssueDescription, name);
+                issueName = CreateList(topDoc, LuceneFieldNames.IssueName,
+                    (x, resultName) => x.Issues.FirstOrDefault(z => z.Name.Equals(resultName)));
+            }
+            if (description is not null)
+            {
+                var top = SearchDocuments(LuceneFieldNames.IssueDescription, description);
 
-            var issueDescription = CreateList(top, FieldNames.IssueDescription,
-                (x, resultName) => x.Issues.FirstOrDefault(z => z.Description!.ToLower() == resultName.ToLower()));
+                issueDescription = CreateList(top, LuceneFieldNames.IssueDescription,
+                    (x, resultName) => x.Issues.FirstOrDefault(z => z.Description!.ToLower() == resultName.ToLower()));
 
-            //issueName.Append(issueDescription);
+                issueName?.ToList().AddRange(issueDescription);
+            }
 
-            var issueList = issueName.Distinct().Select(x => new BaseIssueDto(x!));
+            var issueList = issueName?.Distinct().Select(x => new BaseIssueDto(x!)) ?? issueDescription?.Distinct().Select(x => new BaseIssueDto(x!));
 
             return new FilteredEntities
             {
@@ -160,6 +200,18 @@ namespace Patronage.DataAccess.Services
                 {
                     yield return entity;
                 }
+            }
+        }
+
+        public void DeleteDocument(IEntity entity)
+        {
+            var terms = entity.GetLuceneTerm();
+
+            writer.DeleteDocuments(entity.GetLuceneTerm().First());
+
+            if (terms.ToList().Count > 1)
+            {
+                writer.DeleteDocuments(entity.GetLuceneTerm().Last());
             }
         }
 

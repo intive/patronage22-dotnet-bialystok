@@ -6,8 +6,8 @@ namespace Patronage.Contracts.ModelDtos
 {
     public class FilteredEntities
     {
-        public IEnumerable<BaseBoardDto> Boards { get; set; } = null!;
-        public IEnumerable<ProjectDto> Projects { get; set; } = null!;
-        public IEnumerable<BaseIssueDto> Issues { get; set; } = null!;
+        public IEnumerable<BaseBoardDto>? Boards { get; set; }
+        public IEnumerable<ProjectDto>? Projects { get; set; }
+        public IEnumerable<BaseIssueDto>? Issues { get; set; }
     }
 }

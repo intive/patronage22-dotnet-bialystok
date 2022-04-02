@@ -5,10 +5,12 @@ namespace Patronage.Contracts.Interfaces
 {
     public interface ILuceneService
     {
-        public FilteredEntities Search(string name, string description);
-
-        public void DeleteDocument(IEntity entity);
+        public FilteredEntities Search(string? name = null, string? description = null);
 
         public void AddDocument(IEntity entity);
+
+        public void UpdateDocument(IEntity entity, int id);
+
+        public void DeleteDocument(IEntity entity);
     }
 }

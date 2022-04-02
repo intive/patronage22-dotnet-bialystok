@@ -17,8 +17,12 @@ namespace Patronage.Api.MediatR.Board.Commands.Create
 
         public async Task<BoardDto?> Handle(CreateBoardCommand request, CancellationToken cancellationToken)
         {
-            _luceneService.AddDocument(request.Data);
-            return await _boardService.CreateBoardAsync(request.Data);
+            var result = await _boardService.CreateBoardAsync(request.Data);
+            if (result is not null)
+            {
+                _luceneService.AddDocument(request.Data);
+            }
+            return result;
         }
     }
 }

@@ -17,8 +17,12 @@ namespace Patronage.Api.MediatR.Issues.Commands
 
         public async Task<IssueDto?> Handle(CreateIssueCommand request, CancellationToken cancellationToken)
         {
-            _luceneService.AddDocument(request.Data);
-            return await _issueService.CreateAsync(request.Data);
+            var result = await _issueService.CreateAsync(request.Data);
+            if (result is not null)
+            {
+                _luceneService.AddDocument(request.Data);
+            }
+            return result;
         }
     }
 }

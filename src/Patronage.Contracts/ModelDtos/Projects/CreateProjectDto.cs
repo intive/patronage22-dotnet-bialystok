@@ -1,4 +1,7 @@
-﻿using Patronage.Common;
+﻿using Lucene.Net.Documents;
+using Lucene.Net.Index;
+using Patronage.Common;
+using Patronage.Contracts.Helpers;
 
 namespace Patronage.Contracts.ModelDtos.Projects
 {
@@ -8,5 +11,15 @@ namespace Patronage.Contracts.ModelDtos.Projects
         public string Name { get; set; } = null!;
         public string? Description { get; set; }
         public bool IsActive { get; set; } = true;
+
+        public IEnumerable<TextField> GetLuceneTextField()
+        {
+            return new List<TextField>().Append(new TextField(LuceneFieldNames.ProjectName, Name, Field.Store.YES));
+        }
+
+        public IEnumerable<Term> GetLuceneTerm()
+        {
+            return new List<Term>().Append(new Term(LuceneFieldNames.ProjectName, Name));
+        }
     }
 }

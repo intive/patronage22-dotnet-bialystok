@@ -1,5 +1,9 @@
-﻿using Patronage.Common;
+﻿using Lucene.Net.Documents;
+using Lucene.Net.Index;
+using Patronage.Common;
+using Patronage.Contracts.Helpers;
 using Patronage.Models;
+using System.Collections;
 
 namespace Patronage.Contracts.ModelDtos.Boards
 {
@@ -22,6 +26,16 @@ namespace Patronage.Contracts.ModelDtos.Boards
 
         public BaseBoardDto()
         {
+        }
+
+        public IEnumerable<TextField> GetLuceneTextField()
+        {
+            return new List<TextField>().Append(new TextField(LuceneFieldNames.BoardName, Name, Field.Store.YES));
+        }
+
+        public IEnumerable<Term> GetLuceneTerm()
+        {
+            return new List<Term>().Append(new Term(LuceneFieldNames.BoardName, Name));
         }
     }
 }

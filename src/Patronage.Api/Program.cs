@@ -12,14 +12,14 @@ using Patronage.Api.Middleware;
 using Patronage.Api.Controllers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Azure.Storage.Blobs;
 
-var logger = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
+var logger = NLogBuilder.ConfigureNLog(Environment.GetEnvironmentVariable("IS_HEROKU2") == "true" ? "NLog.Azure.config" : "NLog.config").GetCurrentClassLogger();
 logger.Info("Starting");
 
 try
 {
     var builder = WebApplication.CreateBuilder(args);
-
     var envConfig = new ConfigurationBuilder();
     var envSettings = envConfig.AddJsonFile("appsettings.Development.json",
                            optional: false,
@@ -30,7 +30,7 @@ try
     // TODO: P2022-1704
     builder.Services.AddCors(config =>
     {
-        config.AddPolicy("PatronageCorsPolicy", policy => policy.AllowAnyOrigin()
+        config.AddPolicy("PatronageCorsPolicy", policy => policy.WithOrigins("http://patronage22-bialystok-js.herokuapp.com", "http://localhost")
             .AllowAnyHeader()
             .AllowAnyMethod());
     });
@@ -39,6 +39,7 @@ try
     {
         options.SuppressAsyncSuffixInActionNames = false;
     });
+    builder.Services.AddMvc();
     // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen(c =>
@@ -88,6 +89,8 @@ try
     builder.Services.AddScoped<ICommentService, CommentService>();
     builder.Services.AddScoped<ILuceneService, LuceneService>();
 
+    builder.Services.AddSingleton(a => new BlobServiceClient(builder.Configuration.GetValue<string>("AzureBlob:ConnectionString")));
+    builder.Services.AddSingleton<IBlobService, BlobService>();
     builder.Services.AddScoped<ErrorHandlingMiddleware>();
 
     builder.Services.AddMediatR(typeof(Program));
@@ -117,6 +120,8 @@ try
 
     var app = builder.Build();
 
+    await LuceneManager.Initialize(app.Services.GetRequiredService<IBlobService>());
+
     databaseManager.ApplyMigrations(app);
 
     // Configure the HTTP request pipeline.
@@ -142,7 +147,14 @@ try
     // ErrorHandlingMiddleware does not work if UseDeveloperExceptionPage is enabled so I commented it
     //app.UseDeveloperExceptionPage();
 
-    app.MapControllers();//.RequireAuthorization();
+    if (EnvironmentVarHandler.IsAuthEnabled())
+    {
+        app.MapControllers().RequireAuthorization();
+    }
+    else
+    {
+        app.MapControllers();
+    }
 
     logger.Info("Initializing complete!");
     string? port = Environment.GetEnvironmentVariable("PORT") ?? "80";

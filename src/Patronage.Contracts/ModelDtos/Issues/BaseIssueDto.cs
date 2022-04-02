@@ -1,4 +1,7 @@
-﻿using Patronage.Common;
+﻿using Lucene.Net.Documents;
+using Lucene.Net.Index;
+using Patronage.Common;
+using Patronage.Contracts.Helpers;
 using Patronage.Models;
 
 namespace Patronage.Contracts.ModelDtos.Issues
@@ -28,6 +31,18 @@ namespace Patronage.Contracts.ModelDtos.Issues
 
         public BaseIssueDto()
         {
+        }
+
+        public IEnumerable<TextField> GetLuceneTextField()
+        {
+            var list = new List<TextField>().Append(new TextField(LuceneFieldNames.IssueName, Name, Field.Store.YES));
+            return list.Append(new TextField(LuceneFieldNames.IssueDescription, Description, Field.Store.YES));
+        }
+
+        public IEnumerable<Term> GetLuceneTerm()
+        {
+            var list = new List<Term>().Append(new Term(LuceneFieldNames.IssueName, Name));
+            return list.Append(new Term(LuceneFieldNames.IssueDescription, Description));
         }
     }
 }
