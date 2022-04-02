@@ -40,15 +40,15 @@ namespace Patronage.Tests
                 Name = "created name",
                 Description = "created description"
             };
-            
+
             //Act
             var response = await _projectService.Create(project);
-            var projectExists = await _projectService.GetById(response);
 
             //Assert
-            Assert.NotNull(projectExists);
             Assert.True(response > 0);
-            Assert.Equal(project.Name, projectExists!.Name);
+            var createdProject = _context.Projects.FirstOrDefault(x => x.Id == response);
+            Assert.NotNull(createdProject);
+            Assert.Equal(project.Name, createdProject!.Name);
         }
 
         [Fact]
@@ -66,7 +66,7 @@ namespace Patronage.Tests
 
             //Act
             var response = await _projectService.GetAll(null);
-            
+
             //Assert
             Assert.NotNull(response);
             Assert.True(response!.Any(), "Could not load projects from project controller.");
@@ -88,17 +88,25 @@ namespace Patronage.Tests
 
             //Act
             var response = await _projectService.GetAll("This name is unique");
-            var response2 = await _projectService.GetAll("this name does not exist");            
 
             //Assert
             Assert.NotNull(response);
             Assert.True(response!.Any(), "Could not load projects from project service.");
             Assert.Equal("This name is unique", response!.First().Name);
-            
-            Assert.NotNull(response2);
-            Assert.False(response2!.Any(), "Projects returned when they should not have been.");
         }
+        
+        [Fact]
+        public async Task DoesNotReturnNonExistingProjects()
+        {
+            //Arrange
 
+            //Act
+            var response = await _projectService.GetAll("this name does not exist");
+
+            //Assert
+            Assert.NotNull(response);
+            Assert.False(response!.Any(), "Projects returned when they should not have been.");
+        }
         [Fact]
         public async Task CanSearchProjectsByAlias()
         {
@@ -114,15 +122,11 @@ namespace Patronage.Tests
 
             //Act
             var response = await _projectService.GetAll("This alias is unique");
-            var response2 = await _projectService.GetAll("this name does not exist");
 
             //Assert
             Assert.NotNull(response);
             Assert.True(response!.Any(), "Could not load projects from project service.");
             Assert.Equal("This alias is unique", response!.First().Alias);
-
-            Assert.NotNull(response2);
-            Assert.False(response2!.Any(), "Projects returned when they should not have been.");
         }
 
         [Fact]
@@ -140,15 +144,11 @@ namespace Patronage.Tests
 
             //Act
             var response = await _projectService.GetAll("This description is unique");
-            var response2 = await _projectService.GetAll("this description does not exist");
 
             //Assert
             Assert.NotNull(response);
             Assert.True(response!.Any(), "Could not load projects from project service.");
             Assert.Equal("This description is unique", response!.First().Description);
-
-            Assert.NotNull(response2);
-            Assert.False(response2!.Any(), "Projects returned when they should not have been.");
         }
         
         [Fact]
@@ -173,14 +173,14 @@ namespace Patronage.Tests
 
             //Act
             var response = await _projectService.Update(10002, updatedProject);
-            var projectResponse= await _projectService.GetById(10002);
 
             //Assert
+            var updatedProjectResponse = _context.Projects.FirstOrDefault(x => x.Id == 10002);
             Assert.True(response, "Could not update project.");
-            Assert.NotNull(projectResponse);
-            Assert.True(projectResponse!.Name == "Updated name", "Project name was not updated.");
-            Assert.True(projectResponse!.Description == "Updated description", "Project description was not updated.");
-            Assert.True(projectResponse!.Alias == "Updated alias", "Project alias was not updated.");
+            Assert.NotNull(updatedProjectResponse);
+            Assert.True(updatedProjectResponse!.Name == "Updated name", "Project name was not updated.");
+            Assert.True(updatedProjectResponse!.Description == "Updated description", "Project description was not updated.");
+            Assert.True(updatedProjectResponse!.Alias == "Updated alias", "Project alias was not updated.");
         }
 
         [Fact]
@@ -205,9 +205,9 @@ namespace Patronage.Tests
 
             //Act
             var response = await _projectService.LightUpdate(10000, updatedProject);
-            var projectResponse = await _projectService.GetById(10000);
-            
+
             //Assert
+            var projectResponse = _context.Projects.FirstOrDefault(x => x.Id == 10000);
             Assert.True(response, "Could not light update project.");
             Assert.NotNull(projectResponse);
             Assert.True(projectResponse!.Name == "Base name", "Project name was updated, when it should not have been.");
@@ -232,14 +232,12 @@ namespace Patronage.Tests
 
             //Act
             var response = await _projectService.Delete(10001);
-            var responseAll = await _projectService.GetAll(null);
-            var projectResponse = await _projectService.GetById(10001);
 
             //Assert
+            var deletedProjectResponse = _context.Projects.FirstOrDefault(x => x.Id == 10001);
+            Assert.NotNull(deletedProjectResponse);
             Assert.True(response, "Could not delete project.");
-            Assert.NotNull(projectResponse);
-            Assert.True(projectResponse!.IsActive == false, "Project was not deleted.");
-            Assert.True(responseAll!.Any(x => x.Id == 10001) || responseAll!.Any(x => x.IsActive == false), "Get all returned deleted project.");
+            Assert.True(deletedProjectResponse!.IsActive == false, "Project was not deleted.");
         }
     }
 }
