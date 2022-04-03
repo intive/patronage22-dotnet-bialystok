@@ -13,6 +13,8 @@ using Patronage.Api.Controllers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Azure.Storage.Blobs;
+using Patronage.DataAccess.BackgroundServices;
+using static Patronage.DataAccess.BackgroundServices.BackgroundReportWorker;
 
 var logger = NLogBuilder.ConfigureNLog(Environment.GetEnvironmentVariable("IS_HEROKU2") == "true" ? "NLog.Azure.config" : "NLog.config").GetCurrentClassLogger();
 logger.Info("Starting");
@@ -116,6 +118,9 @@ try
 
         options.DefaultPolicy = defaultPolicyBuilder.Build();
     });
+
+    builder.Services.AddHostedService<BackgroundReportWorker>()
+                    .AddSingleton<IBackgroundQueue<Report>, BackgroundQueue<Report>>();
 
     var app = builder.Build();
 
