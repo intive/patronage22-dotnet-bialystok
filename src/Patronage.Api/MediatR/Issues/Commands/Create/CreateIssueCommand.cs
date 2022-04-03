@@ -6,5 +6,10 @@ namespace Patronage.Api.MediatR.Issues.Commands
     public class CreateIssueCommand : IRequest<IssueDto>
     {
         public BaseIssueDto Data { get; set; } = null!;
+
+        public CreateIssueCommand(BaseIssueDto dto)
+        {
+            Data = dto;
+        }
     }
 }

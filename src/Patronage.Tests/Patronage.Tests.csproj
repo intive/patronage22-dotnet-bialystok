@@ -23,6 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Patronage.Api\Patronage.Api.csproj" />
     <ProjectReference Include="..\Patronage.Contracts\Patronage.Contracts.csproj" />
     <ProjectReference Include="..\Patronage.DataAccess\Patronage.DataAccess.csproj" />
     <ProjectReference Include="..\Patronage.Models\Patronage.Models.csproj" />
