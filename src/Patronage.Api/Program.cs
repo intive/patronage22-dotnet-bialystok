@@ -93,8 +93,6 @@ try
     builder.Services.AddSingleton<IBlobService, BlobService>();
     builder.Services.AddScoped<ErrorHandlingMiddleware>();
 
-    builder.Services.AddQuartzConfiguration();
-
     builder.Services.AddMediatR(typeof(Program));
 
     builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
@@ -119,6 +117,11 @@ try
 
         options.DefaultPolicy = defaultPolicyBuilder.Build();
     });
+
+    if (EnvironmentVarHandler.IsHeroku())
+    {
+        builder.Services.AddQuartzConfiguration();
+    }
 
     var app = builder.Build();
 
