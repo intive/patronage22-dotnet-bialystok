@@ -122,6 +122,7 @@ namespace Patronage.DataAccess.Services
             IEnumerable<ProjectDto>? projectList = null;
             IEnumerable<Issue?>? issueName = null;
             IEnumerable<Issue?>? issueDescription = null;
+            var issueList = new List<BaseIssueDto>();
 
             if (name is not null)
             {
@@ -150,23 +151,25 @@ namespace Patronage.DataAccess.Services
 
                 issueName = CreateList(topDoc, LuceneFieldNames.IssueName,
                     (x, resultName) => x.Issues.FirstOrDefault(z => z.Name.Equals(resultName)));
+
+                issueList.AddRange(issueName.Select(x => new BaseIssueDto(x!)));
             }
             if (description is not null)
             {
                 var top = SearchDocuments(LuceneFieldNames.IssueDescription, description);
 
                 issueDescription = CreateList(top, LuceneFieldNames.IssueDescription,
-                    (x, resultName) => x.Issues.FirstOrDefault(z => z.Description!.ToLower() == resultName.ToLower()));
+                    (x, resultName) => x.Issues.FirstOrDefault(z => z.Description == null ? false : z.Description.Equals(resultName)));
 
-                issueName?.ToList().AddRange(issueDescription);
+                issueList.AddRange(issueDescription.Select(x => new BaseIssueDto(x!)));
             }
 
-            var issueList = issueName?.Distinct().Select(x => new BaseIssueDto(x!)) ?? issueDescription?.Distinct().Select(x => new BaseIssueDto(x!));
+            var test = issueList.Distinct().ToArray();
 
             return new FilteredEntities
             {
                 Boards = boardsList,
-                Issues = issueList,
+                Issues = issueList.Distinct(),
                 Projects = projectList
             };
         }

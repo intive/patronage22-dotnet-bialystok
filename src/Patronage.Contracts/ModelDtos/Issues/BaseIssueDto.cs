@@ -6,7 +6,7 @@ using Patronage.Models;
 
 namespace Patronage.Contracts.ModelDtos.Issues
 {
-    public class BaseIssueDto : IEntity
+    public class BaseIssueDto : IEntity, IEquatable<BaseIssueDto>
     {
         public string Alias { get; set; } = null!;
         public string Name { get; set; } = null!;
@@ -43,6 +43,20 @@ namespace Patronage.Contracts.ModelDtos.Issues
         {
             var list = new List<Term>().Append(new Term(LuceneFieldNames.IssueName, Name));
             return list.Append(new Term(LuceneFieldNames.IssueDescription, Description));
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Name, Description);
+        }
+
+        public bool Equals(BaseIssueDto? other)
+        {
+            if (Object.ReferenceEquals(other, null)) return false;
+
+            if (Object.ReferenceEquals(this, other)) return true;
+
+            return (Description?.Equals(other.Description) ?? (Description is null && other.Description is null)) && Name.Equals(other.Name);
         }
     }
 }

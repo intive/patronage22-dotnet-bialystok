@@ -21,7 +21,7 @@ namespace Patronage.Api.Controllers
         /// </summary>
         /// <param name="name"></param>
         /// <param name="description"></param>
-        /// <returns>Object with 3 properties - list of filtered projects, boards and issue. If there's no match list is set to null.</returns>
+        /// <returns>Object with 3 properties - list of filtered projects, boards and issue. If there's no match, list is set to null.</returns>
         [HttpGet]
         public ActionResult Search([FromQuery] string? name, string? description)
         {

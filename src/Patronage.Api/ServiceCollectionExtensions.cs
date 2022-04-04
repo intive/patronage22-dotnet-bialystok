@@ -5,6 +5,8 @@ using NETCore.MailKit.Infrastructure.Internal;
 using System.Text.Json;
 using Patronage.DataAccess;
 using System.Text;
+using Patronage.Api.Jobs;
+using Quartz;
 
 namespace Patronage.Api
 {
@@ -125,6 +127,36 @@ namespace Patronage.Api
                 };
             });
             return services;
+        }
+
+        public static IServiceCollection AddQuartzConfiguration(this IServiceCollection service)
+        {
+            service.AddTransient<UploadIndexJob>();
+            service.AddQuartz(q =>
+            {
+                q.SchedulerId = "Scheduler Lucene";
+                q.UseMicrosoftDependencyInjectionJobFactory();
+                q.UseSimpleTypeLoader();
+                q.UseInMemoryStore();
+                q.UseDefaultThreadPool(tp =>
+                {
+                    tp.MaxConcurrency = 10;
+                });
+
+                q.ScheduleJob<UploadIndexJob>(trigger => trigger
+                    .WithIdentity("uploadLucene", "luceneGroup")
+                        .StartAt(DateBuilder.EvenSecondDate(DateTimeOffset.UtcNow.AddMinutes(5)))
+                        .WithSimpleSchedule(x => x
+                            .WithIntervalInMinutes(30)
+                            .RepeatForever())
+                );
+            });
+            service.AddQuartzServer(options =>
+            {
+                options.WaitForJobsToComplete = true;
+            });
+
+            return service;
         }
     }
 }

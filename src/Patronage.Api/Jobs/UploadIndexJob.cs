@@ -1,4 +1,5 @@
-﻿using Patronage.Contracts.Interfaces;
+﻿using Patronage.Contracts.Helpers;
+using Patronage.Contracts.Interfaces;
 using Quartz;
 
 namespace Patronage.Api.Jobs
@@ -14,7 +15,7 @@ namespace Patronage.Api.Jobs
 
         public async Task Execute(IJobExecutionContext context)
         {
-            await _blobService.UploadBlobsAsync("luceneIndex", "index");
+            await _blobService.UploadBlobsAsync("luceneIndex", LuceneFieldNames.IndexName);
         }
     }
 }

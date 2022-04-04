@@ -93,6 +93,8 @@ try
     builder.Services.AddSingleton<IBlobService, BlobService>();
     builder.Services.AddScoped<ErrorHandlingMiddleware>();
 
+    builder.Services.AddQuartzConfiguration();
+
     builder.Services.AddMediatR(typeof(Program));
 
     builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
