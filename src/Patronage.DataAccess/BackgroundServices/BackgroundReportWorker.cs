@@ -1,17 +1,20 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Patronage.Contracts.Helpers.Reports;
+using Patronage.Contracts.Interfaces;
+using Patronage.Models;
 
 namespace Patronage.DataAccess.BackgroundServices
 {
     public class BackgroundReportWorker : BackgroundService
     {
-        private readonly IBackgroundQueue<Report> _queue;
+        private readonly IBackgroundQueue<GenerateReportParams> _queue;
         private readonly IServiceScopeFactory _scopeFactory;
         private readonly ILogger<BackgroundReportWorker> _logger;
 
         public BackgroundReportWorker(
-            IBackgroundQueue<Report> queue,
+            IBackgroundQueue<GenerateReportParams> queue,
             IServiceScopeFactory scopeFactory,
             ILogger<BackgroundReportWorker> logger)
         {
@@ -43,36 +46,25 @@ namespace Patronage.DataAccess.BackgroundServices
             {
                 try
                 {
-                    await Task.Delay(500, stoppingToken);
-                    var report = _queue.Dequeue();
+                    //await Task.Delay(500, stoppingToken);
+                    var reportParams = _queue.Dequeue();
 
-                    if (report == null) continue;
+                    if (reportParams == null) continue;
 
-                    _logger.LogInformation("Starting to process ..");
+                    _logger.LogInformation("Starting process of generating report...");
 
                     using (var scope = _scopeFactory.CreateScope())
                     {
-                        // TODO: Here you should call a service producing report i think
+                        var reportService = scope.ServiceProvider.GetRequiredService<IReportService>();
 
-                        //var reportService = scope.ServiceProvider.GetRequiredService<IReportService>();
-
-                        //await reportService.CreateReportAsync(report, stoppingToken);
+                        await reportService.GenerateReportAsync(reportParams, stoppingToken);
                     }
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogCritical("An error occurred when publishing a book. Exception: {@Exception}", ex);
+                    _logger.LogCritical("An error occurred. Exception: {@Exception}", ex);
                 }
             }
-        }
-
-        // Mock database table
-        public class Report
-        {
-            public int Id { get; set; }
-            public int UserId { get; set; }
-            public string Status { get; set; }
-            public string File { get; set; }
         }
     }
 }

@@ -14,7 +14,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Azure.Storage.Blobs;
 using Patronage.DataAccess.BackgroundServices;
-using static Patronage.DataAccess.BackgroundServices.BackgroundReportWorker;
+using Patronage.Contracts.Helpers.Reports;
 
 var logger = NLogBuilder.ConfigureNLog(Environment.GetEnvironmentVariable("IS_HEROKU2") == "true" ? "NLog.Azure.config" : "NLog.config").GetCurrentClassLogger();
 logger.Info("Starting");
@@ -89,6 +89,7 @@ try
     builder.Services.AddTransient<ITokenService, TokenService>();
     builder.Services.AddScoped<IStatusService, StatusService>();
     builder.Services.AddScoped<ICommentService, CommentService>();
+    builder.Services.AddScoped<IReportService, ReportService>();
 
     builder.Services.AddSingleton(a => new BlobServiceClient(builder.Configuration.GetValue<string>("AzureBlob:ConnectionString")));
     builder.Services.AddSingleton<IBlobService, BlobService>();
@@ -120,7 +121,7 @@ try
     });
 
     builder.Services.AddHostedService<BackgroundReportWorker>()
-                    .AddSingleton<IBackgroundQueue<Report>, BackgroundQueue<Report>>();
+                    .AddSingleton<IBackgroundQueue<GenerateReportParams>, BackgroundQueue<GenerateReportParams>>();
 
     var app = builder.Build();
 

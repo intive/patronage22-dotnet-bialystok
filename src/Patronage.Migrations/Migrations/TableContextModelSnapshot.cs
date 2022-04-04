@@ -260,7 +260,7 @@ namespace Patronage.Migrations.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Boards");
+                    b.ToTable("Boards", (string)null);
 
                     b.HasData(
                         new
@@ -297,7 +297,7 @@ namespace Patronage.Migrations.Migrations
 
                     b.HasIndex("StatusId");
 
-                    b.ToTable("BoardsStatus");
+                    b.ToTable("BoardsStatus", (string)null);
 
                     b.HasData(
                         new
@@ -349,7 +349,7 @@ namespace Patronage.Migrations.Migrations
 
                     b.HasIndex("IssueId");
 
-                    b.ToTable("Comment");
+                    b.ToTable("Comment", (string)null);
                 });
 
             modelBuilder.Entity("Patronage.Models.Issue", b =>
@@ -402,7 +402,7 @@ namespace Patronage.Migrations.Migrations
 
                     b.HasIndex("ProjectId");
 
-                    b.ToTable("Issues");
+                    b.ToTable("Issues", (string)null);
 
                     b.HasData(
                         new
@@ -469,7 +469,7 @@ namespace Patronage.Migrations.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Logs");
+                    b.ToTable("Logs", (string)null);
                 });
 
             modelBuilder.Entity("Patronage.Models.Project", b =>
@@ -506,7 +506,7 @@ namespace Patronage.Migrations.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Projects");
+                    b.ToTable("Projects", (string)null);
 
                     b.HasData(
                         new
@@ -551,7 +551,7 @@ namespace Patronage.Migrations.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Statuses");
+                    b.ToTable("Statuses", (string)null);
 
                     b.HasData(
                         new
