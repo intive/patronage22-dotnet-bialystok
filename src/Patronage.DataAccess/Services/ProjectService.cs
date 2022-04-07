@@ -116,7 +116,7 @@ namespace Patronage.DataAccess.Services
             {
                 project.Description = project.Description;
             }
-            else if (projectDto.Description?.Data == null)
+            else if (projectDto.Description.Data == null)
             {
                 project.Description = null;
             }
