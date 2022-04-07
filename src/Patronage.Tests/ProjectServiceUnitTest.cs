@@ -31,7 +31,7 @@ namespace Patronage.Tests
         }
 
         [Fact]
-        public async Task CanCreateProject()
+        public async Task CreateProjectReturnsProjectDto()
         {
             //Arrange
             CreateProjectDto project = new()
@@ -52,7 +52,7 @@ namespace Patronage.Tests
         }
 
         [Fact]
-        public async Task CanGetProjects()
+        public async Task GetProjectReturnsProject()
         {
             //Arrange
             Project project = new()
@@ -74,7 +74,7 @@ namespace Patronage.Tests
         }
 
         [Fact]
-        public async Task CanSearchProjectsByName()
+        public async Task SearchProjectByNameReturnsProject()
         {
             //Arrange
             Project project = new()
@@ -96,7 +96,7 @@ namespace Patronage.Tests
         }
         
         [Fact]
-        public async Task DoesNotReturnNonExistingProjects()
+        public async Task SearchByNonexistentNameReturnsNull()
         {
             //Arrange
 
@@ -108,7 +108,7 @@ namespace Patronage.Tests
             Assert.False(response!.Any(), "Projects returned when they should not have been.");
         }
         [Fact]
-        public async Task CanSearchProjectsByAlias()
+        public async Task SearchProjectByAliasReturnsProject()
         {
             //Arrange
             Project project = new()
@@ -130,7 +130,7 @@ namespace Patronage.Tests
         }
 
         [Fact]
-        public async Task CanSearchProjectsByDescription()
+        public async Task SearchProjectByDescriptionReturnsProject()
         {
             //Arrange
             Project project = new()
@@ -152,7 +152,7 @@ namespace Patronage.Tests
         }
         
         [Fact]
-        public async Task CanUpdateProject()
+        public async Task UpdateProjectReturnsTrue()
         {
             //Arrange
             Project project = new()
@@ -184,7 +184,7 @@ namespace Patronage.Tests
         }
 
         [Fact]
-        public async Task CanLightUpdateProject()
+        public async Task LightUpdateProjectReturnsTrue()
         {
             //Arrange
             Project project = new()
@@ -217,7 +217,7 @@ namespace Patronage.Tests
         }
 
         [Fact]
-        public async Task CanDeleteProject()
+        public async Task DeleteProjectReturnsTrue()
         {
             //Arrange
             Project project = new()
