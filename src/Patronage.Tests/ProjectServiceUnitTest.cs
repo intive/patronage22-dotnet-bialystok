@@ -31,7 +31,7 @@ namespace Patronage.Tests
         }
 
         [Fact]
-        public async Task CreateProjectReturnsProjectDto()
+        public async void CreateProjectReturnsProjectDto()
         {
             //Arrange
             CreateProjectDto project = new()
@@ -52,7 +52,7 @@ namespace Patronage.Tests
         }
 
         [Fact]
-        public async Task GetProjectReturnsProject()
+        public async void GetProjectReturnsProject()
         {
             //Arrange
             Project project = new()
@@ -74,7 +74,7 @@ namespace Patronage.Tests
         }
 
         [Fact]
-        public async Task SearchProjectByNameReturnsProject()
+        public async void SearchProjectByNameReturnsProject()
         {
             //Arrange
             Project project = new()
@@ -96,7 +96,7 @@ namespace Patronage.Tests
         }
         
         [Fact]
-        public async Task SearchByNonexistentNameReturnsNull()
+        public async void SearchByNonexistentNameReturnsNull()
         {
             //Arrange
 
@@ -108,7 +108,7 @@ namespace Patronage.Tests
             Assert.False(response!.Any(), "Projects returned when they should not have been.");
         }
         [Fact]
-        public async Task SearchProjectByAliasReturnsProject()
+        public async void SearchProjectByAliasReturnsProject()
         {
             //Arrange
             Project project = new()
@@ -130,7 +130,7 @@ namespace Patronage.Tests
         }
 
         [Fact]
-        public async Task SearchProjectByDescriptionReturnsProject()
+        public async void SearchProjectByDescriptionReturnsProject()
         {
             //Arrange
             Project project = new()
@@ -152,12 +152,12 @@ namespace Patronage.Tests
         }
         
         [Fact]
-        public async Task UpdateProjectReturnsTrue()
+        public async void UpdateProjectReturnsTrue()
         {
             //Arrange
             Project project = new()
             {
-                Id = 10002,
+                Id = 10103,
                 Alias = "Not updated alias",
                 Name = "Not updated name",
                 Description = "Not updated description"
@@ -172,10 +172,10 @@ namespace Patronage.Tests
             };
 
             //Act
-            var response = await _projectService.Update(10002, updatedProject);
+            var response = await _projectService.Update(10103, updatedProject);
 
             //Assert
-            var updatedProjectResponse = _context.Projects.FirstOrDefault(x => x.Id == 10002);
+            var updatedProjectResponse = _context.Projects.FirstOrDefault(x => x.Id == 10103);
             Assert.True(response, "Could not update project.");
             Assert.NotNull(updatedProjectResponse);
             Assert.True(updatedProjectResponse!.Name == "Updated name", "Project name was not updated.");
@@ -184,7 +184,7 @@ namespace Patronage.Tests
         }
 
         [Fact]
-        public async Task LightUpdateProjectReturnsTrue()
+        public async void LightUpdateProjectReturnsTrue()
         {
             //Arrange
             Project project = new()
@@ -217,7 +217,7 @@ namespace Patronage.Tests
         }
 
         [Fact]
-        public async Task DeleteProjectReturnsTrue()
+        public async void DeleteProjectReturnsTrue()
         {
             //Arrange
             Project project = new()
