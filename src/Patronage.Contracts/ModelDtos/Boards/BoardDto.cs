@@ -21,5 +21,24 @@ namespace Patronage.Contracts.ModelDtos.Boards
         public BoardDto()
         {
         }
+
+        public override bool Equals(object? obj)
+        {
+            if (obj is not BoardDto)
+            {
+                return false;
+            }
+
+            BoardDto Dto = (BoardDto)obj;
+
+            return Id == Dto.Id &&
+                   IsActive == Dto.IsActive &&
+                   ModifiedOn == Dto.ModifiedOn &&
+                   BoardStatuses == Dto.BoardStatuses &&
+                   Alias == Dto.Alias &&
+                   Name == Dto.Name &&
+                   Description == Dto.Description &&
+                   CreatedOn == Dto.CreatedOn;
+        }
     }
 }
