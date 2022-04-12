@@ -87,6 +87,7 @@ try
     builder.Services.AddTransient<ITokenService, TokenService>();
     builder.Services.AddScoped<IStatusService, StatusService>();
     builder.Services.AddScoped<ICommentService, CommentService>();
+    builder.Services.AddScoped<ILuceneService, LuceneService>();
 
     builder.Services.AddSingleton(a => new BlobServiceClient(builder.Configuration.GetValue<string>("AzureBlob:ConnectionString")));
     builder.Services.AddSingleton<IBlobService, BlobService>();
@@ -117,7 +118,14 @@ try
         options.DefaultPolicy = defaultPolicyBuilder.Build();
     });
 
+    if (EnvironmentVarHandler.IsHeroku())
+    {
+        builder.Services.AddQuartzConfiguration();
+    }
+
     var app = builder.Build();
+
+    await LuceneManager.Initialize(app.Services.GetRequiredService<IBlobService>());
 
     databaseManager.ApplyMigrations(app);
 

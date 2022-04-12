@@ -18,7 +18,7 @@ namespace Patronage.DataAccess.Services
         public async Task GetBlobAsync(string blobContainerName, string localDirectory)
         {
             _logger.LogDebug($"Downloading {blobContainerName} from Azure Blob Storage");
-            var containerClient = _blobServiceClient.GetBlobContainerClient("herokulogs");
+            var containerClient = _blobServiceClient.GetBlobContainerClient(blobContainerName);
             if (!Directory.Exists(localDirectory))
             {
                 Directory.CreateDirectory($@"{localDirectory}");

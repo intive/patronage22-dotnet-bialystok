@@ -1,6 +1,11 @@
-﻿namespace Patronage.Contracts.ModelDtos.Projects
+﻿using Lucene.Net.Documents;
+using Lucene.Net.Index;
+using Patronage.Common;
+using Patronage.Contracts.Helpers;
+
+namespace Patronage.Contracts.ModelDtos.Projects
 {
-    public class ProjectDto
+    public class ProjectDto : IEntity
     {
         public int Id { get; set; }
         public string Alias { get; set; } = null!;
@@ -9,5 +14,15 @@
         public bool IsActive { get; set; }
         public DateTime CreatedOn { get; set; }
         public DateTime? ModifiedOn { get; set; }
+
+        public IEnumerable<TextField> GetLuceneTextField()
+        {
+            return new List<TextField>().Append(new TextField(LuceneFieldNames.ProjectName, Name, Field.Store.YES));
+        }
+
+        public IEnumerable<Term> GetLuceneTerm()
+        {
+            return new List<Term>().Append(new Term(LuceneFieldNames.ProjectName, Name));
+        }
     }
 }
